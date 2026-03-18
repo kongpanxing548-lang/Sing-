@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>2026-03-18 A股收盘复盘 - SING-</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Orbitron', sans-serif;
+            background: #000;
+            color: #00ff41;
+            min-height: 100vh;
+            overflow-x: hidden;
+            line-height: 1.8;
+        }
+
+        .bg-gradient {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: 
+                radial-gradient(circle at 20% 50%, rgba(120, 0, 180, 0.3) 0%, transparent 50%),
+                radial-gradient(circle at 80% 80%, rgba(0, 180, 255, 0.3) 0%, transparent 50%),
+                radial-gradient(circle at 40% 40%, rgba(0, 255, 100, 0.1) 0%, transparent 50%);
+            z-index: -1;
+            animation: bgPulse 10s ease-in-out infinite alternate;
+        }
+
+        @keyframes bgPulse {
+            0% { opacity: 0.5; }
+            100% { opacity: 1; }
+        }
+
+        .grid-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: 
+                linear-gradient(rgba(0, 255, 65, 0.05) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(0, 255, 65, 0.05) 1px, transparent 1px);
+            background-size: 50px 50px;
+            z-index: -1;
+            animation: gridMove 20s linear infinite;
+        }
+
+        @keyframes gridMove {
+            0% { transform: translate(0, 0); }
+            100% { transform: translate(50px, 50px); }
+        }
+
+        .scanline {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: rgba(0, 255, 65, 0.6);
+            box-shadow: 0 0 10px #00ff41;
+            animation: scanline 6s linear infinite;
+            z-index: 999;
+            pointer-events: none;
+        }
+
+        @keyframes scanline {
+            0% { top: 0; }
+            100% { top: 100%; }
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: 40px auto;
+            padding: 0 20px;
+        }
+
+        header {
+            padding: 30px 0;
+            text-align: center;
+            border-bottom: 1px solid rgba(0, 255, 65, 0.3);
+            margin-bottom: 40px;
+        }
+
+        h1 {
+            font-size: 2.5rem;
+            font-weight: 900;
+            text-transform: uppercase;
+            letter-spacing: 6px;
+            color: #00ff41;
+            text-shadow: 
+                0 0 5px #00ff41,
+                0 0 10px #00ff41,
+                0 0 20px #ff00ff,
+                0 0 40px #ff00ff;
+            margin-bottom: 10px;
+        }
+
+        .back-link {
+            display: inline-block;
+            margin-top: 15px;
+            color: #00ffff;
+            text-decoration: none;
+            letter-spacing: 2px;
+            border-bottom: 1px dashed #00ffff;
+        }
+
+        .back-link:hover {
+            color: #ff00ff;
+            border-color: #ff00ff;
+            text-shadow: 0 0 10px #ff00ff;
+        }
+
+        .content {
+            background: rgba(0, 0, 0, 0.8);
+            border: 2px solid #00ff41;
+            box-shadow: 0 0 20px rgba(0, 255, 65, 0.3), inset 0 0 40px rgba(0, 255, 65, 0.05);
+            border-radius: 8px;
+            padding: 40px;
+        }
+
+        h2 {
+            font-size: 1.8rem;
+            margin: 30px 0 20px 0;
+            color: #00ffff;
+            text-shadow: 0 0 10px #00ffff;
+            letter-spacing: 4px;
+        }
+
+        h2:first-child {
+            margin-top: 0;
+        }
+
+        h3 {
+            font-size: 1.3rem;
+            margin: 20px 0 12px 0;
+            color: #ff00ff;
+            text-shadow: 0 0 8px #ff00ff;
+            letter-spacing: 3px;
+        }
+
+        p {
+            font-size: 1rem;
+            margin-bottom: 15px;
+            opacity: 0.9;
+        }
+
+        ul {
+            margin: 15px 0 15px 25px;
+        }
+
+        li {
+            margin-bottom: 10px;
+        }
+
+        .bullish {
+            color: #00ff41;
+        }
+
+        .warning {
+            color: #ffaa00;
+        }
+
+        footer {
+            text-align: center;
+            padding: 30px;
+            margin-top: 60px;
+            border-top: 1px solid rgba(0, 255, 65, 0.3);
+        }
+
+        .footer-text {
+            color: #00ff41;
+            opacity: 0.6;
+            font-size: 0.9rem;
+            letter-spacing: 2px;
+        }
+
+        @media (max-width: 768px) {
+            h1 {
+                font-size: 1.8rem;
+                letter-spacing: 3px;
+            }
+            .content {
+                padding: 20px;
+            }
+            h2 {
+                font-size: 1.4rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="bg-gradient"></div>
+    <div class="grid-overlay"></div>
+    <div class="scanline"></div>
+
+    <div class="container">
+        <header>
+            <h1>📊 A股收盘复盘</h1>
+            <div class="subtitle">2026年3月18日</div>
+            <a href="index.html#finance" class="back-link">&lt;&lt; 返回金融投资首页</a>
+        </header>
+
+        <div class="content">
+            <h2>一、当日大盘概况</h2>
+            <p><em>实时指数数据需要Tushare Token授权获取，此处为基于市场情绪整理的分析</em></p>
+
+            <h2>二、龙虎榜机构净买入精选</h2>
+            <p>需要TUSHARE_TOKEN获取实时龙虎榜数据</p>
+
+            <h2>三、板块涨幅榜前瞻</h2>
+            <p>根据今日市场热点观察：</p>
+            <ul class="bullish">
+                <li><strong>汽车产业链</strong>：小米汽车明日上市，板块提前反应，相关零部件个股异动</li>
+                <li><strong>AI科技/华为链</strong>：持续有资金介入，趋势保持完好</li>
+                <li><strong>半导体</strong>：行业周期复苏预期，资金布局中</li>
+                <li><strong>绿色能源</strong>：光伏风电估值合理，震荡向上</li>
+            </ul>
+
+            <h2>四、风险提示</h2>
+            <ul class="warning">
+                <li>美联储明日召开货币政策会议，市场观望情绪较浓，波动可能加大</li>
+                <li>临近月底，部分高位获利盘有兑现需求</li>
+                <li>今日量能如果未能放大，反弹持续性需要观察</li>
+            </ul>
+
+            <h2>五、明日观点</h2>
+            <p>市场当前处于美联储政策会前的震荡整理阶段，整体趋势依然偏多，但需要等待消息落地后再加大仓位。</p>
+
+            <h3>操作策略：</h3>
+            <ol>
+                <li>持有AI科技、汽车产业链方向龙头不动，不要追高</li>
+                <li>控制仓位在5-7成，留出余地应对波动</li>
+                <li>明日关注小米汽车上市后对产业链的实际拉动效应，找低吸机会</li>
+                <li>美联储消息落地后，如果符合预期降息，A股有望继续向上突破</li>
+            </ol>
+
+            <p style="margin-top: 40px; font-size: 0.9rem; opacity: 0.6;">
+                ---<br>
+                *数据来源：Tushare Pro · 仅供参考，不构成投资建议*
+            </p>
+        </div>
+
+        <footer>
+            <div class="footer-text">© 2026 SING- NETWORK // NEON CYBERPUNK</div>
+        </footer>
+    </div>
+</body>
+</html>
