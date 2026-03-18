@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sing- 黄页主站</title>
+    <title>SING- · Personal Operating System</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
@@ -14,10 +14,18 @@
             box-sizing: border-box;
         }
 
+        :root {
+            --neon-green: #00ff41;
+            --neon-cyan: #00ffff;
+            --neon-pink: #ff00ff;
+            --neon-yellow: #ffaa00;
+            --bg-black: #000000;
+        }
+
         body {
             font-family: 'Orbitron', sans-serif;
-            background: #000;
-            color: #00ff41;
+            background: var(--bg-black);
+            color: var(--neon-green);
             min-height: 100vh;
             overflow-x: hidden;
         }
@@ -64,7 +72,7 @@
 
         /* 霓虹标题 */
         header {
-            padding: 40px 20px;
+            padding: 40px 20px 20px;
             text-align: center;
         }
 
@@ -72,54 +80,53 @@
             font-size: 3.5rem;
             font-weight: 900;
             text-transform: uppercase;
-            letter-spacing: 8px;
-            color: #00ff41;
+            letter-spacing: 12px;
+            color: var(--neon-green);
             text-shadow: 
-                0 0 5px #00ff41,
-                0 0 10px #00ff41,
-                0 0 20px #ff00ff,
-                0 0 40px #ff00ff;
+                0 0 5px var(--neon-green),
+                0 0 10px var(--neon-green),
+                0 0 20px var(--neon-pink),
+                0 0 40px var(--neon-pink);
             animation: glitch 3s infinite;
         }
 
         @keyframes glitch {
-            0%, 100% { text-shadow: 0 0 5px #00ff41, 0 0 10px #00ff41, 0 0 20px #ff00ff, 0 0 40px #ff00ff; }
-            25% { text-shadow: -2px 0 #ff00ff, 2px 2px #00ff41; }
-            50% { text-shadow: 2px -2px #00ffff, -2px 2px #ff00ff; }
-            75% { text-shadow: -2px 0 #00ff41, 2px -2px #ff00ff; }
+            0%, 100% { text-shadow: 0 0 5px var(--neon-green), 0 0 10px var(--neon-green), 0 0 20px var(--neon-pink), 0 0 40px var(--neon-pink); }
+            25% { text-shadow: -2px 0 var(--neon-pink), 2px 2px var(--neon-green); }
+            50% { text-shadow: 2px -2px var(--neon-cyan), -2px 2px var(--neon-pink); }
+            75% { text-shadow: -2px 0 var(--neon-green), 2px -2px var(--neon-pink); }
         }
 
         .subtitle {
             margin-top: 15px;
             font-size: 1rem;
-            color: #00ffff;
-            letter-spacing: 4px;
+            color: var(--neon-cyan);
+            letter-spacing: 6px;
             opacity: 0.8;
         }
 
-        /* 页签容器 */
-        .tabs-container {
+        /* 主导航 - 一级菜单 */
+        .main-nav {
             max-width: 1200px;
-            margin: 40px auto;
+            margin: 20px auto 30px;
             padding: 0 20px;
         }
 
-        /* 页签导航 */
-        .tabs-nav {
+        .main-nav-buttons {
             display: flex;
             justify-content: center;
-            gap: 10px;
-            margin-bottom: 40px;
+            gap: 15px;
             flex-wrap: wrap;
+            margin-bottom: 30px;
         }
 
-        .tab-btn {
-            padding: 16px 32px;
+        .main-nav-btn {
+            padding: 14px 28px;
             background: rgba(0, 0, 0, 0.7);
-            border: 2px solid #00ff41;
-            color: #00ff41;
+            border: 2px solid var(--neon-green);
+            color: var(--neon-green);
             font-family: 'Orbitron', sans-serif;
-            font-size: 1.1rem;
+            font-size: 1rem;
             font-weight: 600;
             text-transform: uppercase;
             letter-spacing: 2px;
@@ -128,22 +135,23 @@
             overflow: hidden;
             transition: all 0.3s ease;
             box-shadow: 0 0 10px rgba(0, 255, 65, 0.3);
+            border-radius: 4px;
         }
 
-        .tab-btn:hover {
+        .main-nav-btn:hover {
             background: rgba(0, 255, 65, 0.1);
             box-shadow: 0 0 20px rgba(0, 255, 65, 0.6);
             transform: translateY(-2px);
         }
 
-        .tab-btn.active {
+        .main-nav-btn.active {
             background: rgba(0, 255, 65, 0.2);
-            border-color: #ff00ff;
-            color: #ff00ff;
+            border-color: var(--neon-pink);
+            color: var(--neon-pink);
             box-shadow: 0 0 25px rgba(255, 0, 255, 0.7);
         }
 
-        .tab-btn::before {
+        .main-nav-btn::before {
             content: '';
             position: absolute;
             top: 0;
@@ -154,21 +162,28 @@
             transition: left 0.5s;
         }
 
-        .tab-btn:hover::before {
+        .main-nav-btn:hover::before {
             left: 100%;
         }
 
-        /* 页签内容 */
-        .tabs-content {
-            position: relative;
-            min-height: 500px;
+        /* 主内容容器 */
+        .content-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
         }
 
-        .tab-content {
+        /* 模块内容区域 */
+        .module-content {
+            position: relative;
+            min-height: 600px;
+        }
+
+        .tab-panel {
             display: none;
-            padding: 40px;
+            padding: 30px;
             background: rgba(0, 0, 0, 0.8);
-            border: 2px solid #00ff41;
+            border: 2px solid var(--neon-green);
             box-shadow: 
                 0 0 20px rgba(0, 255, 65, 0.3),
                 inset 0 0 40px rgba(0, 255, 65, 0.05);
@@ -181,24 +196,145 @@
             to { opacity: 1; transform: translateY(0); }
         }
 
-        .tab-content.active {
+        .tab-panel.active {
             display: block;
         }
 
-        .tab-content h2 {
-            font-size: 2rem;
-            margin-bottom: 25px;
-            color: #00ffff;
-            text-shadow: 0 0 10px #00ffff;
-            letter-spacing: 4px;
+        .tab-panel h2 {
+            font-size: 2.2rem;
+            margin-bottom: 30px;
+            color: var(--neon-cyan);
+            text-shadow: 0 0 10px var(--neon-cyan);
+            letter-spacing: 6px;
         }
 
-        .tab-content p {
-            font-size: 1rem;
-            line-height: 1.8;
+        /* 子菜单 - 二级分类 */
+        .sub-menu {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 15px;
+            margin-bottom: 30px;
+        }
+
+        .sub-menu-item {
+            padding: 18px;
+            border: 1px solid var(--neon-green);
+            background: rgba(0, 255, 65, 0.05);
+            border-radius: 6px;
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .sub-menu-item:hover {
+            background: rgba(0, 255, 65, 0.15);
+            border-color: var(--neon-pink);
+            box-shadow: 0 0 15px rgba(255, 0, 255, 0.3);
+            transform: translateY(-2px);
+        }
+
+        .sub-menu-item.active {
+            background: rgba(255, 0, 255, 0.1);
+            border-color: var(--neon-pink);
+            box-shadow: 0 0 15px rgba(255, 0, 255, 0.5);
+        }
+
+        .sub-menu-item h3 {
+            color: var(--neon-green);
+            font-size: 1.1rem;
+            letter-spacing: 2px;
+            margin-bottom: 8px;
+        }
+
+        .sub-menu-item p {
+            color: var(--neon-cyan);
+            font-size: 0.85rem;
+            letter-spacing: 1px;
+            opacity: 0.7;
+        }
+
+        /* 板块内容 - 折叠区域 */
+        .section-content {
+            display: none;
+            margin-top: 25px;
+            padding-top: 25px;
+            border-top: 1px solid rgba(0, 255, 65, 0.3);
+        }
+
+        .section-content.active {
+            display: block;
+        }
+
+        /* 日期分组卡片样式 */
+        .date-group {
+            margin: 20px 0;
+            padding: 22px;
+            border: 2px solid var(--neon-green);
+            background: rgba(0, 255, 65, 0.08);
+            border-radius: 8px;
+        }
+
+        .date-title {
+            color: var(--neon-cyan);
+            font-size: 1.4rem;
             margin-bottom: 20px;
-            color: #00ff41;
-            opacity: 0.9;
+            letter-spacing: 4px;
+            text-shadow: 0 0 6px var(--neon-cyan);
+        }
+
+        .report-list {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 12px;
+        }
+
+        .report-item {
+            padding: 15px;
+            border: 1px solid var(--neon-green);
+            background: rgba(0, 255, 65, 0.05);
+            border-radius: 5px;
+            transition: all 0.3s ease;
+        }
+
+        .report-item:hover {
+            border-color: var(--neon-pink);
+            background: rgba(255, 0, 255, 0.05);
+        }
+
+        .report-name {
+            color: var(--neon-cyan);
+            font-size: 1.1rem;
+            margin-bottom: 10px;
+            letter-spacing: 2px;
+        }
+
+        .report-item a {
+            color: var(--neon-green);
+            text-decoration: none;
+            border-bottom: 1px dashed var(--neon-green);
+            letter-spacing: 2px;
+            font-size: 0.95rem;
+            transition: all 0.3s ease;
+        }
+
+        .report-item a:hover {
+            color: var(--neon-pink);
+            border-color: var(--neon-pink);
+        }
+
+        /* 占位内容样式 */
+        .placeholder-box {
+            border: 1px dashed var(--neon-green);
+            padding: 40px;
+            text-align: center;
+            margin-top: 20px;
+            background: rgba(0, 255, 65, 0.05);
+            border-radius: 6px;
+        }
+
+        .placeholder-text {
+            color: var(--neon-cyan);
+            font-size: 1.1rem;
+            letter-spacing: 2px;
         }
 
         /* 发光边框动画 */
@@ -213,7 +349,7 @@
             left: -2px;
             right: -2px;
             bottom: -2px;
-            background: linear-gradient(45deg, #00ff41, #00ffff, #ff00ff, #00ff41);
+            background: linear-gradient(45deg, var(--neon-green), var(--neon-cyan), var(--neon-pink), var(--neon-green));
             border-radius: 10px;
             z-index: -1;
             animation: borderGlow 3s linear infinite;
@@ -228,19 +364,14 @@
             100% { background-position: 0% 50%; }
         }
 
-        /* 占位内容样式 */
-        .placeholder-box {
-            border: 1px dashed #00ff41;
-            padding: 30px;
-            text-align: center;
-            margin-top: 20px;
-            background: rgba(0, 255, 65, 0.05);
+        /* 关于页样式 */
+        .about-content {
+            line-height: 2;
         }
 
-        .placeholder-text {
-            color: #00ffff;
-            font-size: 1.1rem;
-            letter-spacing: 2px;
+        .about-content p {
+            margin-bottom: 15px;
+            font-size: 1rem;
         }
 
         /* 页脚 */
@@ -252,10 +383,10 @@
         }
 
         .footer-text {
-            color: #00ff41;
+            color: var(--neon-green);
             opacity: 0.6;
             font-size: 0.9rem;
-            letter-spacing: 2px;
+            letter-spacing: 4px;
         }
 
         /* 扫描线效果 */
@@ -266,7 +397,7 @@
             width: 100%;
             height: 4px;
             background: rgba(0, 255, 65, 0.6);
-            box-shadow: 0 0 10px #00ff41;
+            box-shadow: 0 0 10px var(--neon-green);
             animation: scanline 6s linear infinite;
             z-index: 999;
             pointer-events: none;
@@ -283,13 +414,19 @@
                 font-size: 2rem;
                 letter-spacing: 4px;
             }
-            .tabs-nav {
+            .main-nav-buttons {
                 flex-direction: column;
             }
-            .tab-content {
+            .sub-menu {
+                grid-template-columns: 1fr;
+            }
+            .report-list {
+                grid-template-columns: 1fr;
+            }
+            .tab-panel {
                 padding: 20px;
             }
-            .tab-content h2 {
+            .tab-panel h2 {
                 font-size: 1.5rem;
             }
         }
@@ -302,83 +439,364 @@
 
     <header>
         <h1>SING-</h1>
-        <div class="subtitle">CYBERPUNK YELLOW PAGE NETWORK</div>
+        <div class="subtitle">PERSONAL OPERATING SYSTEM</div>
+        <div class="subtitle" style="margin-top: 8px; font-size: 0.8rem;">Record → Think → Create → Output → Assetize</div>
     </header>
 
-    <div class="tabs-container">
-        <div class="tabs-nav glow-border">
-            <button class="tab-btn active" onclick="switchTab('game-audio')">游戏音频</button>
-            <button class="tab-btn" onclick="switchTab('finance')">金融投资</button>
-            <button class="tab-btn" onclick="switchTab('ecommerce')">跨境电商</button>
+    <div class="main-nav">
+        <div class="main-nav-buttons glow-border">
+            <button class="main-nav-btn active" onclick="switchMainTab('game-audio')">GAME AUDIO</button>
+            <button class="main-nav-btn" onclick="switchMainTab('finance')">FINANCE</button>
+            <button class="main-nav-btn" onclick="switchMainTab('ecommerce')">ECOMMERCE</button>
+            <button class="main-nav-btn" onclick="switchMainTab('lab')">LAB</button>
+            <button class="main-nav-btn" onclick="switchMainTab('projects')">PROJECTS</button>
+            <button class="main-nav-btn" onclick="switchMainTab('library')">LIBRARY</button>
+            <button class="main-nav-btn" onclick="switchMainTab('about')">ABOUT</button>
         </div>
+    </div>
 
-        <div class="tabs-content">
-            <div id="game-audio" class="tab-content active">
-                <h2>[GAME AUDIO]</h2>
-                <p>游戏音频资源板块正在建设中...</p>
-                <div class="placeholder-box">
-                    <div class="placeholder-text">>>> 等待内容录入 <<<</div>
+    <div class="content-container">
+        <div class="module-content">
+            <!-- GAME AUDIO -->
+            <div id="game-audio" class="tab-panel active">
+                <h2>[ GAME AUDIO ]</h2>
+                <div class="sub-menu">
+                    <div class="sub-menu-item" onclick="toggleSection('ga-design')">
+                        <h3>音频设计</h3>
+                        <p>游戏音效设计、声音制作</p>
+                    </div>
+                    <div class="sub-menu-item" onclick="toggleSection('ga-demo')">
+                        <h3>音乐Demo</h3>
+                        <p>原创音乐作品展示</p>
+                    </div>
+                    <div class="sub-menu-item" onclick="toggleSection('ga-projects')">
+                        <h3>项目案例</h3>
+                        <p>商业项目作品集</p>
+                    </div>
+                    <div class="sub-menu-item" onclick="toggleSection('ga-tech')">
+                        <h3>音频技术</h3>
+                        <p>技术研究、工具分享</p>
+                    </div>
+                    <div class="sub-menu-item" onclick="toggleSection('ga-research')">
+                        <h3>游戏音乐研究</h3>
+                        <p>行业分析、理论研究</p>
+                    </div>
+                </div>
+
+                <div id="ga-design" class="section-content">
+                    <div class="placeholder-box">
+                        <div class="placeholder-text">>>> 内容建设中 <<<</div>
+                    </div>
+                </div>
+                <div id="ga-demo" class="section-content">
+                    <div class="placeholder-box">
+                        <div class="placeholder-text">>>> 内容建设中 <<<</div>
+                    </div>
+                </div>
+                <div id="ga-projects" class="section-content">
+                    <div class="placeholder-box">
+                        <div class="placeholder-text">>>> 内容建设中 <<<</div>
+                    </div>
+                </div>
+                <div id="ga-tech" class="section-content">
+                    <div class="placeholder-box">
+                        <div class="placeholder-text">>>> 内容建设中 <<<</div>
+                    </div>
+                </div>
+                <div id="ga-research" class="section-content">
+                    <div class="placeholder-box">
+                        <div class="placeholder-text">>>> 内容建设中 <<<</div>
+                    </div>
                 </div>
             </div>
 
-            <div id="finance" class="tab-content">
-                <h2>[FINANCE INVESTMENT]</h2>
-                <div class="daily-news-section">
-                    <h3 style="color: #ff00ff; text-shadow: 0 0 8px #ff00ff; margin: 20px 0 15px 0; letter-spacing: 3px;">■ 每日资讯</h3>
-                    
+            <!-- FINANCE -->
+            <div id="finance" class="tab-panel">
+                <h2>[ FINANCE INVESTMENT ]</h2>
+                <div class="sub-menu">
+                    <div class="sub-menu-item" onclick="toggleSection('fi-logic')">
+                        <h3>投资逻辑</h3>
+                        <p>投资理念、系统框架</p>
+                    </div>
+                    <div class="sub-menu-item active" onclick="toggleSection('fi-daily')">
+                        <h3>每日资讯</h3>
+                        <p>市场观察、每日复盘</p>
+                    </div>
+                    <div class="sub-menu-item" onclick="toggleSection('fi-record')">
+                        <h3>投资记录</h3>
+                        <p>交易记录、持仓跟踪</p>
+                    </div>
+                    <div class="sub-menu-item" onclick="toggleSection('fi-allocation')">
+                        <h3>资产配置</h3>
+                        <p>宏观策略、资产分布</p>
+                    </div>
+                </div>
+
+                <div id="fi-logic" class="section-content">
+                    <div class="placeholder-box">
+                        <div class="placeholder-text">>>> 内容建设中 <<<</div>
+                    </div>
+                </div>
+                <div id="fi-daily" class="section-content active">
                     <!-- 按日期分组 -->
-                    <div class="date-group" style="margin: 20px 0; padding: 20px; border: 2px solid #00ff41; background: rgba(0, 255, 65, 0.08); border-radius: 8px;">
-                        <div class="date-title" style="color: #00ffff; font-size: 1.3rem; margin-bottom: 18px; letter-spacing: 3px; text-shadow: 0 0 6px #00ffff;">
-                            ▶ 2026-03-18
-                        </div>
-                        <div class="report-list" style="margin-left: 15px;">
-                            <div class="report-item" style="margin: 12px 0; padding: 12px; border: 1px solid #00ff41; background: rgba(0, 255, 65, 0.05); border-radius: 5px;">
-                                <div class="report-name" style="color: #00ffff; font-size: 1.05rem; margin-bottom: 8px; letter-spacing: 2px;">早盘早报</div>
+                    <div class="date-group">
+                        <div class="date-title">▶ 2026-03-18</div>
+                        <div class="report-list">
+                            <div class="report-item">
+                                <div class="report-name">早盘早报</div>
                                 <div class="report-link" style="margin-top: 8px;">
-                                    <a href="daily/20260318/morning.html" style="color: #00ff41; text-decoration: none; border-bottom: 1px dashed #00ff41; letter-spacing: 2px;" onmouseover="this.style.color='#ff00ff'; this.style.borderColor='#ff00ff';" onmouseout="this.style.color='#00ff41'; this.style.borderColor='#00ff41';">>>> 查看完整早报 <<<</a>
+                                    <a href="daily/20260318/morning.html">>>> 查看完整早报 <<<</a>
                                 </div>
                             </div>
-                            <div class="report-item" style="margin: 12px 0; padding: 12px; border: 1px solid #00ff41; background: rgba(0, 255, 65, 0.05); border-radius: 5px;">
-                                <div class="report-name" style="color: #00ffff; font-size: 1.05rem; margin-bottom: 8px; letter-spacing: 2px;">收盘复盘</div>
+                            <div class="report-item">
+                                <div class="report-name">收盘复盘</div>
                                 <div class="report-link" style="margin-top: 8px;">
-                                    <a href="daily/20260318/close.html" style="color: #00ff41; text-decoration: none; border-bottom: 1px dashed #00ff41; letter-spacing: 2px;" onmouseover="this.style.color='#ff00ff'; this.style.borderColor='#ff00ff';" onmouseout="this.style.color='#00ff41'; this.style.borderColor='#00ff41';">>>> 查看完整复盘 <<<</a>
+                                    <a href="daily/20260318/close.html">>>> 查看完整复盘 <<<</a>
                                 </div>
                             </div>
                         </div>
                     </div>
+                    <p style="margin-top: 20px;">更多内容持续更新中...</p>
                 </div>
-                <div style="margin-top: 40px;">
-                    <p>更多金融投资分析内容持续更新中...</p>
+                <div id="fi-record" class="section-content">
+                    <div class="placeholder-box">
+                        <div class="placeholder-text">>>> 内容建设中 <<<</div>
+                    </div>
+                </div>
+                <div id="fi-allocation" class="section-content">
+                    <div class="placeholder-box">
+                        <div class="placeholder-text">>>> 内容建设中 <<<</div>
+                    </div>
                 </div>
             </div>
 
-            <div id="ecommerce" class="tab-content">
-                <h2>[CROSS-BORDER ECOMMERCE]</h2>
-                <p>跨境电商运营板块正在建设中...</p>
-                <div class="placeholder-box">
-                    <div class="placeholder-text">>>> 等待内容录入 <<<</div>
+            <!-- ECOMMERCE -->
+            <div id="ecommerce" class="tab-panel">
+                <h2>[ CROSS-BORDER ECOMMERCE ]</h2>
+                <div class="sub-menu">
+                    <div class="sub-menu-item" onclick="toggleSection('ec-temu')">
+                        <h3>TEMU</h3>
+                        <p>TEMU平台运营、选品</p>
+                    </div>
+                    <div class="sub-menu-item" onclick="toggleSection('ec-amazon')">
+                        <h3>亚马逊</h3>
+                        <p>亚马逊运营</p>
+                    </div>
+                    <div class="sub-menu-item" onclick="toggleSection('ec-ai')">
+                        <h3>AI运营</h3>
+                        <p>AI赋能电商运营</p>
+                    </div>
+                    <div class="sub-menu-item" onclick="toggleSection('ec-model')">
+                        <h3>商业模型</h3>
+                        <p>商业模式、盈利能力分析</p>
+                    </div>
+                </div>
+
+                <div id="ec-temu" class="section-content">
+                    <div class="placeholder-box">
+                        <div class="placeholder-text">>>> 内容建设中 <<<</div>
+                    </div>
+                </div>
+                <div id="ec-amazon" class="section-content">
+                    <div class="placeholder-box">
+                        <div class="placeholder-text">>>> 内容建设中 <<<</div>
+                    </div>
+                </div>
+                <div id="ec-ai" class="section-content">
+                    <div class="placeholder-box">
+                        <div class="placeholder-text">>>> 内容建设中 <<<</div>
+                    </div>
+                </div>
+                <div id="ec-model" class="section-content">
+                    <div class="placeholder-box">
+                        <div class="placeholder-text">>>> 内容建设中 <<<</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- LAB -->
+            <div id="lab" class="tab-panel">
+                <h2>[ CREATIVE LAB ]</h2>
+                <div class="sub-menu">
+                    <div class="sub-menu-item" onclick="toggleSection('lab-aimusic')">
+                        <h3>AI音乐</h3>
+                        <p>AI音乐创作实验</p>
+                    </div>
+                    <div class="sub-menu-item" onclick="toggleSection('lab-aivideo')">
+                        <h3>AI视频</h3>
+                        <p>AI视频生成实验</p>
+                    </div>
+                    <div class="sub-menu-item" onclick="toggleSection('lab-design')">
+                        <h3>设计实验</h3>
+                        <p>创意设计探索</p>
+                    </div>
+                </div>
+
+                <div id="lab-aimusic" class="section-content">
+                    <div class="placeholder-box">
+                        <div class="placeholder-text">>>> 内容建设中 <<<</div>
+                    </div>
+                </div>
+                <div id="lab-aivideo" class="section-content">
+                    <div class="placeholder-box">
+                        <div class="placeholder-text">>>> 内容建设中 <<<</div>
+                    </div>
+                </div>
+                <div id="lab-design" class="section-content">
+                    <div class="placeholder-box">
+                        <div class="placeholder-text">>>> 内容建设中 <<<</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- PROJECTS -->
+            <div id="projects" class="tab-panel">
+                <h2>[ PROJECTS ]</h2>
+                <div class="sub-menu">
+                    <div class="sub-menu-item" onclick="toggleSection('proj-game')">
+                        <h3>游戏项目</h3>
+                        <p>参与的游戏项目</p>
+                    </div>
+                    <div class="sub-menu-item" onclick="toggleSection('proj-business')">
+                        <h3>商业项目</h3>
+                        <p>商业项目记录</p>
+                    </div>
+                    <div class="sub-menu-item" onclick="toggleSection('proj-creative')">
+                        <h3>创意项目</h3>
+                        <p>创意个人项目</p>
+                    </div>
+                </div>
+
+                <div id="proj-game" class="section-content">
+                    <div class="placeholder-box">
+                        <div class="placeholder-text">>>> 内容建设中 <<<</div>
+                    </div>
+                </div>
+                <div id="proj-business" class="section-content">
+                    <div class="placeholder-box">
+                        <div class="placeholder-text">>>> 内容建设中 <<<</div>
+                    </div>
+                </div>
+                <div id="proj-creative" class="section-content">
+                    <div class="placeholder-box">
+                        <div class="placeholder-text">>>> 内容建设中 <<<</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- LIBRARY -->
+            <div id="library" class="tab-panel">
+                <h2>[ LIBRARY ]</h2>
+                <div class="sub-menu">
+                    <div class="sub-menu-item" onclick="toggleSection('lib-music')">
+                        <h3>音乐参考库</h3>
+                        <p>优质音乐参考收集</p>
+                    </div>
+                    <div class="sub-menu-item" onclick="toggleSection('lib-tools')">
+                        <h3>工具</h3>
+                        <p>实用工具汇总</p>
+                    </div>
+                    <div class="sub-menu-item" onclick="toggleSection('lib-data')">
+                        <h3>数据</h3>
+                        <p>数据资源汇总</p>
+                    </div>
+                </div>
+
+                <div id="lib-music" class="section-content">
+                    <div class="placeholder-box">
+                        <div class="placeholder-text">>>> 内容建设中 <<<</div>
+                    </div>
+                </div>
+                <div id="lib-tools" class="section-content">
+                    <div class="placeholder-box">
+                        <div class="placeholder-text">>>> 内容建设中 <<<</div>
+                    </div>
+                </div>
+                <div id="lib-data" class="section-content">
+                    <div class="placeholder-box">
+                        <div class="placeholder-text">>>> 内容建设中 <<<</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ABOUT -->
+            <div id="about" class="tab-panel">
+                <h2>[ ABOUT ]</h2>
+                <div class="sub-menu">
+                    <div class="sub-menu-item" onclick="toggleSection('about-exp')">
+                        <h3>个人经历</h3>
+                        <p>职业经历介绍</p>
+                    </div>
+                    <div class="sub-menu-item" onclick="toggleSection('about-timeline')">
+                        <h3>时间线</h3>
+                        <p>成长时间线</p>
+                    </div>
+                    <div class="sub-menu-item" onclick="toggleSection('about-contact')">
+                        <h3>联系方式</h3>
+                        <p>社交账号、联系方式</p>
+                    </div>
+                </div>
+
+                <div id="about-exp" class="section-content">
+                    <div class="placeholder-box">
+                        <div class="placeholder-text">>>> 内容建设中 <<<</div>
+                    </div>
+                </div>
+                <div id="about-timeline" class="section-content">
+                    <div class="placeholder-box">
+                        <div class="placeholder-text">>>> 内容建设中 <<<</div>
+                    </div>
+                </div>
+                <div id="about-contact" class="section-content">
+                    <div class="placeholder-box">
+                        <div class="placeholder-text">>>> 内容建设中 <<<</div>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
 
     <footer>
-        <div class="footer-text">© 2026 SING- NETWORK // NEON CYBERPUNK</div>
+        <div class="footer-text">© 2026 SING- // PERSONAL OPERATING SYSTEM // CYBERPUNK</div>
     </footer>
 
     <script>
-        function switchTab(tabId) {
+        // 切换主标签
+        function switchMainTab(tabId) {
             // 移除所有active状态
-            document.querySelectorAll('.tab-btn').forEach(btn => {
+            document.querySelectorAll('.main-nav-btn').forEach(btn => {
                 btn.classList.remove('active');
             });
-            document.querySelectorAll('.tab-content').forEach(content => {
-                content.classList.remove('active');
+            document.querySelectorAll('.tab-panel').forEach(panel => {
+                panel.classList.remove('active');
             });
 
             // 添加active状态
             event.target.classList.add('active');
             document.getElementById(tabId).classList.add('active');
+        }
+
+        // 折叠/展开二级分类内容
+        function toggleSection(sectionId) {
+            // 移除同分类下其他active
+            const parent = document.getElementById(sectionId).parentElement;
+            parent.querySelectorAll('.sub-menu-item').forEach(item => {
+                if (item.children[0].getAttribute('onclick') !== `toggleSection('${sectionId}')`) {
+                    item.classList.remove('active');
+                }
+            });
+
+            // toggle当前
+            const section = document.getElementById(sectionId);
+            const btn = event.currentTarget;
+            
+            if (section.classList.contains('active')) {
+                section.classList.remove('active');
+                btn.classList.remove('active');
+            } else {
+                section.classList.add('active');
+                btn.classList.add('active');
+            }
         }
 
         // 添加随机霓虹闪烁效果
@@ -389,6 +807,14 @@
                 header.style.opacity = 0.8 + Math.random() * 0.2;
             }, randomDelay);
         }, 2000);
+
+        // 默认展开第一个二级分类
+        document.addEventListener('DOMContentLoaded', function() {
+            const firstActive = document.querySelector('.sub-menu-item.active');
+            if (firstActive) {
+                // 已经有active了，保持不变
+            }
+        });
     </script>
 </body>
 </html>
