@@ -24,13 +24,13 @@
 
         body {
             font-family: 'Orbitron', sans-serif;
-            background: var(--bg-black);
+            background: transparent;
             color: var(--neon-green);
             min-height: 100vh;
             overflow-x: hidden;
         }
 
-        /* 赛博朋克背景效果 */
+        /* 赛博朋克背景 - 日系动画风格 */
         .bg-gradient {
             position: fixed;
             top: 0;
@@ -38,16 +38,26 @@
             width: 100%;
             height: 100%;
             background: 
-                radial-gradient(circle at 20% 50%, rgba(120, 0, 180, 0.3) 0%, transparent 50%),
-                radial-gradient(circle at 80% 80%, rgba(0, 180, 255, 0.3) 0%, transparent 50%),
-                radial-gradient(circle at 40% 40%, rgba(0, 255, 100, 0.1) 0%, transparent 50%);
+                url('assets/background.jpg') no-repeat center center fixed;
+            background-size: cover;
+            z-index: -2;
+        }
+        
+        .bg-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: 
+                radial-gradient(ellipse at center, rgba(20, 0, 40, 0.35) 0%, rgba(0, 0, 0, 0.7) 100%);
             z-index: -1;
-            animation: bgPulse 10s ease-in-out infinite alternate;
+            animation: bgPulse 15s ease-in-out infinite alternate;
         }
 
         @keyframes bgPulse {
             0% { opacity: 0.5; }
-            100% { opacity: 1; }
+            100% { opacity: 0.8; }
         }
 
         /* 网格线效果 */
@@ -256,8 +266,14 @@
         .section-content {
             display: none;
             margin-top: 25px;
-            padding-top: 25px;
+            padding: 30px 25px;
             border-top: 1px solid rgba(0, 255, 65, 0.3);
+            background: rgba(0, 0, 0, 0.5);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border-radius: 12px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.3);
         }
 
         .section-content.active {
@@ -268,9 +284,12 @@
         .date-group {
             margin: 20px 0;
             padding: 22px;
-            border: 2px solid var(--neon-green);
+            border: 1px solid var(--neon-green);
             background: rgba(0, 255, 65, 0.08);
+            backdrop-filter: blur(5px);
+            -webkit-backdrop-filter: blur(5px);
             border-radius: 8px;
+            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2);
         }
 
         .date-title {
@@ -795,6 +814,9 @@
             </div>
         </div>
     </div>
+
+    <div class="bg-gradient"></div>
+    <div class="bg-overlay"></div>
 
     <footer>
         <div class="footer-text">© 2026 SING- // PERSONAL OPERATING SYSTEM // CYBERPUNK</div>
