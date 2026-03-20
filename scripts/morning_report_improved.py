@@ -309,9 +309,10 @@ def weekly_strategy_report():
     # 占位，实际内容在周一生成时填充
     return None
 
-def generate_report(include_weekly=False):
+def generate_report(include_weekly=False, last_week_summary=None):
     """生成完整早盘报告
     include_weekly: 是否包含周度策略报告（周一使用）
+    last_week_summary: 上周策略表现总结字典
     """
     date_yesterday, date_yesterday_num = get_trade_date()
     today = datetime.now().strftime('%Y年%m月%d日')
@@ -389,12 +390,14 @@ def generate_report(include_weekly=False):
     report += "\n"
     
     # 第五部分：周度策略报告（仅周一）
-    if include_weekly:
-        report += "**五、周度策略报告**\n\n"
-        report += "（待生成：大盘趋势判断、行业配置建议、上周策略回测）\n\n"
+    if include_weekly and last_week_summary is not None:
+        weekly_report = generate_weekly_report(last_week_summary)
+        report += weekly_report
+        report += "\n"
     
     # 最后一部分：今日观点
-    section_num = 6 if include_weekly else 5
+    section_num = 5 if include_weekly else 5
+    section_num = section_num if include_weekly else section_num
     report += f"**{section_num}、今日市场观点**\n\n"
     
     report += "✅ **看好方向:**\n"
@@ -477,6 +480,43 @@ def generate_close_report():
     report += "- 仓位建议：6-7成，明日继续看多\n\n"
     
     report += f"\n\n*复盘生成时间: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}*\n"
+    report += "*分析师: 小金*"
+    
+    return report
+
+def generate_weekly_report(last_week_summary):
+    """生成周度策略报告（每周一早盘追加）"""
+    today = datetime.now().strftime('%Y年%m月%d日')
+    
+    report = f"📊 **【{today} 周度策略报告】**\n\n"
+    report += "@许海丹老板\n\n"
+    
+    # 第一部分：上周策略回顾
+    report += "**一、上周策略表现回顾**\n\n"
+    report += "| 策略 | 胜率 | 盈亏比 | 说明 |\n"
+    report += "|------|------|--------|------|\n"
+    report += f"| 动量选股 | {last_week_summary.get('win_rate', 'N/A')} | {last_week_summary.get('profit_ratio', 'N/A')} | 趋势跟踪 |\n\n"
+    
+    # 第二部分：本周大盘判断
+    report += "**二、本周大盘趋势判断**\n\n"
+    report += "- 指数方向: \n"
+    report += "- 风格判断: \n"
+    report += "- 焦点板块: \n\n"
+    
+    # 第三部分：行业配置建议
+    report += "**三、本周行业配置建议**\n\n"
+    report += "- 看好方向:\n"
+    report += "  1. \n"
+    report += "  2. \n"
+    report += "  3. \n\n"
+    
+    # 第四部分：本周关注焦点
+    report += "**四、本周关注焦点**\n\n"
+    report += "- 重要事件:\n"
+    report += "- 数据公布:\n"
+    report += "- 风险点:\n\n"
+    
+    report += f"\n\n*报告生成时间: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}*\n"
     report += "*分析师: 小金*"
     
     return report
