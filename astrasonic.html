@@ -169,55 +169,55 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            flex-direction: column;
             padding: 40px 60px;
             margin-bottom: 40px;
             position: relative;
             overflow: hidden;
-            text-align: center;
         }
         .hero-banner::before {
             content: '';
             position: absolute;
             top: 0; left: 0; right: 0; bottom: 0;
-            background: radial-gradient(ellipse at 30% 50%, rgba(255,85,0,0.15) 0%, transparent 50%),
-                        radial-gradient(ellipse at 70% 50%, rgba(153,69,255,0.1) 0%, transparent 50%);
+            background: radial-gradient(ellipse at 50% 50%, rgba(255,85,0,0.12) 0%, transparent 60%);
         }
         .hero-content {
             position: relative;
             z-index: 1;
             text-align: center;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
         }
         .hero-title {
             font-size: 42px;
             font-weight: 800;
             letter-spacing: 3px;
             margin-bottom: 16px;
-            display: flex;
-            flex-direction: column;
-            gap: 8px;
-            align-items: center;
         }
         .hero-brand {
             background: linear-gradient(135deg, #ff5500, #ff8800);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
+            text-align: center;
         }
         .hero-subtitle {
             font-size: 14px;
             color: var(--text-secondary);
             letter-spacing: 4px;
             font-weight: 400;
+            text-align: center;
         }
         .hero-tagline {
             font-size: 20px;
             color: var(--text-primary);
             margin-bottom: 12px;
             font-weight: 500;
+            text-align: center;
         }
         .hero-desc {
             font-size: 13px;
             color: var(--text-muted);
+            text-align: center;
         }
         .hero-visual {
             position: relative;
@@ -254,6 +254,7 @@
             display: grid;
             grid-template-columns: repeat(5, 1fr);
             gap: 16px;
+            justify-items: center;
         }
         
         /* 资产卡片 */
@@ -296,8 +297,11 @@
         
         /* 横向滚动 */
         .card-row {
-            display: flex; gap: 16px; overflow-x: auto;
+            display: flex;
+            gap: 16px;
+            overflow-x: auto;
             padding-bottom: 8px;
+            justify-content: center;
         }
         .card-row::-webkit-scrollbar { height: 4px; }
         .card-row::-webkit-scrollbar-track { background: var(--bg-secondary); }
