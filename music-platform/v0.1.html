@@ -1,0 +1,1537 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sing+ · 史诗音乐平台</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;600;700;800;900&family=Rajdhani:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        /* ==================== CSS 变量 ==================== */
+        :root {
+            --bg-primary: #0a0a0f;
+            --bg-secondary: #12121a;
+            --bg-card: rgba(255, 255, 255, 0.03);
+            --bg-card-hover: rgba(255, 255, 255, 0.08);
+            
+            --color-primary: #ff3d00;
+            --color-primary-light: #ff6f00;
+            --color-accent: #00e5ff;
+            --color-accent-secondary: #7c4dff;
+            
+            --text-primary: #ffffff;
+            --text-secondary: #b0b0b0;
+            --text-muted: #666666;
+            
+            --font-display: 'Orbitron', sans-serif;
+            --font-body: 'Rajdhani', sans-serif;
+            
+            --glow-primary: 0 0 20px rgba(255, 61, 0, 0.5);
+            --glow-accent: 0 0 20px rgba(0, 229, 255, 0.5);
+            --glow-card: 0 8px 32px rgba(0, 0, 0, 0.4);
+            
+            --border-glow: 1px solid rgba(255, 61, 0, 0.3);
+            --border-accent: 1px solid rgba(0, 229, 255, 0.3);
+            
+            --transition-fast: 0.2s ease;
+            --transition-medium: 0.4s ease;
+            --transition-slow: 0.6s ease;
+        }
+
+        /* ==================== 重置样式 ==================== */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            font-family: var(--font-body);
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+
+        a {
+            text-decoration: none;
+            color: inherit;
+            transition: var(--transition-fast);
+        }
+
+        ul, ol {
+            list-style: none;
+        }
+
+        img {
+            max-width: 100%;
+            height: auto;
+            display: block;
+        }
+
+        /* ==================== 背景效果 ==================== */
+        .bg-effect {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -3;
+            background: 
+                radial-gradient(ellipse at 20% 20%, rgba(255, 61, 0, 0.15) 0%, transparent 50%),
+                radial-gradient(ellipse at 80% 80%, rgba(124, 77, 255, 0.1) 0%, transparent 50%),
+                radial-gradient(ellipse at 50% 50%, rgba(0, 229, 255, 0.05) 0%, transparent 70%),
+                var(--bg-primary);
+        }
+
+        .grid-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -2;
+            background-image: 
+                linear-gradient(rgba(255, 61, 0, 0.03) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(255, 61, 0, 0.03) 1px, transparent 1px);
+            background-size: 60px 60px;
+            animation: gridMove 30s linear infinite;
+        }
+
+        @keyframes gridMove {
+            0% { transform: translate(0, 0); }
+            100% { transform: translate(60px, 60px); }
+        }
+
+        /* ==================== 导航栏 ==================== */
+        .navbar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            z-index: 1000;
+            padding: 0 40px;
+            height: 80px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            background: rgba(10, 10, 15, 0.8);
+            backdrop-filter: blur(20px);
+            border-bottom: 1px solid rgba(255, 61, 0, 0.1);
+            transition: var(--transition-medium);
+        }
+
+        .navbar.scrolled {
+            height: 60px;
+            background: rgba(10, 10, 15, 0.95);
+            box-shadow: 0 4px 30px rgba(0, 0, 0, 0.5);
+        }
+
+        .nav-brand {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .brand-logo {
+            width: 45px;
+            height: 45px;
+            background: linear-gradient(135deg, var(--color-primary), var(--color-primary-light));
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: var(--font-display);
+            font-weight: 900;
+            font-size: 1.5rem;
+            color: white;
+            box-shadow: var(--glow-primary);
+        }
+
+        .brand-name {
+            font-family: var(--font-display);
+            font-size: 1.5rem;
+            font-weight: 700;
+            background: linear-gradient(135deg, var(--text-primary), var(--color-primary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .nav-menu {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .nav-item {
+            position: relative;
+            padding: 10px 20px;
+            font-family: var(--font-body);
+            font-size: 1rem;
+            font-weight: 500;
+            color: var(--text-secondary);
+            border-radius: 8px;
+            transition: var(--transition-fast);
+            cursor: pointer;
+        }
+
+        .nav-item:hover,
+        .nav-item.active {
+            color: var(--text-primary);
+            background: rgba(255, 61, 0, 0.1);
+        }
+
+        .nav-item.active {
+            color: var(--color-primary);
+        }
+
+        .nav-item::after {
+            content: '';
+            position: absolute;
+            bottom: 6px;
+            left: 50%;
+            width: 0;
+            height: 2px;
+            background: var(--color-primary);
+            transition: var(--transition-fast);
+            transform: translateX(-50%);
+        }
+
+        .nav-item:hover::after,
+        .nav-item.active::after {
+            width: 30px;
+        }
+
+        .nav-actions {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+
+        .nav-icon {
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 10px;
+            background: var(--bg-card);
+            border: var(--border-glow);
+            color: var(--text-secondary);
+            cursor: pointer;
+            transition: var(--transition-fast);
+        }
+
+        .nav-icon:hover {
+            background: rgba(255, 61, 0, 0.1);
+            border-color: var(--color-primary);
+            color: var(--color-primary);
+        }
+
+        .btn-primary {
+            padding: 12px 28px;
+            background: linear-gradient(135deg, var(--color-primary), var(--color-primary-light));
+            border: none;
+            border-radius: 10px;
+            font-family: var(--font-body);
+            font-size: 1rem;
+            font-weight: 600;
+            color: white;
+            cursor: pointer;
+            transition: var(--transition-fast);
+            box-shadow: var(--glow-primary);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 0 40px rgba(255, 61, 0, 0.6);
+        }
+
+        /* ==================== Hero 区域 ==================== */
+        .hero {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            padding: 120px 40px 80px;
+            overflow: hidden;
+        }
+
+        .hero-bg {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+        }
+
+        .hero-orb {
+            position: absolute;
+            border-radius: 50%;
+            filter: blur(80px);
+            animation: orbFloat 8s ease-in-out infinite;
+        }
+
+        .hero-orb-1 {
+            width: 600px;
+            height: 600px;
+            background: rgba(255, 61, 0, 0.3);
+            top: -200px;
+            right: -100px;
+            animation-delay: 0s;
+        }
+
+        .hero-orb-2 {
+            width: 400px;
+            height: 400px;
+            background: rgba(124, 77, 255, 0.2);
+            bottom: -100px;
+            left: -100px;
+            animation-delay: -3s;
+        }
+
+        .hero-orb-3 {
+            width: 300px;
+            height: 300px;
+            background: rgba(0, 229, 255, 0.15);
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            animation-delay: -5s;
+        }
+
+        @keyframes orbFloat {
+            0%, 100% { transform: translate(0, 0) scale(1); }
+            33% { transform: translate(30px, -30px) scale(1.05); }
+            66% { transform: translate(-20px, 20px) scale(0.95); }
+        }
+
+        .hero-content {
+            text-align: center;
+            max-width: 900px;
+            z-index: 1;
+        }
+
+        .hero-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 8px 20px;
+            background: rgba(255, 61, 0, 0.1);
+            border: var(--border-glow);
+            border-radius: 50px;
+            font-size: 0.9rem;
+            color: var(--color-primary);
+            margin-bottom: 30px;
+            animation: fadeInUp 0.8s ease forwards;
+        }
+
+        .hero-badge::before {
+            content: '';
+            width: 8px;
+            height: 8px;
+            background: var(--color-primary);
+            border-radius: 50%;
+            animation: pulse 2s ease-in-out infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; transform: scale(1); }
+            50% { opacity: 0.5; transform: scale(1.2); }
+        }
+
+        .hero-title {
+            font-family: var(--font-display);
+            font-size: clamp(3rem, 8vw, 6rem);
+            font-weight: 900;
+            line-height: 1.1;
+            margin-bottom: 24px;
+            animation: fadeInUp 0.8s ease 0.2s forwards;
+            opacity: 0;
+        }
+
+        .hero-title .highlight {
+            background: linear-gradient(135deg, var(--color-primary), var(--color-accent));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            text-shadow: none;
+        }
+
+        .hero-subtitle {
+            font-size: clamp(1.1rem, 2vw, 1.4rem);
+            color: var(--text-secondary);
+            margin-bottom: 40px;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+            animation: fadeInUp 0.8s ease 0.4s forwards;
+            opacity: 0;
+        }
+
+        .hero-buttons {
+            display: flex;
+            gap: 20px;
+            justify-content: center;
+            flex-wrap: wrap;
+            animation: fadeInUp 0.8s ease 0.6s forwards;
+            opacity: 0;
+        }
+
+        .btn-hero {
+            padding: 16px 40px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: var(--transition-fast);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .btn-hero-primary {
+            background: linear-gradient(135deg, var(--color-primary), var(--color-primary-light));
+            border: none;
+            color: white;
+            box-shadow: var(--glow-primary);
+        }
+
+        .btn-hero-primary:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 0 60px rgba(255, 61, 0, 0.6);
+        }
+
+        .btn-hero-secondary {
+            background: transparent;
+            border: 2px solid var(--color-accent);
+            color: var(--color-accent);
+        }
+
+        .btn-hero-secondary:hover {
+            background: rgba(0, 229, 255, 0.1);
+            box-shadow: var(--glow-accent);
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* ==================== Section 通用样式 ==================== */
+        .section {
+            padding: 100px 40px;
+            position: relative;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .section-header {
+            text-align: center;
+            margin-bottom: 60px;
+        }
+
+        .section-tag {
+            display: inline-block;
+            padding: 6px 16px;
+            background: rgba(255, 61, 0, 0.1);
+            border: var(--border-glow);
+            border-radius: 50px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: var(--color-primary);
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            margin-bottom: 16px;
+        }
+
+        .section-title {
+            font-family: var(--font-display);
+            font-size: clamp(2rem, 4vw, 3rem);
+            font-weight: 700;
+            margin-bottom: 16px;
+        }
+
+        .section-desc {
+            font-size: 1.1rem;
+            color: var(--text-secondary);
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        /* ==================== 最新发行 ==================== */
+        .releases-section {
+            background: linear-gradient(180deg, transparent, rgba(255, 61, 0, 0.03), transparent);
+        }
+
+        .releases-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 30px;
+        }
+
+        .release-card {
+            background: var(--bg-card);
+            border: var(--border-glow);
+            border-radius: 20px;
+            overflow: hidden;
+            transition: var(--transition-medium);
+            position: relative;
+        }
+
+        .release-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, rgba(255, 61, 0, 0.1), transparent);
+            opacity: 0;
+            transition: var(--transition-medium);
+        }
+
+        .release-card:hover {
+            transform: translateY(-10px);
+            border-color: var(--color-primary);
+            box-shadow: var(--glow-card), var(--glow-primary);
+        }
+
+        .release-card:hover::before {
+            opacity: 1;
+        }
+
+        .release-cover {
+            position: relative;
+            aspect-ratio: 1;
+            overflow: hidden;
+        }
+
+        .release-cover img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: var(--transition-medium);
+        }
+
+        .release-card:hover .release-cover img {
+            transform: scale(1.1);
+        }
+
+        .release-play {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%) scale(0.8);
+            width: 70px;
+            height: 70px;
+            background: var(--color-primary);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            transition: var(--transition-medium);
+            box-shadow: var(--glow-primary);
+        }
+
+        .release-card:hover .release-play {
+            opacity: 1;
+            transform: translate(-50%, -50%) scale(1);
+        }
+
+        .release-play svg {
+            width: 28px;
+            height: 28px;
+            fill: white;
+            margin-left: 4px;
+        }
+
+        .release-info {
+            padding: 24px;
+        }
+
+        .release-title {
+            font-family: var(--font-display);
+            font-size: 1.2rem;
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+
+        .release-artist {
+            font-size: 0.95rem;
+            color: var(--text-secondary);
+            margin-bottom: 12px;
+        }
+
+        .release-meta {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .release-genre {
+            padding: 4px 12px;
+            background: rgba(0, 229, 255, 0.1);
+            border: 1px solid rgba(0, 229, 255, 0.3);
+            border-radius: 50px;
+            font-size: 0.8rem;
+            color: var(--color-accent);
+        }
+
+        .release-duration {
+            font-size: 0.9rem;
+            color: var(--text-muted);
+        }
+
+        /* ==================== 音乐分类 ==================== */
+        .categories-section {
+            background: var(--bg-secondary);
+        }
+
+        .categories-wrapper {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 16px;
+            justify-content: center;
+        }
+
+        .category-tag {
+            padding: 14px 32px;
+            background: var(--bg-card);
+            border: var(--border-glow);
+            border-radius: 50px;
+            font-size: 1rem;
+            font-weight: 500;
+            color: var(--text-secondary);
+            cursor: pointer;
+            transition: var(--transition-fast);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .category-tag:hover,
+        .category-tag.active {
+            background: rgba(255, 61, 0, 0.1);
+            border-color: var(--color-primary);
+            color: var(--color-primary);
+            transform: scale(1.05);
+        }
+
+        .category-tag.active {
+            box-shadow: var(--glow-primary);
+        }
+
+        .category-icon {
+            font-size: 1.2rem;
+        }
+
+        /* ==================== 演出活动 ==================== */
+        .events-section {
+            background: linear-gradient(180deg, transparent, rgba(124, 77, 255, 0.03), transparent);
+        }
+
+        .events-timeline {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .event-item {
+            display: flex;
+            gap: 30px;
+            padding: 30px;
+            background: var(--bg-card);
+            border: var(--border-glow);
+            border-radius: 20px;
+            margin-bottom: 20px;
+            transition: var(--transition-medium);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .event-item::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 0;
+            width: 4px;
+            height: 100%;
+            background: linear-gradient(180deg, var(--color-primary), var(--color-accent));
+            opacity: 0;
+            transition: var(--transition-medium);
+        }
+
+        .event-item:hover {
+            transform: translateX(10px);
+            border-color: var(--color-accent);
+        }
+
+        .event-item:hover::before {
+            opacity: 1;
+        }
+
+        .event-date {
+            flex-shrink: 0;
+            width: 100px;
+            text-align: center;
+            padding: 20px;
+            background: linear-gradient(135deg, var(--color-primary), var(--color-primary-light));
+            border-radius: 16px;
+            color: white;
+        }
+
+        .event-date .month {
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        .event-date .day {
+            font-family: var(--font-display);
+            font-size: 2.5rem;
+            font-weight: 700;
+            line-height: 1;
+        }
+
+        .event-details {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        .event-title {
+            font-family: var(--font-display);
+            font-size: 1.4rem;
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+
+        .event-venue {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            color: var(--text-secondary);
+            margin-bottom: 16px;
+        }
+
+        .event-venue svg {
+            width: 18px;
+            height: 18px;
+            fill: var(--color-accent);
+        }
+
+        .event-actions {
+            display: flex;
+            gap: 12px;
+        }
+
+        .btn-event {
+            padding: 10px 24px;
+            border-radius: 8px;
+            font-size: 0.95rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition-fast);
+        }
+
+        .btn-event-primary {
+            background: var(--color-primary);
+            border: none;
+            color: white;
+        }
+
+        .btn-event-primary:hover {
+            box-shadow: var(--glow-primary);
+        }
+
+        .btn-event-secondary {
+            background: transparent;
+            border: 1px solid var(--text-muted);
+            color: var(--text-secondary);
+        }
+
+        .btn-event-secondary:hover {
+            border-color: var(--color-accent);
+            color: var(--color-accent);
+        }
+
+        /* ==================== 关于我们 ==================== */
+        .about-section {
+            background: var(--bg-secondary);
+        }
+
+        .about-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 60px;
+            align-items: center;
+        }
+
+        .about-content h2 {
+            font-family: var(--font-display);
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 24px;
+            line-height: 1.2;
+        }
+
+        .about-content h2 span {
+            color: var(--color-primary);
+        }
+
+        .about-content p {
+            font-size: 1.1rem;
+            color: var(--text-secondary);
+            margin-bottom: 16px;
+            line-height: 1.8;
+        }
+
+        .about-stats {
+            display: flex;
+            gap: 40px;
+            margin-top: 40px;
+        }
+
+        .stat-item {
+            text-align: center;
+        }
+
+        .stat-number {
+            font-family: var(--font-display);
+            font-size: 3rem;
+            font-weight: 700;
+            color: var(--color-primary);
+            text-shadow: var(--glow-primary);
+        }
+
+        .stat-label {
+            font-size: 0.95rem;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .about-visual {
+            position: relative;
+        }
+
+        .about-image-wrapper {
+            position: relative;
+            border-radius: 24px;
+            overflow: hidden;
+            border: var(--border-glow);
+        }
+
+        .about-image-wrapper::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, rgba(255, 61, 0, 0.2), transparent 50%);
+        }
+
+        .about-image-wrapper img {
+            width: 100%;
+            aspect-ratio: 4/3;
+            object-fit: cover;
+        }
+
+        .about-float-card {
+            position: absolute;
+            bottom: -30px;
+            right: -30px;
+            width: 200px;
+            padding: 24px;
+            background: var(--bg-card);
+            border: var(--border-accent);
+            border-radius: 16px;
+            backdrop-filter: blur(20px);
+        }
+
+        .about-float-card h4 {
+            font-family: var(--font-display);
+            font-size: 1rem;
+            margin-bottom: 12px;
+        }
+
+        .about-float-card .progress-bar {
+            height: 6px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 3px;
+            overflow: hidden;
+        }
+
+        .about-float-card .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, var(--color-primary), var(--color-accent));
+            border-radius: 3px;
+        }
+
+        /* ==================== 页脚 ==================== */
+        .footer {
+            padding: 80px 40px 40px;
+            background: var(--bg-secondary);
+            border-top: 1px solid rgba(255, 61, 0, 0.1);
+        }
+
+        .footer-grid {
+            display: grid;
+            grid-template-columns: 2fr 1fr 1fr 1fr;
+            gap: 60px;
+            margin-bottom: 60px;
+        }
+
+        .footer-brand p {
+            color: var(--text-secondary);
+            margin-top: 16px;
+            max-width: 300px;
+        }
+
+        .footer-social {
+            display: flex;
+            gap: 12px;
+            margin-top: 24px;
+        }
+
+        .social-link {
+            width: 44px;
+            height: 44px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: var(--bg-card);
+            border: var(--border-glow);
+            border-radius: 12px;
+            color: var(--text-secondary);
+            transition: var(--transition-fast);
+        }
+
+        .social-link:hover {
+            background: rgba(255, 61, 0, 0.1);
+            border-color: var(--color-primary);
+            color: var(--color-primary);
+            transform: translateY(-4px);
+        }
+
+        .footer-title {
+            font-family: var(--font-display);
+            font-size: 1.1rem;
+            font-weight: 600;
+            margin-bottom: 24px;
+            color: var(--text-primary);
+        }
+
+        .footer-links li {
+            margin-bottom: 12px;
+        }
+
+        .footer-links a {
+            color: var(--text-secondary);
+            font-size: 0.95rem;
+            transition: var(--transition-fast);
+        }
+
+        .footer-links a:hover {
+            color: var(--color-primary);
+            padding-left: 8px;
+        }
+
+        .footer-bottom {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding-top: 40px;
+            border-top: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .footer-copyright {
+            color: var(--text-muted);
+            font-size: 0.9rem;
+        }
+
+        .footer-legal {
+            display: flex;
+            gap: 24px;
+        }
+
+        .footer-legal a {
+            color: var(--text-muted);
+            font-size: 0.9rem;
+        }
+
+        .footer-legal a:hover {
+            color: var(--text-primary);
+        }
+
+        /* ==================== 响应式设计 ==================== */
+        @media (max-width: 1200px) {
+            .footer-grid {
+                grid-template-columns: 1fr 1fr;
+            }
+        }
+
+        @media (max-width: 992px) {
+            .navbar {
+                padding: 0 20px;
+            }
+            
+            .nav-menu {
+                display: none;
+            }
+            
+            .hero {
+                padding: 100px 20px 60px;
+            }
+            
+            .section {
+                padding: 60px 20px;
+            }
+            
+            .about-grid {
+                grid-template-columns: 1fr;
+                gap: 40px;
+            }
+            
+            .about-visual {
+                order: -1;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .hero-title {
+                font-size: 2.5rem;
+            }
+            
+            .hero-buttons {
+                flex-direction: column;
+                align-items: center;
+            }
+            
+            .btn-hero {
+                width: 100%;
+                max-width: 280px;
+                justify-content: center;
+            }
+            
+            .events-timeline {
+                max-width: 100%;
+            }
+            
+            .event-item {
+                flex-direction: column;
+                gap: 20px;
+            }
+            
+            .event-date {
+                width: 100%;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                gap: 12px;
+                padding: 16px;
+            }
+            
+            .event-date .day {
+                font-size: 2rem;
+            }
+            
+            .about-stats {
+                flex-wrap: wrap;
+                justify-content: center;
+            }
+            
+            .footer-grid {
+                grid-template-columns: 1fr;
+                gap: 40px;
+            }
+            
+            .footer-bottom {
+                flex-direction: column;
+                gap: 16px;
+                text-align: center;
+            }
+        }
+
+        /* ==================== 滚动动画 ==================== */
+        .fade-in {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: opacity 0.6s ease, transform 0.6s ease;
+        }
+
+        .fade-in.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    </style>
+</head>
+<body>
+    <!-- 背景效果 -->
+    <div class="bg-effect"></div>
+    <div class="grid-overlay"></div>
+
+    <!-- 导航栏 -->
+    <nav class="navbar">
+        <div class="nav-brand">
+            <div class="brand-logo">S+</div>
+            <span class="brand-name">Sing+</span>
+        </div>
+        
+        <ul class="nav-menu">
+            <li><a href="#home" class="nav-item active">首页</a></li>
+            <li><a href="#releases" class="nav-item">音乐</a></li>
+            <li><a href="#categories" class="nav-item">分类</a></li>
+            <li><a href="#events" class="nav-item">演出</a></li>
+            <li><a href="#about" class="nav-item">关于</a></li>
+        </ul>
+        
+        <div class="nav-actions">
+            <div class="nav-icon">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <circle cx="11" cy="11" r="8"></circle>
+                    <path d="M21 21l-4.35-4.35"></path>
+                </svg>
+            </div>
+            <button class="btn-primary">开始体验</button>
+        </div>
+    </nav>
+
+    <!-- Hero 区域 -->
+    <section id="home" class="hero">
+        <div class="hero-bg">
+            <div class="hero-orb hero-orb-1"></div>
+            <div class="hero-orb hero-orb-2"></div>
+            <div class="hero-orb hero-orb-3"></div>
+        </div>
+        
+        <div class="hero-content">
+            <div class="hero-badge">
+                <span>🎵 史诗音乐新体验</span>
+            </div>
+            
+            <h1 class="hero-title">
+                释放你的<br>
+                <span class="highlight">音乐想象力</span>
+            </h1>
+            
+            <p class="hero-subtitle">
+                发现全球顶级史诗音乐厂牌，感受震撼人心的视听盛宴。
+                探索最新专辑、 upcoming 演出活动，与音乐灵魂共鸣。
+            </p>
+            
+            <div class="hero-buttons">
+                <button class="btn-hero btn-hero-primary">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+                        <path d="M8 5v14l11-7z"/>
+                    </svg>
+                    立即探索
+                </button>
+                <button class="btn-hero btn-hero-secondary">
+                    了解更多
+                </button>
+            </div>
+        </div>
+    </section>
+
+    <!-- 最新发行 -->
+    <section id="releases" class="section releases-section">
+        <div class="container">
+            <div class="section-header fade-in">
+                <span class="section-tag">Latest Releases</span>
+                <h2 class="section-title">最新发行</h2>
+                <p class="section-desc">
+                    探索最新发布的史诗音乐，感受震撼人心的旋律
+                </p>
+            </div>
+            
+            <div class="releases-grid">
+                <!-- 发行卡片 1 -->
+                <div class="release-card fade-in">
+                    <div class="release-cover">
+                        <img src="https://images.unsplash.com/photo-1511379938547-c1f69419868d?w=600&h=600&fit=crop" alt="专辑封面">
+                        <div class="release-play">
+                            <svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
+                        </div>
+                    </div>
+                    <div class="release-info">
+                        <h3 class="release-title">Infinity Horizon</h3>
+                        <p class="release-artist">Atlas Orchestra</p>
+                        <div class="release-meta">
+                            <span class="release-genre">史诗</span>
+                            <span class="release-duration">4:32</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- 发行卡片 2 -->
+                <div class="release-card fade-in">
+                    <div class="release-cover">
+                        <img src="https://images.unsplash.com/photo-1493225457124-a3eb161ffa5f?w=600&h=600&fit=crop" alt="专辑封面">
+                        <div class="release-play">
+                            <svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
+                        </div>
+                    </div>
+                    <div class="release-info">
+                        <h3 class="release-title">Neon Dreams</h3>
+                        <p class="release-artist">Cyber Symphony</p>
+                        <div class="release-meta">
+                            <span class="release-genre">电子</span>
+                            <span class="release-duration">3:48</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- 发行卡片 3 -->
+                <div class="release-card fade-in">
+                    <div class="release-cover">
+                        <img src="https://images.unsplash.com/photo-1470225620780-dba8ba36b745?w=600&h=600&fit=crop" alt="专辑封面">
+                        <div class="release-play">
+                            <svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
+                        </div>
+                    </div>
+                    <div class="release-info">
+                        <h3 class="release-title">Midnight Pulse</h3>
+                        <p class="release-artist">Velocity</p>
+                        <div class="release-meta">
+                            <span class="release-genre">氛围</span>
+                            <span class="release-duration">5:16</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- 发行卡片 4 -->
+                <div class="release-card fade-in">
+                    <div class="release-cover">
+                        <img src="https://images.unsplash.com/photo-1514320291840-2e0a9bf2a9ae?w=600&h=600&fit=crop" alt="专辑封面">
+                        <div class="release-play">
+                            <svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
+                        </div>
+                    </div>
+                    <div class="release-info">
+                        <h3 class="release-title">Dragon's Rise</h3>
+                        <p class="release-artist">Epic Collective</p>
+                        <div class="release-meta">
+                            <span class="release-genre">奇幻</span>
+                            <span class="release-duration">6:02</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 音乐分类 -->
+    <section id="categories" class="section categories-section">
+        <div class="container">
+            <div class="section-header fade-in">
+                <span class="section-tag">Categories</span>
+                <h2 class="section-title">音乐分类</h2>
+                <p class="section-desc">
+                    按风格探索你喜欢的音乐类型
+                </p>
+            </div>
+            
+            <div class="categories-wrapper fade-in">
+                <div class="category-tag active">
+                    <span class="category-icon">🔥</span>
+                    全部
+                </div>
+                <div class="category-tag">
+                    <span class="category-icon">⚔️</span>
+                    史诗
+                </div>
+                <div class="category-tag">
+                    <span class="category-icon">🎹</span>
+                    电子
+                </div>
+                <div class="category-tag">
+                    <span class="category-icon">🌙</span>
+                    氛围
+                </div>
+                <div class="category-tag">
+                    <span class="category-icon">🏰</span>
+                    奇幻
+                </div>
+                <div class="category-tag">
+                    <span class="category-icon">🚀</span>
+                    科幻
+                </div>
+                <div class="category-tag">
+                    <span class="category-icon">🎭</span>
+                    戏剧
+                </div>
+                <div class="category-tag">
+                    <span class="category-icon">🌊</span>
+                    放松
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 演出活动 -->
+    <section id="events" class="section events-section">
+        <div class="container">
+            <div class="section-header fade-in">
+                <span class="section-tag">Events</span>
+                <h2 class="section-title">即将演出</h2>
+                <p class="section-desc">
+                    体验现场音乐的震撼与激情
+                </p>
+            </div>
+            
+            <div class="events-timeline">
+                <div class="event-item fade-in">
+                    <div class="event-date">
+                        <span class="month">Jul</span>
+                        <span class="day">15</span>
+                    </div>
+                    <div class="event-details">
+                        <h3 class="event-title">Epic Symphony World Tour</h3>
+                        <div class="event-venue">
+                            <svg viewBox="0 0 24 24"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+                            <span>上海梅赛德斯奔驰文化中心</span>
+                        </div>
+                        <div class="event-actions">
+                            <button class="btn-event btn-event-primary">购票</button>
+                            <button class="btn-event btn-event-secondary">详情</button>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="event-item fade-in">
+                    <div class="event-date">
+                        <span class="month">Aug</span>
+                        <span class="day">22</span>
+                    </div>
+                    <div class="event-details">
+                        <h3 class="event-title">Neon Nights Electronic Festival</h3>
+                        <div class="event-venue">
+                            <svg viewBox="0 0 24 24"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+                            <span>北京凯迪拉克中心</span>
+                        </div>
+                        <div class="event-actions">
+                            <button class="btn-event btn-event-primary">购票</button>
+                            <button class="btn-event btn-event-secondary">详情</button>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="event-item fade-in">
+                    <div class="event-date">
+                        <span class="month">Sep</span>
+                        <span class="day">08</span>
+                    </div>
+                    <div class="event-details">
+                        <h3 class="event-title">Ambient Dreams Live</h3>
+                        <div class="event-venue">
+                            <svg viewBox="0 0 24 24"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+                            <span>深圳春茧体育馆</span>
+                        </div>
+                        <div class="event-actions">
+                            <button class="btn-event btn-event-primary">购票</button>
+                            <button class="btn-event btn-event-secondary">详情</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 关于我们 -->
+    <section id="about" class="section about-section">
+        <div class="container">
+            <div class="about-grid">
+                <div class="about-content fade-in">
+                    <h2>关于 <span>Sing+</span></h2>
+                    <p>
+                        Sing+ 是一个致力于发现和推广世界顶级史诗音乐的平台。
+                        我们与全球最优秀的音乐制作人、作曲家合作，为你带来前所未有的音乐体验。
+                    </p>
+                    <p>
+                        无论是电影配乐、游戏音乐还是商业广告音乐，
+                        我们相信音乐有着改变情绪、激发想象力的神奇力量。
+                    </p>
+                    
+                    <div class="about-stats">
+                        <div class="stat-item">
+                            <div class="stat-number">10K+</div>
+                            <div class="stat-label">音乐作品</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-number">500+</div>
+                            <div class="stat-label">合作艺术家</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-number">50+</div>
+                            <div class="stat-label">国家用户</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="about-visual fade-in">
+                    <div class="about-image-wrapper">
+                        <img src="https://images.unsplash.com/photo-1498038432885-c6f3f1b912ee?w=800&h=600&fit=crop" alt="关于我们">
+                    </div>
+                    <div class="about-float-card">
+                        <h4>平台活跃度</h4>
+                        <div class="progress-bar">
+                            <div class="progress-fill" style="width: 78%"></div>
+                        </div>
+                        <p style="margin-top: 8px; font-size: 0.9rem; color: var(--text-secondary);">月活用户增长 78%</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 页脚 -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-grid">
+                <div class="footer-brand">
+                    <div class="nav-brand">
+                        <div class="brand-logo">S+</div>
+                        <span class="brand-name">Sing+</span>
+                    </div>
+                    <p>
+                        发现全球顶级史诗音乐，感受震撼人心的视听盛宴。
+                        音乐连接世界，音乐点燃激情。
+                    </p>
+                    <div class="footer-social">
+                        <a href="#" class="social-link">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+                                <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/>
+                            </svg>
+                        </a>
+                        <a href="#" class="social-link">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+                                <path d="M19.59 6.69a4.83 4.83 0 0 1-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 0 1-5.2 1.74 2.89 2.89 0 0 1 2.31-4.64 2.93 2.93 0 0 1 .88.13V9.4a6.84 6.84 0 0 0-1-.05A6.33 6.33 0 0 0 5 20.1a6.34 6.34 0 0 0 10.86-4.43v-7a8.16 8.16 0 0 0 4.77 1.52v-3.4a4.85 4.85 0 0 1-1-.1z"/>
+                            </svg>
+                        </a>
+                        <a href="#" class="social-link">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+                                <path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/>
+                            </svg>
+                        </a>
+                        <a href="#" class="social-link">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+                                <path d="M12 0C5.374 0 0 5.373 0 12c0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23A11.509 11.509 0 0112 5.803c1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576C20.566 21.797 24 17.3 24 12c0-6.627-5.373-12-12-12z"/>
+                            </svg>
+                        </a>
+                    </div>
+                </div>
+                
+                <div class="footer-column">
+                    <h4 class="footer-title">快速链接</h4>
+                    <ul class="footer-links">
+                        <li><a href="#">首页</a></li>
+                        <li><a href="#">音乐</a></li>
+                        <li><a href="#">专辑</a></li>
+                        <li><a href="#">演出</a></li>
+                    </ul>
+                </div>
+                
+                <div class="footer-column">
+                    <h4 class="footer-title">资源</h4>
+                    <ul class="footer-links">
+                        <li><a href="#">帮助中心</a></li>
+                        <li><a href="#">使用条款</a></li>
+                        <li><a href="#">隐私政策</a></li>
+                        <li><a href="#">版权声明</a></li>
+                    </ul>
+                </div>
+                
+                <div class="footer-column">
+                    <h4 class="footer-title">联系我们</h4>
+                    <ul class="footer-links">
+                        <li><a href="#">support@singplus.com</a></li>
+                        <li><a href="#">合作咨询</a></li>
+                        <li><a href="#">加入我们</a></li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="footer-bottom">
+                <p class="footer-copyright">© 2026 Sing+. All rights reserved.</p>
+                <div class="footer-legal">
+                    <a href="#">隐私政策</a>
+                    <a href="#">服务条款</a>
+                    <a href="#">Cookie 设置</a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // 导航栏滚动效果
+        const navbar = document.querySelector('.navbar');
+        
+        window.addEventListener('scroll', () => {
+            if (window.scrollY > 50) {
+                navbar.classList.add('scrolled');
+            } else {
+                navbar.classList.remove('scrolled');
+            }
+        });
+
+        // 滚动动画
+        const fadeElements = document.querySelectorAll('.fade-in');
+        
+        const observerOptions = {
+            threshold: 0.1,
+            rootMargin: '0px 0px -50px 0px'
+        };
+        
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('visible');
+                }
+            });
+        }, observerOptions);
+        
+        fadeElements.forEach(el => observer.observe(el));
+
+        // 分类标签点击效果
+        const categoryTags = document.querySelectorAll('.category-tag');
+        
+        categoryTags.forEach(tag => {
+            tag.addEventListener('click', () => {
+                categoryTags.forEach(t => t.classList.remove('active'));
+                tag.classList.add('active');
+            });
+        });
+
+        // 导航链接点击效果
+        const navItems = document.querySelectorAll('.nav-item');
+        
+        navItems.forEach(item => {
+            item.addEventListener('click', (e) => {
+                navItems.forEach(i => i.classList.remove('active'));
+                item.classList.add('active');
+            });
+        });
+    </script>
+</body>
+</html>

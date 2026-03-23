@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>创意实验室 - SING-</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;600;700;800;900&family=Rajdhani:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-primary: #0a0a0f;
+            --bg-card: rgba(255, 255, 255, 0.03);
+            --color-primary: #ff3d00;
+            --color-primary-light: #ff6f00;
+            --color-accent: #00e5ff;
+            --color-purple: #7c4dff;
+            --text-primary: #ffffff;
+            --text-secondary: #b0b0b0;
+            --font-display: 'Orbitron', sans-serif;
+            --font-body: 'Rajdhani', sans-serif;
+            --glow-primary: 0 0 20px rgba(255, 61, 0, 0.5);
+            --border-glow: 1px solid rgba(255, 61, 0, 0.3);
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: var(--font-body); background: var(--bg-primary); color: var(--text-primary); }
+        a { text-decoration: none; color: inherit; }
+        
+        .bg-effect {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -3;
+            background: radial-gradient(ellipse at 20% 20%, rgba(124, 77, 255, 0.15) 0%, transparent 50%),
+                        radial-gradient(ellipse at 80% 80%, rgba(0, 229, 255, 0.1) 0%, transparent 50%), var(--bg-primary);
+        }
+        
+        .navbar {
+            position: fixed; top: 0; left: 0; width: 100%; z-index: 1000;
+            padding: 20px 40px; display: flex; align-items: center; justify-content: space-between;
+            background: rgba(10, 10, 15, 0.9); backdrop-filter: blur(20px);
+            border-bottom: 1px solid rgba(255, 61, 0, 0.1);
+        }
+        .nav-brand { display: flex; align-items: center; gap: 12px; }
+        .brand-logo { width: 40px; height: 40px; background: linear-gradient(135deg, var(--color-purple), var(--color-primary-light));
+            border-radius: 10px; display: flex; align-items: center; justify-content: center;
+            font-family: var(--font-display); font-weight: 900; font-size: 1.2rem; color: white; }
+        .brand-name { font-family: var(--font-display); font-size: 1.3rem; font-weight: 700; }
+        .nav-menu { display: flex; gap: 30px; }
+        .nav-item { color: var(--text-secondary); font-weight: 500; transition: 0.2s; }
+        .nav-item:hover, .nav-item.active { color: var(--color-purple); }
+        .back-link { display: flex; align-items: center; gap: 8px; color: var(--color-accent); }
+        
+        .hero { padding: 120px 40px 60px; text-align: center; }
+        .hero-icon { font-size: 4rem; margin-bottom: 20px; }
+        .hero h1 { font-family: var(--font-display); font-size: 2.5rem; font-weight: 700; margin-bottom: 16px; }
+        .hero h1 span { background: linear-gradient(135deg, var(--color-purple), var(--color-accent)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        .hero p { color: var(--text-secondary); max-width: 600px; margin: 0 auto; }
+        
+        .container { max-width: 1200px; margin: 0 auto; padding: 40px; }
+        .section-title { font-family: var(--font-display); font-size: 1.5rem; margin-bottom: 24px; display: flex; align-items: center; gap: 12px; }
+        .section-title::before { content: ''; width: 4px; height: 24px; background: var(--color-purple); border-radius: 2px; }
+        
+        .tools-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 20px; }
+        .tool-card {
+            background: var(--bg-card); border: 1px solid rgba(124, 77, 255, 0.3); border-radius: 16px; padding: 24px;
+            transition: 0.3s; cursor: pointer;
+        }
+        .tool-card:hover { transform: translateY(-5px); border-color: var(--color-purple); box-shadow: 0 0 30px rgba(124, 77, 255, 0.3); }
+        .tool-icon { font-size: 2.5rem; margin-bottom: 16px; }
+        .tool-card h3 { font-size: 1.2rem; margin-bottom: 8px; }
+        .tool-card p { color: var(--text-secondary); font-size: 0.9rem; margin-bottom: 16px; }
+        .tool-tags { display: flex; flex-wrap: wrap; gap: 8px; }
+        .tool-tag { padding: 4px 12px; background: rgba(124, 77, 255, 0.1); border: 1px solid rgba(124, 77, 255, 0.3);
+            border-radius: 50px; font-size: 0.75rem; color: var(--color-purple); }
+        
+        @media (max-width: 768px) {
+            .navbar { padding: 15px 20px; }
+            .nav-menu { display: none; }
+            .hero { padding: 100px 20px 40px; }
+            .container { padding: 20px; }
+        }
+    </style>
+</head>
+<body>
+    <div class="bg-effect"></div>
+    
+    <nav class="navbar">
+        <div class="nav-brand">
+            <a href="index.html" class="back-link">←</a>
+            <div class="brand-logo">S</div>
+            <span class="brand-name">SING-</span>
+        </div>
+        <ul class="nav-menu">
+            <li><a href="index.html" class="nav-item">首页</a></li>
+            <li><a href="game-audio.html" class="nav-item">游戏音频</a></li>
+            <li><a href="lab.html" class="nav-item active">创意实验室</a></li>
+            <li><a href="projects.html" class="nav-item">游戏项目</a></li>
+            <li><a href="library.html" class="nav-item">资源库</a></li>
+            <li><a href="finance.html" class="nav-item">金融投资</a></li>
+        </ul>
+    </nav>
+    
+    <section class="hero">
+        <div class="hero-icon">🧪</div>
+        <h1>创意<span>实验室</span></h1>
+        <p>AI音乐生成、视频创作、图像生成、创意工具探索</p>
+    </section>
+    
+    <div class="container">
+        <h2 class="section-title">AI 音乐工具</h2>
+        <div class="tools-grid">
+            <div class="tool-card">
+                <div class="tool-icon">🎵</div>
+                <h3>Suno AI</h3>
+                <p>AI音乐生成，支持多种风格，可生成完整歌曲</p>
+                <div class="tool-tags">
+                    <span class="tool-tag">音乐生成</span>
+                    <span class="tool-tag">多风格</span>
+                </div>
+            </div>
+            <div class="tool-card">
+                <div class="tool-icon">🎹</div>
+                <h3>Udio</h3>
+                <p>Stability AI 旗下音乐生成工具</p>
+                <div class="tool-tags">
+                    <span class="tool-tag">AI音乐</span>
+                    <span class="tool-tag">Stability</span>
+                </div>
+            </div>
+            <div class="tool-card">
+                <div class="tool-icon">🧠</div>
+                <h3>ElevenLabs</h3>
+                <p>AI语音合成，语音克隆，声音生成</p>
+                <div class="tool-tags">
+                    <span class="tool-tag">语音合成</span>
+                    <span class="tool-tag">声音克隆</span>
+                </div>
+            </div>
+        </div>
+        
+        <h2 class="section-title" style="margin-top: 50px;">AI 视频工具</h2>
+        <div class="tools-grid">
+            <div class="tool-card">
+                <div class="tool-icon">🎬</div>
+                <h3>Runway</h3>
+                <p>AI视频生成与编辑，文本转视频</p>
+                <div class="tool-tags">
+                    <span class="tool-tag">视频生成</span>
+                    <span class="tool-tag">AI编辑</span>
+                </div>
+            </div>
+            <div class="tool-card">
+                <div class="tool-icon">🎥</div>
+                <h3>Pika</h3>
+                <p>AI视频生成工具，支持多种风格</p>
+                <div class="tool-tags">
+                    <span class="tool-tag">视频生成</span>
+                    <span class="tool-tag">多风格</span>
+                </div>
+            </div>
+            <div class="tool-card">
+                <div class="tool-icon">🎞️</div>
+                <h3>Kaiber</h3>
+                <p>AI动画和视频生成平台</p>
+                <div class="tool-tags">
+                    <span class="tool-tag">动画</span>
+                    <span class="tool-tag">创意</span>
+                </div>
+            </div>
+        </div>
+        
+        <h2 class="section-title" style="margin-top: 50px;">AI 图像工具</h2>
+        <div class="tools-grid">
+            <div class="tool-card">
+                <div class="tool-icon">🎨</div>
+                <h3>Midjourney</h3>
+                <p>AI图像生成，艺术风格强大</p>
+                <div class="tool-tags">
+                    <span class="tool-tag">图像生成</span>
+                    <span class="tool-tag">艺术</span>
+                </div>
+            </div>
+            <div class="tool-card">
+                <div class="tool-icon">🖼️</div>
+                <h3>Stable Diffusion</h3>
+                <p>开源AI图像生成，本地部署</p>
+                <div class="tool-tags">
+                    <span class="tool-tag">开源</span>
+                    <span class="tool-tag">本地部署</span>
+                </div>
+            </div>
+            <div class="tool-card">
+                <div class="tool-icon">✨</div>
+                <h3>Adobe Firefly</h3>
+                <p>Adobe AI图像生成，商用安全</p>
+                <div class="tool-tags">
+                    <span class="tool-tag">商业</span>
+                    <span class="tool-tag">Adobe</span>
+                </div>
+            </div>
+            <div class="tool-card">
+                <div class="tool-icon">🖌️</div>
+                <h3>Leonardo AI</h3>
+                <p>AI图像生成，预训练模型丰富</p>
+                <div class="tool-tags">
+                    <span class="tool-tag">图像生成</span>
+                    <span class="tool-tag">多模型</span>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>游戏音频 - SING-</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;600;700;800;900&family=Rajdhani:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-primary: #0a0a0f;
+            --bg-secondary: #12121a;
+            --bg-card: rgba(255, 255, 255, 0.03);
+            --color-primary: #ff3d00;
+            --color-primary-light: #ff6f00;
+            --color-accent: #00e5ff;
+            --text-primary: #ffffff;
+            --text-secondary: #b0b0b0;
+            --font-display: 'Orbitron', sans-serif;
+            --font-body: 'Rajdhani', sans-serif;
+            --glow-primary: 0 0 20px rgba(255, 61, 0, 0.5);
+            --border-glow: 1px solid rgba(255, 61, 0, 0.3);
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: var(--font-body); background: var(--bg-primary); color: var(--text-primary); }
+        a { text-decoration: none; color: inherit; }
+        
+        .bg-effect {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -3;
+            background: radial-gradient(ellipse at 20% 20%, rgba(255, 61, 0, 0.15) 0%, transparent 50%),
+                        radial-gradient(ellipse at 80% 80%, rgba(124, 77, 255, 0.1) 0%, transparent 50%), var(--bg-primary);
+        }
+        
+        /* 导航 */
+        .navbar {
+            position: fixed; top: 0; left: 0; width: 100%; z-index: 1000;
+            padding: 20px 40px; display: flex; align-items: center; justify-content: space-between;
+            background: rgba(10, 10, 15, 0.9); backdrop-filter: blur(20px);
+            border-bottom: 1px solid rgba(255, 61, 0, 0.1);
+        }
+        .nav-brand { display: flex; align-items: center; gap: 12px; }
+        .brand-logo { width: 40px; height: 40px; background: linear-gradient(135deg, var(--color-primary), var(--color-primary-light));
+            border-radius: 10px; display: flex; align-items: center; justify-content: center;
+            font-family: var(--font-display); font-weight: 900; font-size: 1.2rem; color: white; }
+        .brand-name { font-family: var(--font-display); font-size: 1.3rem; font-weight: 700; }
+        .nav-menu { display: flex; gap: 30px; }
+        .nav-item { color: var(--text-secondary); font-weight: 500; transition: 0.2s; }
+        .nav-item:hover, .nav-item.active { color: var(--color-primary); }
+        .back-link { display: flex; align-items: center; gap: 8px; color: var(--color-accent); }
+        
+        /* Hero */
+        .hero {
+            padding: 120px 40px 60px; text-align: center; position: relative;
+        }
+        .hero-icon { font-size: 4rem; margin-bottom: 20px; }
+        .hero h1 { font-family: var(--font-display); font-size: 2.5rem; font-weight: 700; margin-bottom: 16px; }
+        .hero h1 span { background: linear-gradient(135deg, var(--color-primary), var(--color-accent)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        .hero p { color: var(--text-secondary); max-width: 600px; margin: 0 auto; }
+        
+        /* 内容区 */
+        .container { max-width: 1200px; margin: 0 auto; padding: 40px; }
+        .section-title { font-family: var(--font-display); font-size: 1.5rem; margin-bottom: 24px; display: flex; align-items: center; gap: 12px; }
+        .section-title::before { content: ''; width: 4px; height: 24px; background: var(--color-primary); border-radius: 2px; }
+        
+        /* 项目卡片 */
+        .projects-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 24px; }
+        .project-card {
+            background: var(--bg-card); border: var(--border-glow); border-radius: 16px; padding: 24px;
+            transition: 0.3s;
+        }
+        .project-card:hover { transform: translateY(-5px); border-color: var(--color-primary); box-shadow: var(--glow-primary); }
+        .project-card h3 { font-size: 1.2rem; margin-bottom: 8px; }
+        .project-card p { color: var(--text-secondary); font-size: 0.95rem; margin-bottom: 16px; }
+        .project-tags { display: flex; flex-wrap: wrap; gap: 8px; }
+        .project-tag { padding: 4px 12px; background: rgba(0, 229, 255, 0.1); border: 1px solid rgba(0, 229, 255, 0.3);
+            border-radius: 50px; font-size: 0.75rem; color: var(--color-accent); }
+        .project-status { display: inline-block; padding: 4px 10px; border-radius: 4px; font-size: 0.75rem; margin-bottom: 12px; }
+        .status-active { background: rgba(0, 255, 65, 0.1); color: #00ff41; }
+        .status-planning { background: rgba(255, 170, 0, 0.1); color: #ffaa00; }
+        
+        /* 工具列表 */
+        .tools-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap: 20px; }
+        .tool-card {
+            background: var(--bg-card); border: var(--border-glow); border-radius: 12px; padding: 20px;
+            display: flex; align-items: center; gap: 16px; transition: 0.3s; cursor: pointer;
+        }
+        .tool-card:hover { border-color: var(--color-accent); transform: translateX(5px); }
+        .tool-icon { font-size: 1.5rem; }
+        .tool-info h4 { font-size: 1rem; margin-bottom: 4px; }
+        .tool-info p { color: var(--text-secondary); font-size: 0.85rem; }
+        
+        @media (max-width: 768px) {
+            .navbar { padding: 15px 20px; }
+            .nav-menu { display: none; }
+            .hero { padding: 100px 20px 40px; }
+            .hero h1 { font-size: 1.8rem; }
+            .container { padding: 20px; }
+        }
+    </style>
+</head>
+<body>
+    <div class="bg-effect"></div>
+    
+    <nav class="navbar">
+        <div class="nav-brand">
+            <a href="index.html" class="back-link">←</a>
+            <div class="brand-logo">S</div>
+            <span class="brand-name">SING-</span>
+        </div>
+        <ul class="nav-menu">
+            <li><a href="index.html" class="nav-item">首页</a></li>
+            <li><a href="game-audio.html" class="nav-item active">游戏音频</a></li>
+            <li><a href="lab.html" class="nav-item">创意实验室</a></li>
+            <li><a href="projects.html" class="nav-item">游戏项目</a></li>
+            <li><a href="library.html" class="nav-item">资源库</a></li>
+            <li><a href="finance.html" class="nav-item">金融投资</a></li>
+        </ul>
+    </nav>
+    
+    <section class="hero">
+        <div class="hero-icon">🎵</div>
+        <h1>游戏<span>音频</span></h1>
+        <p>游戏音乐制作、音效设计、音频引擎开发、虚拟歌手养成</p>
+    </section>
+    
+    <div class="container">
+        <!-- 在研项目 -->
+        <h2 class="section-title">在研项目</h2>
+        <div class="projects-grid">
+            <div class="project-card">
+                <span class="project-status status-active">进行中</span>
+                <h3>Epic Battle Music</h3>
+                <p>史诗战斗音乐包，包含20+首战斗曲目，适用于动作/RPG游戏</p>
+                <div class="project-tags">
+                    <span class="project-tag">音乐制作</span>
+                    <span class="project-tag">Unity</span>
+                    <span class="project-tag">Wwise</span>
+                </div>
+            </div>
+            <div class="project-card">
+                <span class="project-status status-active">进行中</span>
+                <h3>Virtual Singer AI</h3>
+                <p>基于AI的虚拟歌手声音合成，支持中文/英文/日文</p>
+                <div class="project-tags">
+                    <span class="project-tag">AI</span>
+                    <span class="project-tag">歌声合成</span>
+                    <span class="project-tag">Vocaloid</span>
+                </div>
+            </div>
+            <div class="project-card">
+                <span class="project-status status-planning">规划中</span>
+                <h3>Rhythm Game OST</h3>
+                <p>节奏游戏原声带，120+BPM电子风格曲目</p>
+                <div class="project-tags">
+                    <span class="project-tag">音游</span>
+                    <span class="project-tag">电子</span>
+                </div>
+            </div>
+        </div>
+        
+        <!-- 音频工具 -->
+        <h2 class="section-title" style="margin-top: 50px;">音频工具</h2>
+        <div class="tools-grid">
+            <div class="tool-card">
+                <div class="tool-icon">🎹</div>
+                <div class="tool-info">
+                    <h4>FL Studio</h4>
+                    <p>音乐制作 DAW</p>
+                </div>
+            </div>
+            <div class="tool-card">
+                <div class="tool-icon">🎛️</div>
+                <div class="tool-info">
+                    <h4>Ableton Live</h4>
+                    <p>电子音乐制作</p>
+                </div>
+            </div>
+            <div class="tool-card">
+                <div class="tool-icon">🔊</div>
+                <div class="tool-info">
+                    <h4>FMOD</h4>
+                    <p>游戏音频引擎</p>
+                </div>
+            </div>
+            <div class="tool-card">
+                <div class="tool-icon">🎧</div>
+                <div class="tool-info">
+                    <h4>Wwise</h4>
+                    <p>3D音频解决方案</p>
+                </div>
+            </div>
+            <div class="tool-card">
+                <div class="tool-icon">🗣️</div>
+                <div class="tool-info">
+                    <h4>Vocaloid 6</h3>
+                    <p>虚拟歌手合成</p>
+                </div>
+            </div>
+            <div class="tool-card">
+                <div class="tool-icon">🤖</div>
+                <div class="tool-info">
+                    <h4>Suno AI</h4>
+                    <p>AI音乐生成</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

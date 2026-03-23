@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>金融投资 - SING-</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;600;700;800;900&family=Rajdhani:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-primary: #0a0a0f;
+            --bg-card: rgba(255, 255, 255, 0.03);
+            --color-primary: #ff3d00;
+            --color-accent: #00e5ff;
+            --color-red: #ff3d00;
+            --color-green: #00ff41;
+            --text-primary: #ffffff;
+            --text-secondary: #b0b0b0;
+            --font-display: 'Orbitron', sans-serif;
+            --font-body: 'Rajdhani', sans-serif;
+            --border-glow: 1px solid rgba(255, 61, 0, 0.3);
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: var(--font-body); background: var(--bg-primary); color: var(--text-primary); }
+        a { text-decoration: none; color: inherit; }
+        
+        .bg-effect {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -3;
+            background: radial-gradient(ellipse at 20% 20%, rgba(255, 61, 0, 0.15) 0%, transparent 50%),
+                        radial-gradient(ellipse at 80% 80%, rgba(0, 255, 65, 0.1) 0%, transparent 50%), var(--bg-primary);
+        }
+        
+        .navbar {
+            position: fixed; top: 0; left: 0; width: 100%; z-index: 1000;
+            padding: 20px 40px; display: flex; align-items: center; justify-content: space-between;
+            background: rgba(10, 10, 15, 0.9); backdrop-filter: blur(20px);
+            border-bottom: 1px solid rgba(255, 61, 0, 0.1);
+        }
+        .nav-brand { display: flex; align-items: center; gap: 12px; }
+        .brand-logo { width: 40px; height: 40px; background: linear-gradient(135deg, var(--color-red), #ff6f00);
+            border-radius: 10px; display: flex; align-items: center; justify-content: center;
+            font-family: var(--font-display); font-weight: 900; font-size: 1.2rem; color: white; }
+        .brand-name { font-family: var(--font-display); font-size: 1.3rem; font-weight: 700; }
+        .nav-menu { display: flex; gap: 30px; }
+        .nav-item { color: var(--text-secondary); font-weight: 500; transition: 0.2s; }
+        .nav-item:hover, .nav-item.active { color: var(--color-red); }
+        .back-link { display: flex; align-items: center; gap: 8px; color: var(--color-accent); }
+        
+        .hero { padding: 120px 40px 60px; text-align: center; }
+        .hero-icon { font-size: 4rem; margin-bottom: 20px; }
+        .hero h1 { font-family: var(--font-display); font-size: 2.5rem; font-weight: 700; margin-bottom: 16px; }
+        .hero h1 span { background: linear-gradient(135deg, var(--color-red), var(--color-green)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        .hero p { color: var(--text-secondary); max-width: 600px; margin: 0 auto; }
+        
+        .container { max-width: 1200px; margin: 0 auto; padding: 40px; }
+        
+        /* 统计卡片 */
+        .stats-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px; margin-bottom: 40px; }
+        .stat-card {
+            background: var(--bg-card); border: var(--border-glow); border-radius: 12px; padding: 20px; text-align: center;
+        }
+        .stat-value { font-family: var(--font-display); font-size: 1.8rem; font-weight: 700; margin-bottom: 4px; }
+        .stat-value.positive { color: var(--color-green); }
+        .stat-value.negative { color: var(--color-red); }
+        .stat-label { font-size: 0.85rem; color: var(--text-secondary); }
+        
+        /* 内容区 */
+        .section-title { font-family: var(--font-display); font-size: 1.5rem; margin-bottom: 24px; display: flex; align-items: center; gap: 12px; }
+        .section-title::before { content: ''; width: 4px; height: 24px; background: var(--color-red); border-radius: 2px; }
+        
+        .content-grid { display: grid; grid-template-columns: 2fr 1fr; gap: 24px; }
+        
+        /* 持仓表 */
+        .holdings-card {
+            background: var(--bg-card); border: var(--border-glow); border-radius: 12px; padding: 24px;
+        }
+        .holding-row {
+            display: grid; grid-template-columns: 1fr 1fr 1fr 1fr; gap: 12px; padding: 12px 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+        }
+        .holding-row.header { font-weight: 600; color: var(--text-secondary); font-size: 0.85rem; }
+        .holding-row:last-child { border-bottom: none; }
+        .holding-name { font-weight: 600; }
+        .holding-change { font-size: 0.9rem; }
+        .holding-change.positive { color: var(--color-green); }
+        .holding-change.negative { color: var(--color-red); }
+        
+        /* 快捷操作 */
+        .quick-actions { display: flex; flex-direction: column; gap: 12px; }
+        .action-btn {
+            background: var(--bg-card); border: var(--border-glow); border-radius: 10px; padding: 16px;
+            display: flex; align-items: center; gap: 12px; cursor: pointer; transition: 0.2s;
+        }
+        .action-btn:hover { border-color: var(--color-red); background: rgba(255, 61, 0, 0.05); }
+        .action-icon { font-size: 1.5rem; }
+        .action-info h4 { font-size: 1rem; margin-bottom: 2px; }
+        .action-info p { font-size: 0.8rem; color: var(--text-secondary); }
+        
+        @media (max-width: 768px) {
+            .navbar { padding: 15px 20px; }
+            .nav-menu { display: none; }
+            .hero { padding: 100px 20px 40px; }
+            .container { padding: 20px; }
+            .stats-grid { grid-template-columns: repeat(2, 1fr); }
+            .content-grid { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body>
+    <div class="bg-effect"></div>
+    
+    <nav class="navbar">
+        <div class="nav-brand">
+            <a href="index.html" class="back-link">←</a>
+            <div class="brand-logo">S</div>
+            <span class="brand-name">SING-</span>
+        </div>
+        <ul class="nav-menu">
+            <li><a href="index.html" class="nav-item">首页</a></li>
+            <li><a href="game-audio.html" class="nav-item">游戏音频</a></li>
+            <li><a href="lab.html" class="nav-item">创意实验室</a></li>
+            <li><a href="projects.html" class="nav-item">游戏项目</a></li>
+            <li><a href="library.html" class="nav-item">资源库</a></li>
+            <li><a href="finance.html" class="nav-item active">金融投资</a></li>
+        </ul>
+    </nav>
+    
+    <section class="hero">
+        <div class="hero-icon">💹</div>
+        <h1>金融<span>投资</span></h1>
+        <p>投资组合追踪、市场分析、风险管理、资产配置</p>
+    </section>
+    
+    <div class="container">
+        <!-- 统计 -->
+        <div class="stats-grid">
+            <div class="stat-card">
+                <div class="stat-value">¥128,450</div>
+                <div class="stat-label">总资产</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-value positive">+12.8%</div>
+                <div class="stat-label">年化收益</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-value">¥98,320</div>
+                <div class="stat-label">持仓市值</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-value positive">+5.2%</div>
+                <div class="stat-label">本月收益</div>
+            </div>
+        </div>
+        
+        <div class="content-grid">
+            <!-- 持仓 -->
+            <div class="holdings-card">
+                <h3 class="section-title" style="margin-bottom: 16px;">持仓明细</h3>
+                <div class="holding-row header">
+                    <span>标的</span>
+                    <span>持仓</span>
+                    <span>现价</span>
+                    <span>涨跌</span>
+                </div>
+                <div class="holding-row">
+                    <span class="holding-name">沪深300</span>
+                    <span>¥45,000</span>
+                    <span>3,850</span>
+                    <span class="holding-change positive">+1.2%</span>
+                </div>
+                <div class="holding-row">
+                    <span class="holding-name">纳指100</span>
+                    <span>¥32,000</span>
+                    <span>17,520</span>
+                    <span class="holding-change positive">+0.8%</span>
+                </div>
+                <div class="holding-row">
+                    <span class="holding-name">黄金ETF</span>
+                    <span>¥15,000</span>
+                    <span>4.52</span>
+                    <span class="holding-change negative">-0.3%</span>
+                </div>
+                <div class="holding-row">
+                    <span class="holding-name">BTC</span>
+                    <span>¥6,320</span>
+                    <span>65,800</span>
+                    <span class="holding-change positive">+3.5%</span>
+                </div>
+            </div>
+            
+            <!-- 快捷操作 -->
+            <div>
+                <h3 class="section-title">快捷操作</h3>
+                <div class="quick-actions">
+                    <div class="action-btn">
+                        <div class="action-icon">📊</div>
+                        <div class="action-info">
+                            <h4>每日报告</h4>
+                            <p>查看今日市场分析</p>
+                        </div>
+                    </div>
+                    <div class="action-btn">
+                        <div class="action-icon">📈</div>
+                        <div class="action-info">
+                            <h4>组合调仓</h4>
+                            <p>调整资产配置</p>
+                        </div>
+                    </div>
+                    <div class="action-btn">
+                        <div class="action-icon">🎯</div>
+                        <div class="action-info">
+                            <h4>定投计划</h4>
+                            <p>设置自动定投</p>
+                        </div>
+                    </div>
+                    <div class="action-btn">
+                        <div class="action-icon">⚠️</div>
+                        <div class="action-info">
+                            <h4>风险监控</h4>
+                            <p>查看风险指标</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
