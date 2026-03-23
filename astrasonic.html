@@ -160,6 +160,77 @@
         /* 内容区 */
         .content { padding: 24px; }
         
+        /* 英雄横幅 */
+        .hero-banner {
+            width: 100%;
+            height: 280px;
+            background: linear-gradient(135deg, #1a1a2e 0%, #0f0f15 50%, #1a1a2e 100%);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 40px 60px;
+            margin-bottom: 40px;
+            position: relative;
+            overflow: hidden;
+        }
+        .hero-banner::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: radial-gradient(ellipse at 30% 50%, rgba(255,85,0,0.15) 0%, transparent 50%),
+                        radial-gradient(ellipse at 70% 50%, rgba(153,69,255,0.1) 0%, transparent 50%);
+        }
+        .hero-content {
+            position: relative;
+            z-index: 1;
+        }
+        .hero-title {
+            font-size: 36px;
+            font-weight: 800;
+            letter-spacing: 2px;
+            margin-bottom: 16px;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+        .hero-brand {
+            background: linear-gradient(135deg, #ff5500, #ff8800);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        .hero-subtitle {
+            font-size: 14px;
+            color: var(--text-secondary);
+            letter-spacing: 4px;
+            font-weight: 400;
+        }
+        .hero-tagline {
+            font-size: 20px;
+            color: var(--text-primary);
+            margin-bottom: 12px;
+            font-weight: 500;
+        }
+        .hero-desc {
+            font-size: 13px;
+            color: var(--text-muted);
+        }
+        .hero-visual {
+            position: relative;
+            z-index: 1;
+        }
+        .hero-circle {
+            width: 180px;
+            height: 180px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, rgba(255,85,0,0.2), rgba(153,69,255,0.2));
+            border: 1px solid rgba(255,255,255,0.1);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 64px;
+        }
+        
         /* 区块 */
         .section { margin-bottom: 40px; }
         .section-header-row {
@@ -405,6 +476,21 @@
             
             <!-- 内容 -->
             <div class="content">
+                <!-- 英雄横幅 -->
+                <div class="hero-banner">
+                    <div class="hero-content">
+                        <h1 class="hero-title">
+                            <span class="hero-brand">ASTRASONIC</span>
+                            <span class="hero-subtitle">— Sound Across the Universe —</span>
+                        </h1>
+                        <p class="hero-tagline">连接声音的宇宙 · 每一刻都有好音乐</p>
+                        <p class="hero-desc">高品质游戏音乐 · 短视频配乐 · 商业授权 · 东方风格</p>
+                    </div>
+                    <div class="hero-visual">
+                        <div class="hero-circle"></div>
+                    </div>
+                </div>
+                
                 <!-- 最新发布 -->
                 <div class="section">
                     <div class="section-header-row">
