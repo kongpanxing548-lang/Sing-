@@ -469,6 +469,29 @@
                 grid-template-columns: repeat(2, 1fr);
             }
         }
+        
+        /* 搜索弹窗 */
+        .search-modal {
+            display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0, 0, 0, 0.8); z-index: 2000; align-items: flex-start; justify-content: center; padding-top: 150px;
+        }
+        .search-modal.active { display: flex; }
+        .search-box { width: 90%; max-width: 600px; }
+        .search-box input {
+            width: 100%; padding: 20px 30px; font-size: 1.2rem; border: 2px solid var(--color-primary);
+            border-radius: 50px; background: var(--bg-secondary); color: var(--text-primary);
+            outline: none; font-family: var(--font-body);
+        }
+        .search-box input:focus { border-color: var(--color-accent); box-shadow: 0 0 20px rgba(0, 229, 255, 0.3); }
+        .search-results { margin-top: 16px; max-height: 400px; overflow-y: auto; }
+        .search-result-item {
+            padding: 16px 20px; background: var(--bg-card); border: 1px solid rgba(255, 61, 0, 0.2);
+            border-radius: 12px; margin-bottom: 10px; cursor: pointer; transition: 0.2s; display: flex; align-items: center; gap: 12px;
+        }
+        .search-result-item:hover { border-color: var(--color-primary); background: rgba(255, 61, 0, 0.1); }
+        .search-result-icon { font-size: 1.5rem; }
+        .search-result-text h4 { font-size: 1rem; margin-bottom: 4px; }
+        .search-result-text p { font-size: 0.85rem; color: var(--text-secondary); }
     </style>
 </head>
 <body>
@@ -487,9 +510,18 @@
             <li><a href="#home" class="nav-item active">首页</a></li>
             <li><a href="#platforms" class="nav-item">板块</a></li>
             <li><a href="#quick" class="nav-item">快速入口</a></li>
-            <li><a href="#about" class="nav-item">关于</a></li>
+            <li><a href="about.html" class="nav-item">关于</a></li>
+            <li><a href="javascript:void(0)" class="nav-item" onclick="toggleSearch()">🔍 搜索</a></li>
         </ul>
     </nav>
+
+    <!-- 搜索弹窗 -->
+    <div id="search-modal" class="search-modal" onclick="closeSearch(event)">
+        <div class="search-box" onclick="event.stopPropagation()">
+            <input type="text" id="search-input" placeholder="搜索板块、项目、文档..." onkeyup="handleSearch(event)">
+            <div class="search-results" id="search-results"></div>
+        </div>
+    </div>
 
     <!-- Hero -->
     <section id="home" class="hero">
@@ -662,6 +694,68 @@
             card.addEventListener('mouseleave', () => {
                 card.style.transform = 'translateY(0)';
             });
+        });
+
+        // 搜索功能
+        const searchData = [
+            { title: '游戏音频', desc: '游戏音乐制作、音效设计', icon: '🎵', url: 'game-audio.html' },
+            { title: '创意实验室', desc: 'AI音乐、视频、图像工具', icon: '🧪', url: 'lab.html' },
+            { title: '游戏项目', desc: '音游开发、项目测试', icon: '🎮', url: 'projects.html' },
+            { title: '资源库', desc: '技术文档、项目资产', icon: '📚', url: 'library.html' },
+            { title: '金融投资', desc: '投资组合、市场分析', icon: '💹', url: 'finance.html' },
+            { title: '关于', desc: '关于SING-空间站', icon: 'ℹ️', url: 'about.html' },
+            { title: 'Epic Battle Music', desc: '史诗战斗音乐包', icon: '🎼', url: 'game-audio.html' },
+            { title: 'Suno AI', desc: 'AI音乐生成工具', icon: '🎵', url: 'lab.html' },
+            { title: 'Rhythm Star', desc: '节奏音游开发中', icon: '🎮', url: 'projects.html' },
+            { title: '技术文档', desc: '开发文档教程', icon: '📖', url: 'library.html' }
+        ];
+        
+        function toggleSearch() {
+            document.getElementById('search-modal').classList.add('active');
+            document.getElementById('search-input').focus();
+        }
+        
+        function closeSearch(e) {
+            if (e.target.classList.contains('search-modal')) {
+                document.getElementById('search-modal').classList.remove('active');
+            }
+        }
+        
+        function handleSearch(e) {
+            const query = e.target.value.toLowerCase();
+            const results = document.getElementById('search-results');
+            
+            if (query.length < 1) {
+                results.innerHTML = '';
+                return;
+            }
+            
+            const filtered = searchData.filter(item => 
+                item.title.toLowerCase().includes(query) || 
+                item.desc.toLowerCase().includes(query)
+            );
+            
+            if (filtered.length === 0) {
+                results.innerHTML = '<p style="color: var(--text-secondary); text-align: center; padding: 20px;">未找到相关内容</p>';
+                return;
+            }
+            
+            results.innerHTML = filtered.map(item => `
+                <a href="${item.url}" class="search-result-item">
+                    <span class="search-result-icon">${item.icon}</span>
+                    <div class="search-result-text">
+                        <h4>${item.title}</h4>
+                        <p>${item.desc}</p>
+                    </div>
+                </a>
+            `).join('');
+        }
+        
+        // ESC 关闭搜索
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') {
+                document.getElementById('search-modal').classList.remove('active');
+            }
         });
     </script>
 </body>

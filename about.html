@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>关于 - SING-</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;600;700;800;900&family=Rajdhani:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-primary: #0a0a0f;
+            --bg-secondary: #12121a;
+            --bg-card: rgba(255, 255, 255, 0.03);
+            --color-primary: #ff3d00;
+            --color-primary-light: #ff6f00;
+            --color-accent: #00e5ff;
+            --color-purple: #7c4dff;
+            --color-green: #00ff41;
+            --text-primary: #ffffff;
+            --text-secondary: #b0b0b0;
+            --font-display: 'Orbitron', sans-serif;
+            --font-body: 'Rajdhani', sans-serif;
+            --border-glow: 1px solid rgba(255, 61, 0, 0.3);
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: var(--font-body); background: var(--bg-primary); color: var(--text-primary); }
+        a { text-decoration: none; color: inherit; }
+        
+        .bg-effect {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -3;
+            background: radial-gradient(ellipse at 30% 20%, rgba(255, 61, 0, 0.1) 0%, transparent 50%),
+                        radial-gradient(ellipse at 70% 80%, rgba(124, 77, 255, 0.1) 0%, transparent 50%), var(--bg-primary);
+        }
+        
+        .navbar {
+            position: fixed; top: 0; left: 0; width: 100%; z-index: 1000;
+            padding: 20px 40px; display: flex; align-items: center; justify-content: space-between;
+            background: rgba(10, 10, 15, 0.9); backdrop-filter: blur(20px);
+            border-bottom: 1px solid rgba(255, 61, 0, 0.1);
+        }
+        .nav-brand { display: flex; align-items: center; gap: 12px; }
+        .brand-logo { width: 40px; height: 40px; background: linear-gradient(135deg, var(--color-primary), var(--color-primary-light));
+            border-radius: 10px; display: flex; align-items: center; justify-content: center;
+            font-family: var(--font-display); font-weight: 900; font-size: 1.2rem; color: white; }
+        .brand-name { font-family: var(--font-display); font-size: 1.3rem; font-weight: 700; }
+        .nav-menu { display: flex; gap: 30px; }
+        .nav-item { color: var(--text-secondary); font-weight: 500; transition: 0.2s; }
+        .nav-item:hover, .nav-item.active { color: var(--color-primary); }
+        
+        .hero { padding: 140px 40px 60px; text-align: center; }
+        .hero h1 { font-family: var(--font-display); font-size: 3rem; font-weight: 700; margin-bottom: 16px; }
+        .hero h1 span { background: linear-gradient(135deg, var(--color-primary), var(--color-purple)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        .hero p { color: var(--text-secondary); font-size: 1.2rem; max-width: 700px; margin: 0 auto; line-height: 1.8; }
+        
+        .container { max-width: 1000px; margin: 0 auto; padding: 40px; }
+        
+        .section-title { font-family: var(--font-display); font-size: 1.5rem; margin-bottom: 24px; display: flex; align-items: center; gap: 12px; }
+        .section-title::before { content: ''; width: 4px; height: 24px; background: var(--color-primary); border-radius: 2px; }
+        
+        /* 关于内容 */
+        .about-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 40px; margin-bottom: 60px; }
+        .about-card {
+            background: var(--bg-card); border: var(--border-glow); border-radius: 16px; padding: 30px;
+            transition: 0.3s;
+        }
+        .about-card:hover { transform: translateY(-5px); border-color: var(--color-primary); }
+        .about-card h3 { font-family: var(--font-display); font-size: 1.3rem; margin-bottom: 16px; color: var(--color-primary); }
+        .about-card p { color: var(--text-secondary); line-height: 1.7; margin-bottom: 16px; }
+        .about-card ul { list-style: none; }
+        .about-card li { padding: 8px 0; color: var(--text-secondary); border-bottom: 1px solid rgba(255,255,255,0.05); }
+        .about-card li:last-child { border-bottom: none; }
+        .about-card li::before { content: '▹'; color: var(--color-accent); margin-right: 10px; }
+        
+        /* 统计 */
+        .stats-row { display: flex; justify-content: center; gap: 60px; margin: 50px 0; flex-wrap: wrap; }
+        .stat-item { text-align: center; }
+        .stat-value { font-family: var(--font-display); font-size: 2.5rem; font-weight: 700; color: var(--color-primary); }
+        .stat-label { color: var(--text-secondary); margin-top: 8px; }
+        
+        /* 联系方式 */
+        .contact-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; }
+        .contact-card {
+            background: var(--bg-card); border: var(--border-glow); border-radius: 12px; padding: 24px;
+            text-align: center; transition: 0.3s; cursor: pointer;
+        }
+        .contact-card:hover { border-color: var(--color-accent); transform: translateY(-3px); }
+        .contact-icon { font-size: 2rem; margin-bottom: 12px; }
+        .contact-card h4 { margin-bottom: 8px; }
+        .contact-card p { color: var(--text-secondary); font-size: 0.9rem; }
+        
+        /* 技术栈 */
+        .tech-grid { display: flex; flex-wrap: wrap; gap: 12px; justify-content: center; }
+        .tech-tag {
+            padding: 10px 20px; background: var(--bg-card); border: var(--border-glow);
+            border-radius: 8px; font-size: 0.9rem; color: var(--text-secondary); transition: 0.2s;
+        }
+        .tech-tag:hover { border-color: var(--color-purple); color: var(--color-purple); }
+        
+        @media (max-width: 768px) {
+            .navbar { padding: 15px 20px; }
+            .nav-menu { display: none; }
+            .hero { padding: 120px 20px 40px; }
+            .hero h1 { font-size: 2rem; }
+            .about-grid { grid-template-columns: 1fr; }
+            .stats-row { gap: 30px; }
+            .contact-grid { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body>
+    <div class="bg-effect"></div>
+    
+    <nav class="navbar">
+        <div class="nav-brand">
+            <a href="index.html" style="display:flex;align-items:center;gap:12px;">
+                <div class="brand-logo">S</div>
+                <span class="brand-name">SING-</span>
+            </a>
+        </div>
+        <ul class="nav-menu">
+            <li><a href="index.html" class="nav-item">首页</a></li>
+            <li><a href="game-audio.html" class="nav-item">游戏音频</a></li>
+            <li><a href="lab.html" class="nav-item">创意实验室</a></li>
+            <li><a href="projects.html" class="nav-item">游戏项目</a></li>
+            <li><a href="library.html" class="nav-item">资源库</a></li>
+            <li><a href="finance.html" class="nav-item">金融投资</a></li>
+            <li><a href="about.html" class="nav-item active">关于</a></li>
+        </ul>
+    </nav>
+    
+    <section class="hero">
+        <h1>关于 <span>SING-</span></h1>
+        <p>
+            SING- 是一个超级个人空间站，融合游戏音频、创意实验室、游戏项目、资源管理和金融投资。
+            用技术驱动创意，用系统管理效率，打造一站式个人创作与资产管理平台。
+        </p>
+    </section>
+    
+    <div class="container">
+        <!-- 统计 -->
+        <div class="stats-row">
+            <div class="stat-item">
+                <div class="stat-value">5+</div>
+                <div class="stat-label">核心板块</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-value">20+</div>
+                <div class="stat-label">在研项目</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-value">50+</div>
+                <div class="stat-label">工具资源</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-value">100+</div>
+                <div class="stat-label">文档教程</div>
+            </div>
+        </div>
+        
+        <!-- 关于内容 -->
+        <div class="about-grid">
+            <div class="about-card">
+                <h3>🎯 核心理念</h3>
+                <p>SING- 致力于打造一个整合个人创作、项目管理、知识积累和资产管理的超级空间站。</p>
+                <ul>
+                    <li>一站式创作工作流</li>
+                    <li>系统化项目管理</li>
+                    <li>知识沉淀与复用</li>
+                    <li>资产可视化追踪</li>
+                </ul>
+            </div>
+            <div class="about-card">
+                <h3>🚀 发展历程</h3>
+                <p>从单一的音频制作空间，逐步发展成为涵盖游戏开发、AI创意工具、项目管理的综合性平台。</p>
+                <ul>
+                    <li>2024: 音频工作室启动</li>
+                    <li>2025: AI工具集成</li>
+                    <li>2026: 空间站正式上线</li>
+                    <li>持续迭代优化中</li>
+                </ul>
+            </div>
+        </div>
+        
+        <!-- 技术栈 -->
+        <h2 class="section-title">技术栈</h2>
+        <div class="tech-grid">
+            <span class="tech-tag">Unity</span>
+            <span class="tech-tag">FL Studio</span>
+            <span class="tech-tag">Ableton Live</span>
+            <span class="tech-tag">FMOD</span>
+            <span class="tech-tag">Wwise</span>
+            <span class="tech-tag">Vocaloid</span>
+            <span class="tech-tag">Suno AI</span>
+            <span class="tech-tag">Midjourney</span>
+            <span class="tech-tag">Runway</span>
+            <span class="tech-tag">Python</span>
+            <span class="tech-tag">JavaScript</span>
+            <span class="tech-tag">OpenClaw</span>
+        </div>
+        
+        <!-- 联系方式 -->
+        <h2 class="section-title" style="margin-top: 60px;">联系我们</h2>
+        <div class="contact-grid">
+            <div class="contact-card">
+                <div class="contact-icon">📧</div>
+                <h4>邮箱</h4>
+                <p>contact@sing-plus.dev</p>
+            </div>
+            <div class="contact-card">
+                <div class="contact-icon">💬</div>
+                <h4>微信</h4>
+                <p>添加请备注"SING"</p>
+            </div>
+            <div class="contact-card">
+                <div class="contact-icon">🐙</div>
+                <h4>GitHub</h4>
+                <p>@kongpanxing548-lang</p>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
