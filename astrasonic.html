@@ -37,9 +37,11 @@
         /* 布局 */
         .app { display: flex; min-height: 100vh; }
         
-        /* 侧边栏 - 380px 固定 */
+        /* 侧边栏 - 弹性宽度 */
         .sidebar {
-            width: 380px; min-width: 380px;
+            min-width: 250px;
+            max-width: 400px;
+            flex: 0 1 18%;
             background: var(--bg-secondary);
             border-right: 1px solid var(--border-subtle);
             height: 100vh; position: fixed; top: 0; left: 0;
@@ -111,7 +113,14 @@
         .accordion-item.active { color: var(--text-primary); }
         
         /* 标签云 */
-        .tag-cloud { padding: 0 24px 16px; display: none; flex-wrap: wrap; gap: 6px; max-height: 140px; overflow: hidden; }
+        .tag-cloud { 
+            padding: 0 24px 16px; 
+            display: flex; 
+            flex-wrap: wrap; 
+            gap: 8px; 
+            max-height: none;
+            overflow: visible;
+        }
         .sidebar-section.expanded .tag-cloud { display: flex; }
         .tag {
             padding: 4px 10px; font-size: 11px;
@@ -123,8 +132,8 @@
         /* 主内容区 */
         .main { 
             flex: 1; 
-            margin-left: 380px; 
-            max-width: calc(100% - 380px);
+            margin-left: 18%;
+            max-width: calc(100% - 18%);
         }
         
         .main-inner {
@@ -386,9 +395,11 @@
         /* 响应式 */
         @media (max-width: 1400px) {
             .main-inner { max-width: 100%; }
+            .sidebar { flex: 0 1 22%; }
+            .main { margin-left: 22%; max-width: calc(100% - 22%); }
         }
         @media (max-width: 900px) {
-            .sidebar { width: 280px; min-width: 280px; }
+            .sidebar { flex: 0 0 280px; min-width: 280px; max-width: 280px; }
             .main { margin-left: 280px; max-width: calc(100% - 280px); }
         }
     </style>
