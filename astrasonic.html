@@ -37,11 +37,11 @@
         /* 布局 */
         .app { display: flex; min-height: 100vh; }
         
-        /* 侧边栏 - 弹性宽度 */
+        /* 侧边栏 - 固定260px */
         .sidebar {
-            min-width: 250px;
-            max-width: 400px;
-            flex: 0 1 18%;
+            width: 260px;
+            min-width: 260px;
+            max-width: 260px;
             background: var(--bg-secondary);
             border-right: 1px solid var(--border-subtle);
             height: 100vh; position: fixed; top: 0; left: 0;
@@ -132,7 +132,7 @@
         /* 主内容区 */
         .main { 
             flex: 1; 
-            margin-left: 18%;
+            margin-left: 260px; 
         }
         
         .main-inner {
@@ -277,7 +277,7 @@
         .section-more { font-size: 12px; color: var(--text-muted); cursor: pointer; text-align: center; }
         .section-more:hover { color: var(--text-secondary); }
         
-        /* 卡片网格 - 响应式5列 */
+        /* 卡片网格 - 响应式5列+ */
         .card-grid {
             display: grid;
             grid-template-columns: repeat(5, 1fr);
@@ -286,8 +286,14 @@
             box-sizing: border-box;
         }
         
-        /* 确保卡片封面自适应 */
-        .card { flex: 1; }
+        /* 超宽屏6列 */
+        @media (min-width: 2000px) {
+            .card-grid { grid-template-columns: repeat(6, 1fr); }
+        }
+        /* 超宽屏7列 */
+        @media (min-width: 2500px) {
+            .card-grid { grid-template-columns: repeat(7, 1fr); }
+        }
         
         /* 资产卡片 */
         .card {
@@ -398,13 +404,9 @@
         
         /* 响应式 */
         /* 响应式 */
-        @media (max-width: 1400px) {
-            .sidebar { flex: 0 1 22%; }
-            .main { margin-left: 22%; }
-        }
         @media (max-width: 900px) {
-            .sidebar { flex: 0 0 280px; min-width: 280px; max-width: 280px; }
-            .main { margin-left: 280px; }
+            .sidebar { width: 260px; min-width: 260px; max-width: 260px; }
+            .main { margin-left: 260px; }
         }
     </style>
 </head>
