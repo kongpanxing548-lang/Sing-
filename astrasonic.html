@@ -28,8 +28,8 @@
             font-family: 'Inter', 'Noto Sans SC', -apple-system, sans-serif;
             background: var(--bg-primary);
             color: var(--text-primary);
-            font-size: 13px;
-            line-height: 1.4;
+            font-size: 14px;
+            line-height: 1.5;
             -webkit-font-smoothing: antialiased;
         }
         a { text-decoration: none; color: inherit; }
@@ -51,8 +51,8 @@
         
         /* Logo */
         .logo {
-            padding: 20px 20px 24px;
-            font-size: 15px; font-weight: 800;
+            padding: 20px 24px 24px;
+            font-size: 18px; font-weight: 800;
             letter-spacing: 4px; color: var(--text-primary);
             border-bottom: 1px solid var(--border-subtle);
             display: flex; align-items: center; gap: 10px;
@@ -65,10 +65,10 @@
         
         /* 导航项 */
         .nav-item {
-            display: block; padding: 10px 20px;
-            color: var(--text-secondary); font-weight: 500;
+            display: block; padding: 12px 24px;
+            color: var(--text-secondary); font-weight: 500; font-size: 14px;
             transition: 0.15s; cursor: pointer;
-            border-left: 2px solid transparent;
+            border-left: 3px solid transparent;
         }
         .nav-item:hover { color: var(--text-primary); background: var(--bg-hover); }
         .nav-item.active {
@@ -80,8 +80,8 @@
         /* 侧边栏区块 */
         .sidebar-section { border-bottom: 1px solid var(--border-subtle); }
         .section-header {
-            padding: 14px 20px 10px;
-            font-size: 10px; font-weight: 600;
+            padding: 16px 24px 12px;
+            font-size: 11px; font-weight: 600;
             color: var(--text-muted); text-transform: uppercase;
             letter-spacing: 1.5px; cursor: pointer;
             display: flex; justify-content: space-between; align-items: center;
@@ -91,9 +91,9 @@
         .section-header.collapsed .arrow { transform: rotate(-90deg); }
         
         /* 快捷搜索标签 */
-        .quick-tags { padding: 0 20px 14px; display: flex; flex-wrap: wrap; gap: 6px; }
+        .quick-tags { padding: 0 24px 16px; display: flex; flex-wrap: wrap; gap: 8px; }
         .quick-tag {
-            padding: 4px 10px; font-size: 11px;
+            padding: 6px 12px; font-size: 12px;
             background: var(--bg-tertiary); border-radius: 4px;
             color: var(--text-secondary); cursor: pointer;
             transition: 0.15s;
@@ -101,20 +101,20 @@
         .quick-tag:hover { background: var(--bg-hover); color: var(--text-primary); }
         
         /* 手风琴折叠 */
-        .accordion { padding: 0 20px 14px; display: none; }
+        .accordion { padding: 0 24px 16px; display: none; }
         .sidebar-section.expanded .accordion { display: block; }
         .accordion-item {
-            padding: 6px 0; color: var(--text-secondary); cursor: pointer;
-            font-size: 12px; transition: 0.15s;
+            padding: 8px 0; color: var(--text-secondary); cursor: pointer;
+            font-size: 13px; transition: 0.15s;
         }
         .accordion-item:hover { color: var(--text-primary); }
         .accordion-item.active { color: var(--text-primary); }
         
         /* 标签云 */
-        .tag-cloud { padding: 0 20px 14px; display: none; flex-wrap: wrap; gap: 5px; max-height: 120px; overflow: hidden; }
+        .tag-cloud { padding: 0 24px 16px; display: none; flex-wrap: wrap; gap: 6px; max-height: 140px; overflow: hidden; }
         .sidebar-section.expanded .tag-cloud { display: flex; }
         .tag {
-            padding: 3px 8px; font-size: 10px;
+            padding: 4px 10px; font-size: 11px;
             background: var(--bg-tertiary); border-radius: 3px;
             color: var(--text-muted); cursor: pointer; transition: 0.15s;
         }
@@ -140,10 +140,10 @@
         .search-box:focus-within { border-color: var(--border-accent); }
         .search-box input {
             flex: 1; background: none; border: none; outline: none;
-            color: var(--text-primary); font-size: 13px;
+            color: var(--text-primary); font-size: 14px;
         }
         .search-box input::placeholder { color: var(--text-muted); }
-        .search-box .icon { color: var(--text-muted); font-size: 14px; }
+        .search-box .icon { color: var(--text-muted); font-size: 15px; }
         
         /* 认证按钮 */
         .auth { display: flex; gap: 10px; }
@@ -161,13 +161,13 @@
         .content { padding: 24px; }
         
         /* 区块 */
-        .section { margin-bottom: 36px; }
+        .section { margin-bottom: 40px; }
         .section-header-row {
             display: flex; justify-content: space-between; align-items: center;
-            margin-bottom: 16px;
+            margin-bottom: 20px;
         }
-        .section-title { font-size: 14px; font-weight: 600; letter-spacing: 0.5px; }
-        .section-more { font-size: 11px; color: var(--text-muted); cursor: pointer; }
+        .section-title { font-size: 16px; font-weight: 600; letter-spacing: 0.5px; }
+        .section-more { font-size: 12px; color: var(--text-muted); cursor: pointer; }
         .section-more:hover { color: var(--text-secondary); }
         
         /* 卡片网格 - 5列 */
@@ -205,13 +205,13 @@
         }
         .card:hover .card-cover .play-btn { transform: scale(1); }
         
-        .card-info { padding: 10px 2px 0; }
+        .card-info { padding: 12px 4px 0; }
         .card-title {
-            font-size: 12px; font-weight: 600; color: var(--text-primary);
+            font-size: 13px; font-weight: 600; color: var(--text-primary);
             white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
         }
         .card-id {
-            font-size: 10px; color: var(--text-muted); margin-top: 2px;
+            font-size: 11px; color: var(--text-muted); margin-top: 4px;
             font-family: monospace;
         }
         
