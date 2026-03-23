@@ -168,11 +168,13 @@
             border-radius: 12px;
             display: flex;
             align-items: center;
-            justify-content: space-between;
+            justify-content: center;
+            flex-direction: column;
             padding: 40px 60px;
             margin-bottom: 40px;
             position: relative;
             overflow: hidden;
+            text-align: center;
         }
         .hero-banner::before {
             content: '';
@@ -184,15 +186,17 @@
         .hero-content {
             position: relative;
             z-index: 1;
+            text-align: center;
         }
         .hero-title {
-            font-size: 36px;
+            font-size: 42px;
             font-weight: 800;
-            letter-spacing: 2px;
+            letter-spacing: 3px;
             margin-bottom: 16px;
             display: flex;
             flex-direction: column;
             gap: 8px;
+            align-items: center;
         }
         .hero-brand {
             background: linear-gradient(135deg, #ff5500, #ff8800);
@@ -234,11 +238,15 @@
         /* 区块 */
         .section { margin-bottom: 40px; }
         .section-header-row {
-            display: flex; justify-content: space-between; align-items: center;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
             margin-bottom: 20px;
+            gap: 8px;
         }
-        .section-title { font-size: 16px; font-weight: 600; letter-spacing: 0.5px; }
-        .section-more { font-size: 12px; color: var(--text-muted); cursor: pointer; }
+        .section-title { font-size: 16px; font-weight: 600; letter-spacing: 0.5px; text-align: center; }
+        .section-more { font-size: 12px; color: var(--text-muted); cursor: pointer; text-align: center; }
         .section-more:hover { color: var(--text-secondary); }
         
         /* 卡片网格 - 5列 */
@@ -495,7 +503,6 @@
                 <div class="section">
                     <div class="section-header-row">
                         <h2 class="section-title">最新发布</h2>
-                        <span class="section-more">查看全部 →</span>
                     </div>
                     <div class="card-row">
                         <div class="card">
@@ -560,7 +567,6 @@
                 <div class="section">
                     <div class="section-header-row">
                         <h2 class="section-title">场景分类</h2>
-                        <span class="section-more">查看全部 →</span>
                     </div>
                     <div class="card-grid">
                         <div class="card">
@@ -650,7 +656,6 @@
                 <div class="section">
                     <div class="section-header-row">
                         <h2 class="section-title">必备音效库</h2>
-                        <span class="section-more">查看全部 →</span>
                     </div>
                     <div class="card-grid">
                         <div class="card">
