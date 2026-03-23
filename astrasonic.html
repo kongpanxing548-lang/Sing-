@@ -284,7 +284,7 @@
         /* 卡片网格 - 全宽流式响应 */
         .card-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
             gap: 20px;
             width: 100%;
             box-sizing: border-box;
@@ -295,6 +295,7 @@
             cursor: pointer; transition: 0.2s;
             display: flex;
             flex-direction: column;
+            width: 100%;
         }
         .card-cover {
             width: 100%;
