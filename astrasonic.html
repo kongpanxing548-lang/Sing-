@@ -2,6 +2,9 @@
 <html lang="zh-CN">
 <head>
     <meta charset="UTF-8">
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+    <meta http-equiv="Pragma" content="no-cache">
+    <meta http-equiv="Expires" content="0">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>ASTRASONIC - 高品质场景化版权音乐资产库</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -35,16 +38,22 @@
         a { text-decoration: none; color: inherit; }
         
         /* 布局 */
-        .app { display: flex; min-height: 100vh; }
+        .app { display: grid; grid-template-columns: var(--sidebar-width) 1fr; min-height: 100vh; }
         
-        /* 侧边栏 - 固定260px */
+        /* 侧边栏 - 响应式宽度 */
+        :root {
+            --sidebar-width: 16%;
+            --sidebar-min-width: 200px;
+            --sidebar-max-width: 400px;
+        }
+        
         .sidebar {
-            width: 260px;
-            min-width: 260px;
-            max-width: 260px;
+            width: var(--sidebar-width);
+            min-width: var(--sidebar-min-width);
+            max-width: var(--sidebar-max-width);
             background: var(--bg-secondary);
             border-right: 1px solid var(--border-subtle);
-            height: 100vh; position: fixed; top: 0; left: 0;
+            height: 100vh; position: sticky; top: 0; left: 0;
             overflow-y: auto; overflow-x: hidden;
         }
         .sidebar::-webkit-scrollbar { width: 4px; }
@@ -131,8 +140,7 @@
         
         /* 主内容区 */
         .main { 
-            flex: 1; 
-            margin-left: 260px; 
+            min-width: 0; /* 防止 flex/grid 子元素溢出 */
         }
         
         .main-inner {
@@ -281,10 +289,10 @@
         .section-more { font-size: 12px; color: var(--text-muted); cursor: pointer; text-align: center; }
         .section-more:hover { color: var(--text-secondary); }
         
-        /* 卡片网格 - 固定列数+扩展 */
+        /* 卡片网格 - 响应式布局 */
         .card-grid {
             display: grid;
-            grid-template-columns: repeat(6, 1fr);
+            grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
             gap: 16px;
             width: 100%;
             box-sizing: border-box;
@@ -399,12 +407,25 @@
         .player-extra { display: flex; gap: 12px; }
         
         /* 响应式 */
-        /* 响应式 */
         @media (max-width: 900px) {
-            .sidebar { width: 240px; min-width: 240px; max-width: 240px; }
-            .main { margin-left: 240px; }
+            :root {
+                --sidebar-width: 200px;
+                --sidebar-min-width: 200px;
+                --sidebar-max-width: 200px;
+            }
+            .app { grid-template-columns: var(--sidebar-width) 1fr; }
+            .sidebar { position: sticky; }
             .main-inner { padding: 16px 20px; }
             .hero-banner { height: 180px; padding: 30px 40px; }
+            .player { left: var(--sidebar-width); }
+        }
+        
+        /* 移动端 - 隐藏侧边栏 */
+        @media (max-width: 768px) {
+            .app { display: block; }
+            .sidebar { display: none; }
+            .player { left: 0; }
+            .card-grid { grid-template-columns: repeat(2, 1fr); }
         }
     </style>
 </head>
@@ -821,6 +842,27 @@
                 animateWave(bars, (index + 1) % bars.length);
             }, 50);
         }
+        
+        // 动态设置播放器位置以匹配侧边栏宽度
+        function updateLayout() {
+            const sidebar = document.querySelector('.sidebar');
+            const player = document.querySelector('.player');
+            if (sidebar && player) {
+                const sidebarWidth = sidebar.offsetWidth;
+                player.style.left = sidebarWidth + 'px';
+                console.log('Sidebar width:', sidebarWidth); // 调试用
+            }
+        }
+        
+        // DOM 准备好就执行，不等待资源加载
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', updateLayout);
+        } else {
+            updateLayout();
+        }
+        
+        // 窗口大小变化时更新
+        window.addEventListener('resize', updateLayout);
     </script>
 </body>
 </html>
