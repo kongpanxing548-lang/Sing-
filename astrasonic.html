@@ -450,6 +450,7 @@
             z-index: 9999;
             cursor: pointer;
             animation: splashFadeIn 1s ease-out;
+            overflow: hidden;
         }
         @keyframes splashFadeIn {
             from { opacity: 0; }
@@ -970,6 +971,7 @@
         
         // 启动画面 - 点击关闭
         function closeSplash() {
+            document.body.style.overflow = ''; // 恢复滚动
             const splash = document.querySelector('.splash-screen');
             if (splash) {
                 splash.classList.add('fade-out');
@@ -978,6 +980,8 @@
                 }, 600);
             }
         }
+        // 页面加载时隐藏滚动条
+        document.body.style.overflow = 'hidden';
     </script>
 </body>
 </html>
