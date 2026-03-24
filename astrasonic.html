@@ -129,6 +129,23 @@
         }
         .tag:hover { background: var(--bg-hover); color: var(--text-secondary); }
         
+        /* 情绪标签 - Audiomachine 风格 */
+        .mood-tags { padding: 0 24px 16px; display: flex; flex-wrap: wrap; gap: 8px; align-items: baseline; }
+        .mood-tag { font-size: 11px; color: var(--text-muted); cursor: pointer; transition: 0.15s; letter-spacing: 0.5px; }
+        .mood-tag:hover { color: var(--text-primary); text-shadow: 0 0 8px rgba(255,255,255,0.3); }
+        .mood-tag-large { font-size: 15px; font-weight: 600; color: var(--text-primary); }
+        
+        /* 乐器数量 */
+        .accordion-item .count { float: right; font-size: 10px; color: var(--text-muted); }
+        
+        /* 筛选器 */
+        .filters { padding: 8px 24px 16px !important; }
+        .filter-group { margin-bottom: 12px; }
+        .filter-label { display: block; font-size: 10px; color: var(--text-muted); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 6px; }
+        .filter-options { display: flex; gap: 6px; flex-wrap: wrap; }
+        .filter-option { font-size: 10px; padding: 3px 8px; background: var(--bg-tertiary); border-radius: 3px; color: var(--text-muted); cursor: pointer; transition: 0.15s; }
+        .filter-option:hover { background: var(--bg-hover); color: var(--text-secondary); }
+        
         /* 主内容区 */
         .main { 
             flex: 1; 
@@ -481,6 +498,67 @@
                     <div class="accordion-item">Drones 持续音</div>
                     <div class="accordion-item">Stings 刺耳音</div>
                     <div class="accordion-item">Whooshes 呼啸</div>
+                </div>
+            </div>
+            
+            <!-- 情绪分类 - Audiomachine 风格 -->
+            <div class="sidebar-section">
+                <div class="section-header" onclick="toggleSection(this)">情绪 Mood <span class="arrow">▼</span></div>
+                <div class="mood-tags">
+                    <span class="mood-tag">ENCHANTED</span>
+                    <span class="mood-tag mood-tag-large">PULSING TENSION</span>
+                    <span class="mood-tag">MODERN ROMANCE</span>
+                    <span class="mood-tag mood-tag-large">APOCALYPTIC</span>
+                    <span class="mood-tag">TRAILERS</span>
+                    <span class="mood-tag">PERIOD DRAMA</span>
+                    <span class="mood-tag mood-tag-large">VOICES</span>
+                    <span class="mood-tag">BLOODY MURDER</span>
+                    <span class="mood-tag mood-tag-large">DRIVING ACTION</span>
+                    <span class="mood-tag">AWARDS SEASON</span>
+                    <span class="mood-tag">BONE CRUNCHING</span>
+                    <span class="mood-tag">GUNS</span>
+                    <span class="mood-tag">FAMILY</span>
+                </div>
+            </div>
+            
+            <!-- 乐器分类 -->
+            <div class="sidebar-section">
+                <div class="section-header" onclick="toggleSection(this)">乐器 Instruments <span class="arrow">▼</span></div>
+                <div class="accordion">
+                    <div class="accordion-item">钢琴与大提琴 <span class="count">1,204</span></div>
+                    <div class="accordion-item">史诗打击乐 <span class="count">856</span></div>
+                    <div class="accordion-item">合成器与电子 <span class="count">2,341</span></div>
+                    <div class="accordion-item">管弦乐 <span class="count">3,120</span></div>
+                    <div class="accordion-item">东方乐器 <span class="count">528</span></div>
+                </div>
+            </div>
+            
+            <!-- 筛选器 -->
+            <div class="sidebar-section">
+                <div class="section-header" onclick="toggleSection(this)">筛选 Filters <span class="arrow">▼</span></div>
+                <div class="accordion filters">
+                    <div class="filter-group">
+                        <span class="filter-label">速度 Tempo</span>
+                        <div class="filter-options">
+                            <span class="filter-option">慢速 Slow</span>
+                            <span class="filter-option">中速 Medium</span>
+                            <span class="filter-option">快速 Fast</span>
+                        </div>
+                    </div>
+                    <div class="filter-group">
+                        <span class="filter-label">调性 Key</span>
+                        <div class="filter-options">
+                            <span class="filter-option">小调 Minor</span>
+                            <span class="filter-option">大调 Major</span>
+                        </div>
+                    </div>
+                    <div class="filter-group">
+                        <span class="filter-label">人声 Vocals</span>
+                        <div class="filter-options">
+                            <span class="filter-option">有 With</span>
+                            <span class="filter-option">无 Without</span>
+                        </div>
+                    </div>
                 </div>
             </div>
             
