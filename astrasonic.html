@@ -37,11 +37,11 @@
         /* 布局 */
         .app { display: flex; min-height: 100vh; }
         
-        /* 侧边栏 - 固定320px */
+        /* 侧边栏 - 响应式宽度，参考 Audiomachine */
         .sidebar {
-            width: 320px;
+            width: 33%;
             min-width: 320px;
-            max-width: 320px;
+            max-width: 50%;
             background: var(--bg-secondary);
             border-right: 1px solid var(--border-subtle);
             height: 100vh; position: fixed; top: 0; left: 0;
@@ -132,7 +132,7 @@
         /* 主内容区 */
         .main { 
             flex: 1; 
-            margin-left: 320px; 
+            margin-left: 33%; 
         }
         
         .main-inner {
@@ -358,7 +358,7 @@
         
         /* 底部播放器 */
         .player {
-            position: fixed; bottom: 0; left: 320px; right: 0;
+            position: fixed; bottom: 0; left: 33%; right: 0;
             height: 64px; background: var(--bg-secondary);
             border-top: 1px solid var(--border-subtle);
             display: flex; align-items: center; padding: 0 20px; gap: 20px;
@@ -399,12 +399,19 @@
         .player-extra { display: flex; gap: 12px; }
         
         /* 响应式 */
-        /* 响应式 */
         @media (max-width: 900px) {
             .sidebar { width: 240px; min-width: 240px; max-width: 240px; }
             .main { margin-left: 240px; }
+            .player { left: 240px; }
             .main-inner { padding: 16px 20px; }
             .hero-banner { height: 180px; padding: 30px 40px; }
+        }
+        
+        /* 移动端 */
+        @media (max-width: 768px) {
+            .sidebar { width: 100%; min-width: 100%; max-width: 100%; }
+            .main { margin-left: 0; }
+            .player { left: 0; }
         }
     </style>
 </head>
