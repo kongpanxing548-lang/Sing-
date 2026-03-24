@@ -283,6 +283,16 @@
             justify-content: center;
             font-size: 64px;
         }
+        .hero-logo {
+            width: 280px;
+            height: 280px;
+            object-fit: contain;
+            animation: float 3s ease-in-out infinite;
+        }
+        @keyframes float {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
         
         /* 区块 */
         .section { margin-bottom: 40px; }
@@ -623,7 +633,7 @@
                         <p class="hero-desc">高品质游戏音乐 · 短视频配乐 · 商业授权 · 东方风格</p>
                     </div>
                     <div class="hero-visual">
-                        <div class="hero-circle"></div>
+                        <img src="logo-circle.png" alt="ASTRASONIC Logo" class="hero-logo">
                     </div>
                 </div>
                 
