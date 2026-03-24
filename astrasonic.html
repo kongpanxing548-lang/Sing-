@@ -37,11 +37,11 @@
         /* 布局 */
         .app { display: flex; min-height: 100vh; }
         
-        /* 侧边栏 - 固定260px */
+        /* 侧边栏 - 固定320px */
         .sidebar {
-            width: 260px;
-            min-width: 260px;
-            max-width: 260px;
+            width: 320px;
+            min-width: 320px;
+            max-width: 320px;
             background: var(--bg-secondary);
             border-right: 1px solid var(--border-subtle);
             height: 100vh; position: fixed; top: 0; left: 0;
@@ -132,7 +132,7 @@
         /* 主内容区 */
         .main { 
             flex: 1; 
-            margin-left: 260px; 
+            margin-left: 320px; 
         }
         
         .main-inner {
@@ -358,7 +358,7 @@
         
         /* 底部播放器 */
         .player {
-            position: fixed; bottom: 0; left: 0; right: 0;
+            position: fixed; bottom: 0; left: 320px; right: 0;
             height: 64px; background: var(--bg-secondary);
             border-top: 1px solid var(--border-subtle);
             display: flex; align-items: center; padding: 0 20px; gap: 20px;
