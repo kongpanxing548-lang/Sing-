@@ -94,21 +94,21 @@
         
         /* 快捷搜索标签 */
 
-        /* 筛选标签样式 - 原型风格 */
-        .filter-tag {
-            padding: 6px 12px;
-            background: var(--bg-tertiary);
-            border-radius: 16px;
-            font-size: 12px;
-            color: var(--text-secondary);
-            cursor: pointer;
-            transition: all 0.2s;
-            border: 1px solid transparent;
+        /* 筛选标签样式 */
+        .filter-tag { 
+            cursor: pointer; 
+            transition: all 0.2s; 
+            background: var(--bg-tertiary) !important; 
+            border: 1px solid transparent; 
+            border-radius: 16px; 
+            padding: 4px 10px; 
+            color: var(--text-secondary) !important;
         }
-        
-        .filter-tag:hover { background: var(--bg-primary); color: var(--text-primary); }
-        
-        .filter-tag.active { 
+        .filter-tag:hover { 
+            background: var(--bg-hover) !important; 
+            color: var(--text-primary) !important; 
+        }
+        .filter-tag.active, 
          
             background: var(--color-primary) !important; 
             color: #fff !important; 
@@ -536,6 +536,26 @@
 
 
         
+        /* 全局高亮样式 - 最高优先级 */
+        .filter-tag.active,
+        .filter-tag.active:hover,
+        .accordion-item.filter-tag.active,
+        .accordion-item.filter-tag.active:hover,
+        .quick-tag.filter-tag.active,
+        .quick-tag.filter-tag.active:hover,
+        .mood-tag.filter-tag.active,
+        .mood-tag
+            background: var(--color-primary) !important;
+            color: #ffffff !important;
+            border-color: var(--color-primary) !important;
+        }
+
+    </style>
+
+        <style>
+        .filter-tag { background-color: var(--bg-tertiary) !important; padding: 4px 10px; border-radius: 16px; }
+        .filter-tag.active { background-color: #ff5500 !important; color: #ffffff !important; }
+        </style>
 </head>
 <body>
     <!-- 启动画面 -->
