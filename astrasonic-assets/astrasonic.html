@@ -1121,7 +1121,7 @@
                 tag.style.backgroundColor = ''; tag.style.color = '';
             } else {
                 activeFilters[filterType].add(filterValue);
-                tag.style.setProperty('background-color', '#ff5500', 'important'); tag.style.setProperty('color', '#ffffff', 'important');
+                tag.style.display = 'inline-block'; tag.style.setProperty('background-color', '#ff5500', 'important'); tag.style.setProperty('color', '#ffffff', 'important');
             }
             
             applyFilters();
