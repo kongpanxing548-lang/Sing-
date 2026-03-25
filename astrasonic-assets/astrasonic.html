@@ -109,7 +109,7 @@
             color: var(--text-primary) !important; 
         }
         .filter-tag.active, 
-        .filter-tag.active:hover { 
+         
             background: var(--color-primary) !important; 
             color: #fff !important; 
             border-color: var(--color-primary) !important; 
@@ -544,7 +544,7 @@
         .quick-tag.filter-tag.active,
         .quick-tag.filter-tag.active:hover,
         .mood-tag.filter-tag.active,
-        .mood-tag.filter-tag.active:hover {
+        .mood-tag
             background: var(--color-primary) !important;
             color: #ffffff !important;
             border-color: var(--color-primary) !important;
@@ -553,8 +553,8 @@
     </style>
 
         <style>
-        .filter-tag { background-color: transparent; padding: 8px 12px; }
-        .filter-tag.active {
+        .filter-tag { background-color: transparent !important; padding: 8px 12px; display: block; width: 100%; box-sizing: border-box; }
+        .filter-tag.active,  background-color: #ff5500 !important; color: #ffffff !important; }
             background-color: #ff5500 !important;
         }
         </style>
@@ -1118,10 +1118,10 @@
             
             if (activeFilters[filterType].has(filterValue)) {
                 activeFilters[filterType].delete(filterValue);
-                tag.style.backgroundColor = ''; tag.style.color = '';
+                tag.classList.remove('active');
             } else {
                 activeFilters[filterType].add(filterValue);
-                tag.style.setProperty('background-color', '#ff5500', 'important'); tag.style.setProperty('color', '#ffffff', 'important');
+                tag.classList.add('active');
             }
             
             applyFilters();
@@ -1211,7 +1211,7 @@
             if (activeFilters[type]) {
                 activeFilters[type].delete(value);
                 var tag = document.querySelector('.filter-tag[data-filter="' + type + '"][data-value="' + value + '"]');
-                if (tag) tag.style.backgroundColor = ''; tag.style.color = '';
+                if (tag) tag.classList.remove('active');
             }
             applyFilters();
         };
@@ -1219,7 +1219,7 @@
         window.clearAllFilters = function() {
             activeFilters = {};
             document.querySelectorAll('.filter-tag.active').forEach(function(tag) {
-                tag.style.backgroundColor = ''; tag.style.color = '';
+                tag.classList.remove('active');
             });
             var searchInput = document.getElementById('topSearchInput');
             if (searchInput) searchInput.value = '';
