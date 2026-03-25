@@ -553,7 +553,7 @@
     </style>
 
         <style>
-        .filter-tag { background-color: transparent; display: block; padding: 8px 12px; }
+        .filter-tag { background-color: transparent; padding: 8px 12px; }
         .filter-tag.active {
             background-color: #ff5500 !important;
         }
@@ -1118,10 +1118,10 @@
             
             if (activeFilters[filterType].has(filterValue)) {
                 activeFilters[filterType].delete(filterValue);
-                tag.style.backgroundColor = ''; tag.style.color = ''; tag.style.display = 'block';
+                tag.style.backgroundColor = ''; tag.style.color = '';
             } else {
                 activeFilters[filterType].add(filterValue);
-                tag.style.display = 'inline-block'; tag.style.setProperty('background-color', '#ff5500', 'important'); tag.style.setProperty('color', '#ffffff', 'important');
+                tag.style.setProperty('background-color', '#ff5500', 'important'); tag.style.setProperty('color', '#ffffff', 'important');
             }
             
             applyFilters();
@@ -1211,7 +1211,7 @@
             if (activeFilters[type]) {
                 activeFilters[type].delete(value);
                 var tag = document.querySelector('.filter-tag[data-filter="' + type + '"][data-value="' + value + '"]');
-                if (tag) tag.style.backgroundColor = ''; tag.style.color = ''; tag.style.display = 'block';
+                if (tag) tag.style.backgroundColor = ''; tag.style.color = '';
             }
             applyFilters();
         };
@@ -1219,7 +1219,7 @@
         window.clearAllFilters = function() {
             activeFilters = {};
             document.querySelectorAll('.filter-tag.active').forEach(function(tag) {
-                tag.style.backgroundColor = ''; tag.style.color = ''; tag.style.display = 'block';
+                tag.style.backgroundColor = ''; tag.style.color = '';
             });
             var searchInput = document.getElementById('topSearchInput');
             if (searchInput) searchInput.value = '';
