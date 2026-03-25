@@ -1111,10 +1111,10 @@
             
             if (activeFilters[filterType].has(filterValue)) {
                 activeFilters[filterType].delete(filterValue);
-                tag.style.background = ''; tag.style.color = ''; tag.style.borderColor = ''; tag.style.display = ''; tag.style.borderRadius = '';
+                tag.style.backgroundColor = ''; tag.style.color = ''; tag.style.borderColor = ''; tag.style.border = ''; tag.style.borderRadius = ''; tag.style.padding = ''; tag.style.display = '';
             } else {
                 activeFilters[filterType].add(filterValue);
-                tag.style.background = '#ff5500'; tag.style.color = '#fff'; tag.style.borderColor = '#ff5500'; tag.style.display = 'inline-block'; tag.style.borderRadius = '16px';
+                tag.style.backgroundColor = '#ff5500 !important'; tag.style.color = '#fff !important'; tag.style.borderColor = '#ff5500 !important'; tag.style.border = '1px solid #ff5500'; tag.style.borderRadius = '20px'; tag.style.padding = '4px 12px'; tag.style.display = 'inline-block';
             }
             
             applyFilters();
@@ -1204,7 +1204,7 @@
             if (activeFilters[type]) {
                 activeFilters[type].delete(value);
                 var tag = document.querySelector('.filter-tag[data-filter="' + type + '"][data-value="' + value + '"]');
-                if (tag) tag.style.background = ''; tag.style.color = ''; tag.style.borderColor = ''; tag.style.display = ''; tag.style.borderRadius = '';
+                if (tag) tag.style.backgroundColor = ''; tag.style.color = ''; tag.style.borderColor = ''; tag.style.border = ''; tag.style.borderRadius = ''; tag.style.padding = ''; tag.style.display = '';
             }
             applyFilters();
         };
@@ -1212,7 +1212,7 @@
         window.clearAllFilters = function() {
             activeFilters = {};
             document.querySelectorAll('.filter-tag.active').forEach(function(tag) {
-                tag.style.background = ''; tag.style.color = ''; tag.style.borderColor = ''; tag.style.display = ''; tag.style.borderRadius = '';
+                tag.style.backgroundColor = ''; tag.style.color = ''; tag.style.borderColor = ''; tag.style.border = ''; tag.style.borderRadius = ''; tag.style.padding = ''; tag.style.display = '';
             });
             var searchInput = document.getElementById('topSearchInput');
             if (searchInput) searchInput.value = '';
