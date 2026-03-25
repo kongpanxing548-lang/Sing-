@@ -1080,8 +1080,10 @@
         var activeFilters = {};
         
         function init() {
+            console.log('Filter init called');
             // 绑定标签点击
             document.querySelectorAll('.filter-tag').forEach(function(tag) {
+                console.log('Found filter-tag:', tag.dataset);
                 tag.addEventListener('click', toggleFilter);
             });
             
@@ -1096,6 +1098,8 @@
         
         function toggleFilter(e) {
             var tag = e.target;
+            console.log('Clicked:', tag.dataset);
+            alert('Clicked: ' + tag.dataset.filter + '=' + tag.dataset.value);
             var filterType = tag.dataset.filter;
             var filterValue = tag.dataset.value;
             
