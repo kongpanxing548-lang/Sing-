@@ -132,6 +132,27 @@
         /* 情绪标签 - Audiomachine 风格 */
         .mood-tags { padding: 0 24px 16px; display: flex; flex-wrap: wrap; gap: 8px; align-items: baseline; }
         .mood-tag { font-size: 11px; color: var(--text-muted); cursor: pointer; transition: 0.15s; letter-spacing: 0.5px; }
+        
+        /* 筛选标签样式 */
+        .filter-tag { 
+            cursor: pointer; 
+            transition: all 0.2s; 
+            background: var(--bg-tertiary); 
+            border: 1px solid transparent; 
+            border-radius: 16px; 
+            padding: 4px 10px; 
+        }
+        .filter-tag:hover { 
+            background: var(--bg-hover); 
+            color: var(--text-primary); 
+        }
+        .filter-tag.active, 
+        .filter-tag.active:hover { 
+            background: var(--color-primary) !important; 
+            color: #fff !important; 
+            border-color: var(--color-primary) !important; 
+        }
+
         .mood-tag:hover { color: var(--text-primary); text-shadow: 0 0 8px rgba(255,255,255,0.3); }
         .mood-tag-large { font-size: 15px; font-weight: 600; color: var(--text-primary); }
         
