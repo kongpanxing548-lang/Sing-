@@ -1,0 +1,434 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ASTRASONIC 搜索筛选原型</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        
+        :root {
+            --bg-primary: #0f0f10;
+            --bg-secondary: #1a1b1f;
+            --bg-tertiary: #25262b;
+            --text-primary: #f4f4f5;
+            --text-secondary: #a1a1aa;
+            --text-muted: #71717a;
+            --color-primary: #ff5500;
+            --color-accent: #9945ff;
+            --border-color: #27272a;
+        }
+        
+        body {
+            font-family: 'Inter', 'Noto Sans SC', sans-serif;
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            min-height: 100vh;
+        }
+        
+        .app-container { display: flex; min-height: 100vh; }
+        
+        .sidebar {
+            width: 320px;
+            background: var(--bg-secondary);
+            padding: 20px;
+            overflow-y: auto;
+            flex-shrink: 0;
+        }
+        
+        .sidebar-section { margin-bottom: 24px; }
+        
+        .sidebar-title {
+            font-size: 11px;
+            text-transform: uppercase;
+            color: var(--text-muted);
+            margin-bottom: 10px;
+            letter-spacing: 0.08em;
+        }
+        
+        .tag-list { display: flex; flex-wrap: wrap; gap: 6px; }
+        
+        .tag {
+            padding: 6px 12px;
+            background: var(--bg-tertiary);
+            border-radius: 16px;
+            font-size: 12px;
+            color: var(--text-secondary);
+            cursor: pointer;
+            transition: all 0.2s;
+            border: 1px solid transparent;
+        }
+        
+        .tag:hover { background: var(--bg-primary); color: var(--text-primary); }
+        
+        .tag.active {
+            background: var(--color-primary);
+            color: #fff;
+            border-color: var(--color-primary);
+        }
+        
+        .main-content { flex: 1; padding: 20px; overflow-y: auto; }
+        
+        .search-bar { display: flex; align-items: center; gap: 12px; margin-bottom: 20px; flex-wrap: wrap; }
+        
+        .search-input-wrap { flex: 1; min-width: 200px; position: relative; }
+        
+        .search-input {
+            width: 100%;
+            padding: 12px 16px 12px 44px;
+            background: var(--bg-secondary);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            color: var(--text-primary);
+            font-size: 14px;
+            outline: none;
+            transition: border-color 0.2s;
+        }
+        
+        .search-input:focus { border-color: var(--color-primary); }
+        
+        .search-icon { position: absolute; left: 14px; top: 50%; transform: translateY(-50%); color: var(--text-muted); }
+        
+        .filter-status {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 12px 16px;
+            background: var(--bg-secondary);
+            border-radius: 8px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+        
+        .filter-status.hidden { display: none; }
+        
+        .filter-label { font-size: 13px; color: var(--text-secondary); }
+        
+        .filter-count { color: var(--color-primary); font-weight: 600; }
+        
+        .active-tags { display: flex; gap: 6px; flex-wrap: wrap; flex: 1; }
+        
+        .active-tag {
+            padding: 4px 10px;
+            background: var(--color-primary);
+            border-radius: 12px;
+            font-size: 12px;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+        
+        .active-tag .remove { cursor: pointer; opacity: 0.8; }
+        
+        .clear-all {
+            padding: 6px 12px;
+            background: transparent;
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            color: var(--text-secondary);
+            font-size: 12px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        
+        .clear-all:hover { border-color: var(--color-primary); color: var(--color-primary); }
+        
+        .card-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: 20px; }
+        
+        .card {
+            background: var(--bg-secondary);
+            border-radius: 8px;
+            overflow: hidden;
+            transition: transform 0.2s, opacity 0.2s;
+            cursor: pointer;
+        }
+        
+        .card:hover { transform: translateY(-4px); }
+        
+        .card.hidden { display: none; }
+        
+        .card-cover { position: relative; aspect-ratio: 1; overflow: hidden; }
+        
+        .card-cover img { width: 100%; height: 100%; object-fit: cover; }
+        
+        .card-cover .play-btn {
+            position: absolute;
+            top: 50%; left: 50%;
+            transform: translate(-50%, -50%) scale(0.8);
+            width: 48px; height: 48px;
+            background: rgba(0,0,0,0.7);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            transition: all 0.2s;
+        }
+        
+        .card:hover .play-btn { opacity: 1; transform: translate(-50%, -50%) scale(1); }
+        
+        .card-info { padding: 12px; }
+        
+        .card-title { font-size: 14px; font-weight: 500; margin-bottom: 4px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        
+        .card-artist { font-size: 12px; color: var(--text-muted); }
+        
+        .card-tags { display: flex; gap: 4px; margin-top: 8px; flex-wrap: wrap; }
+        
+        .card-tag { padding: 2px 8px; background: var(--bg-tertiary); border-radius: 10px; font-size: 10px; color: var(--text-muted); }
+        
+        .no-result { text-align: center; padding: 60px 20px; color: var(--text-muted); display: none; }
+        
+        .no-result-icon { font-size: 48px; margin-bottom: 16px; }
+        
+        .no-result-title { font-size: 18px; color: var(--text-secondary); margin-bottom: 8px; }
+        
+        .no-result-desc { font-size: 14px; }
+        
+        .prototype-note {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background: var(--color-accent);
+            color: #fff;
+            padding: 12px 20px;
+            border-radius: 8px;
+            font-size: 13px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+        }
+    </style>
+</head>
+<body>
+    <div class="app-container">
+        <aside class="sidebar">
+            <div class="sidebar-section">
+                <div class="sidebar-title">场景 Scene</div>
+                <div class="tag-list">
+                    <span class="tag" data-filter="scene" data-value="game">游戏音乐</span>
+                    <span class="tag" data-filter="scene" data-value="short">短视频</span>
+                    <span class="tag" data-filter="scene" data-value="commercial">商业广告</span>
+                    <span class="tag" data-filter="scene" data-value="shop">商铺场景</span>
+                </div>
+            </div>
+            <div class="sidebar-section">
+                <div class="sidebar-title">风格 Style</div>
+                <div class="tag-list">
+                    <span class="tag" data-filter="style" data-value="epic">史诗 Epic</span>
+                    <span class="tag" data-filter="style" data-value="electronic">电子 Electronic</span>
+                    <span class="tag" data-filter="style" data-value="oriental">东方 Oriental</span>
+                    <span class="tag" data-filter="style" data-value="chinese">国风 Chinese</span>
+                </div>
+            </div>
+            <div class="sidebar-section">
+                <div class="sidebar-title">情绪 Mood</div>
+                <div class="tag-list">
+                    <span class="tag" data-filter="mood" data-value="tension">紧张悬疑</span>
+                    <span class="tag" data-filter="mood" data-value="heroic">英雄史诗</span>
+                    <span class="tag" data-filter="mood" data-value="romantic">浪漫温情</span>
+                </div>
+            </div>
+        </aside>
+        
+        <main class="main-content">
+            <div class="search-bar">
+                <div class="search-input-wrap">
+                    <span class="search-icon">🔍</span>
+                    <input type="text" class="search-input" placeholder="搜索音乐标题、艺术家、标签..." id="searchInput">
+                </div>
+            </div>
+            
+            <div class="filter-status" id="filterStatus">
+                <span class="filter-label">找到 <span class="filter-count" id="filterCount">6</span> 个结果</span>
+                <div class="active-tags" id="activeTags"></div>
+                <button class="clear-all" onclick="clearAllFilters()">清除全部</button>
+            </div>
+            
+            <div class="card-grid" id="cardGrid">
+                <div class="card" data-scene="game" data-style="epic" data-mood="heroic">
+                    <div class="card-cover">
+                        <img src="https://images.unsplash.com/photo-1511379938547-c1f69419868d?w=400&h=400&fit=crop" alt="">
+                        <div class="play-btn">▶</div>
+                    </div>
+                    <div class="card-info">
+                        <div class="card-title">赤壁之战</div>
+                        <div class="card-artist">ASTRASONIC Studio</div>
+                        <div class="card-tags"><span class="card-tag">游戏音乐</span><span class="card-tag">史诗</span></div>
+                    </div>
+                </div>
+                
+                <div class="card" data-scene="short" data-style="electronic" data-mood="tension">
+                    <div class="card-cover">
+                        <img src="https://images.unsplash.com/photo-1470225620780-dba8ba36b745?w=400&h=400&fit=crop" alt="">
+                        <div class="play-btn">▶</div>
+                    </div>
+                    <div class="card-info">
+                        <div class="card-title">赛博追击</div>
+                        <div class="card-artist">Neo Beats</div>
+                        <div class="card-tags"><span class="card-tag">短视频</span><span class="card-tag">电子</span></div>
+                    </div>
+                </div>
+                
+                <div class="card" data-scene="commercial" data-style="oriental" data-mood="romantic">
+                    <div class="card-cover">
+                        <img src="https://images.unsplash.com/photo-1493676304819-0d7a8d026dcf?w=400&h=400&fit=crop" alt="">
+                        <div class="play-btn">▶</div>
+                    </div>
+                    <div class="card-info">
+                        <div class="card-title">东方传说</div>
+                        <div class="card-artist">East Wave</div>
+                        <div class="card-tags"><span class="card-tag">商业</span><span class="card-tag">东方</span></div>
+                    </div>
+                </div>
+                
+                <div class="card" data-scene="game" data-style="chinese" data-mood="heroic">
+                    <div class="card-cover">
+                        <img src="https://images.unsplash.com/photo-1514320291840-2e0a9bf2a9ae?w=400&h=400&fit=crop" alt="">
+                        <div class="play-btn">▶</div>
+                    </div>
+                    <div class="card-info">
+                        <div class="card-title">神秘领域</div>
+                        <div class="card-artist">Game Sound</div>
+                        <div class="card-tags"><span class="card-tag">游戏</span><span class="card-tag">国风</span></div>
+                    </div>
+                </div>
+                
+                <div class="card" data-scene="shop" data-style="electronic" data-mood="romantic">
+                    <div class="card-cover">
+                        <img src="https://images.unsplash.com/photo-1511671782779-c97d3d27a1d4?w=400&h=400&fit=crop" alt="">
+                        <div class="play-btn">▶</div>
+                    </div>
+                    <div class="card-info">
+                        <div class="card-title">霓虹冲刺</div>
+                        <div class="card-artist">Synth Master</div>
+                        <div class="card-tags"><span class="card-tag">商铺</span><span class="card-tag">电子</span></div>
+                    </div>
+                </div>
+                
+                <div class="card" data-scene="game" data-style="epic" data-mood="tension">
+                    <div class="card-cover">
+                        <img src="https://images.unsplash.com/photo-1550745165-9bc0b252726f?w=400&h=400&fit=crop" alt="">
+                        <div class="play-btn">▶</div>
+                    </div>
+                    <div class="card-info">
+                        <div class="card-title">像素梦境</div>
+                        <div class="card-artist">Pixel Studios</div>
+                        <div class="card-tags"><span class="card-tag">游戏</span><span class="card-tag">史诗</span></div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="no-result" id="noResult">
+                <div class="no-result-icon">🔍</div>
+                <div class="no-result-title">没有找到匹配的音乐</div>
+                <div class="no-result-desc">尝试清除筛选条件或更改搜索关键词</div>
+            </div>
+        </main>
+    </div>
+    
+    <div class="prototype-note">原型演示：点击侧边栏标签筛选，顶部搜索关键词</div>
+    
+    <script>
+        const tags = document.querySelectorAll('.tag');
+        const cards = document.querySelectorAll('.card');
+        const searchInput = document.getElementById('searchInput');
+        const filterStatus = document.getElementById('filterStatus');
+        const filterCount = document.getElementById('filterCount');
+        const activeTags = document.getElementById('activeTags');
+        const noResult = document.getElementById('noResult');
+        const cardGrid = document.getElementById('cardGrid');
+        
+        let activeFilters = {};
+        
+        function getSceneText(v) { return {game:'游戏',short:'短视频',commercial:'商业',shop:'商铺'}[v]||v; }
+        function getStyleText(v) { return {epic:'史诗',electronic:'电子',oriental:'东方',chinese:'国风'}[v]||v; }
+        function getMoodText(v) { return {tension:'紧张',heroic:'英雄',romantic:'浪漫'}[v]||v; }
+        
+        function init() {
+            tags.forEach(tag => tag.addEventListener('click', toggleTag));
+            searchInput.addEventListener('input', handleSearch);
+            updateFilterStatus();
+        }
+        
+        function toggleTag(e) {
+            const tag = e.target;
+            const filterType = tag.dataset.filter;
+            const filterValue = tag.dataset.value;
+            
+            if (!activeFilters[filterType]) activeFilters[filterType] = new Set();
+            
+            if (activeFilters[filterType].has(filterValue)) {
+                activeFilters[filterType].delete(filterValue);
+                tag.classList.remove('active');
+            } else {
+                activeFilters[filterType].add(filterValue);
+                tag.classList.add('active');
+            }
+            applyFilters();
+        }
+        
+        function handleSearch() { applyFilters(); }
+        
+        function applyFilters() {
+            let visibleCount = 0;
+            
+            cards.forEach(card => {
+                let matches = true;
+                
+                for (const [type, values] of Object.entries(activeFilters)) {
+                    if (values.size === 0) continue;
+                    const cardValue = card.dataset[type];
+                    if (!values.has(cardValue)) { matches = false; break; }
+                }
+                
+                const searchTerm = searchInput.value.toLowerCase();
+                if (searchTerm && !card.textContent.toLowerCase().includes(searchTerm)) matches = false;
+                
+                if (matches) { card.classList.remove('hidden'); visibleCount++; }
+                else { card.classList.add('hidden'); }
+            });
+            
+            filterCount.textContent = visibleCount;
+            
+            if (visibleCount === 0) { noResult.style.display = 'block'; cardGrid.style.display = 'none'; }
+            else { noResult.style.display = 'none'; cardGrid.style.display = 'grid'; }
+            
+            updateActiveTags();
+        }
+        
+        function updateActiveTags() {
+            activeTags.innerHTML = '';
+            for (const [type, values] of Object.entries(activeFilters)) {
+                values.forEach(value => {
+                    const tagEl = document.createElement('div');
+                    tagEl.className = 'active-tag';
+                    let displayText = type === 'scene' ? getSceneText(value) : type === 'style' ? getStyleText(value) : getMoodText(value);
+                    tagEl.innerHTML = `${displayText} <span class="remove" onclick="removeFilter('${type}','${value}')">×</span>`;
+                    activeTags.appendChild(tagEl);
+                });
+            }
+        }
+        
+        function removeFilter(type, value) {
+            if (activeFilters[type]) {
+                activeFilters[type].delete(value);
+                document.querySelector(`.tag[data-filter="${type}"][data-value="${value}"]`)?.classList.remove('active');
+            }
+            applyFilters();
+        }
+        
+        function clearAllFilters() {
+            activeFilters = {};
+            tags.forEach(tag => tag.classList.remove('active'));
+            searchInput.value = '';
+            applyFilters();
+        }
+        
+        function updateFilterStatus() {
+            const hasFilters = Object.values(activeFilters).some(v => v.size > 0) || searchInput.value;
+            filterStatus.classList.toggle('hidden', !hasFilters);
+        }
+        
+        init();
+    </script>
+</body>
+</html>
