@@ -736,7 +736,8 @@
             </header>
             
             <!-- 筛选状态栏 -->
-            <div class="filter-status" id="filterStatus">
+            
+    <div class="filter-status" style="display: block !important;" id="filterStatus">
                 <span class="filter-label">找到 <span class="filter-count" id="filterCount">0</span> 个结果</span>
                 <div class="active-tags" id="activeTags"></div>
                 <button class="clear-all" onclick="clearAllFilters()">清除全部</button>
@@ -1080,10 +1081,10 @@
         var activeFilters = {};
         
         function init() {
-            console.log('Filter init called');
+            
             // 绑定标签点击
             document.querySelectorAll('.filter-tag').forEach(function(tag) {
-                console.log('Found filter-tag:', tag.dataset);
+                
                 tag.addEventListener('click', toggleFilter);
             });
             
@@ -1098,8 +1099,7 @@
         
         function toggleFilter(e) {
             var tag = e.target;
-            console.log('Clicked:', tag.dataset);
-            alert('Clicked: ' + tag.dataset.filter + '=' + tag.dataset.value);
+
             var filterType = tag.dataset.filter;
             var filterValue = tag.dataset.value;
             
@@ -1111,10 +1111,10 @@
             
             if (activeFilters[filterType].has(filterValue)) {
                 activeFilters[filterType].delete(filterValue);
-                tag.classList.remove('active');
+                tag.style.background = ''; tag.style.color = '';
             } else {
                 activeFilters[filterType].add(filterValue);
-                tag.classList.add('active');
+                tag.style.background = '#ff5500'; tag.style.color = '#fff';
             }
             
             applyFilters();
@@ -1204,7 +1204,7 @@
             if (activeFilters[type]) {
                 activeFilters[type].delete(value);
                 var tag = document.querySelector('.filter-tag[data-filter="' + type + '"][data-value="' + value + '"]');
-                if (tag) tag.classList.remove('active');
+                if (tag) tag.style.background = ''; tag.style.color = '';
             }
             applyFilters();
         };
@@ -1212,7 +1212,7 @@
         window.clearAllFilters = function() {
             activeFilters = {};
             document.querySelectorAll('.filter-tag.active').forEach(function(tag) {
-                tag.classList.remove('active');
+                tag.style.background = ''; tag.style.color = '';
             });
             var searchInput = document.getElementById('topSearchInput');
             if (searchInput) searchInput.value = '';
