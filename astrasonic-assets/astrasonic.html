@@ -1117,10 +1117,10 @@
             
             if (activeFilters[filterType].has(filterValue)) {
                 activeFilters[filterType].delete(filterValue);
-                tag.style.backgroundColor = ''; tag.style.color = ''; tag.style.borderColor = ''; tag.style.border = ''; tag.style.borderRadius = ''; tag.style.padding = ''; tag.style.display = '';
+                tag.style.backgroundColor = ''; tag.style.color = '';
             } else {
                 activeFilters[filterType].add(filterValue);
-                tag.style.setProperty('background-color', '#ff5500', 'important'); tag.style.color = '#ffffff'; tag.style.color = '#fff !important'; tag.style.borderColor = '#ff5500 !important'; tag.style.border = '1px solid #ff5500';
+                tag.style.setProperty('background-color', '#ff5500', 'important'); tag.style.setProperty('color', '#ffffff', 'important');
             }
             
             applyFilters();
@@ -1210,7 +1210,7 @@
             if (activeFilters[type]) {
                 activeFilters[type].delete(value);
                 var tag = document.querySelector('.filter-tag[data-filter="' + type + '"][data-value="' + value + '"]');
-                if (tag) tag.style.backgroundColor = ''; tag.style.color = ''; tag.style.borderColor = ''; tag.style.border = ''; tag.style.borderRadius = ''; tag.style.padding = ''; tag.style.display = '';
+                if (tag) tag.style.backgroundColor = ''; tag.style.color = '';
             }
             applyFilters();
         };
@@ -1218,7 +1218,7 @@
         window.clearAllFilters = function() {
             activeFilters = {};
             document.querySelectorAll('.filter-tag.active').forEach(function(tag) {
-                tag.style.backgroundColor = ''; tag.style.color = ''; tag.style.borderColor = ''; tag.style.border = ''; tag.style.borderRadius = ''; tag.style.padding = ''; tag.style.display = '';
+                tag.style.backgroundColor = ''; tag.style.color = '';
             });
             var searchInput = document.getElementById('topSearchInput');
             if (searchInput) searchInput.value = '';
