@@ -1111,10 +1111,10 @@
             
             if (activeFilters[filterType].has(filterValue)) {
                 activeFilters[filterType].delete(filterValue);
-                tag.style.background = ''; tag.style.color = ''; tag.style.borderColor = '';
+                tag.style.background = ''; tag.style.color = ''; tag.style.borderColor = ''; tag.style.display = ''; tag.style.borderRadius = '';
             } else {
                 activeFilters[filterType].add(filterValue);
-                tag.style.background = '#ff5500'; tag.style.color = '#fff'; tag.style.borderColor = '#ff5500';
+                tag.style.background = '#ff5500'; tag.style.color = '#fff'; tag.style.borderColor = '#ff5500'; tag.style.display = 'inline-block'; tag.style.borderRadius = '16px';
             }
             
             applyFilters();
@@ -1204,7 +1204,7 @@
             if (activeFilters[type]) {
                 activeFilters[type].delete(value);
                 var tag = document.querySelector('.filter-tag[data-filter="' + type + '"][data-value="' + value + '"]');
-                if (tag) tag.style.background = ''; tag.style.color = ''; tag.style.borderColor = '';
+                if (tag) tag.style.background = ''; tag.style.color = ''; tag.style.borderColor = ''; tag.style.display = ''; tag.style.borderRadius = '';
             }
             applyFilters();
         };
@@ -1212,7 +1212,7 @@
         window.clearAllFilters = function() {
             activeFilters = {};
             document.querySelectorAll('.filter-tag.active').forEach(function(tag) {
-                tag.style.background = ''; tag.style.color = ''; tag.style.borderColor = '';
+                tag.style.background = ''; tag.style.color = ''; tag.style.borderColor = ''; tag.style.display = ''; tag.style.borderRadius = '';
             });
             var searchInput = document.getElementById('topSearchInput');
             if (searchInput) searchInput.value = '';
