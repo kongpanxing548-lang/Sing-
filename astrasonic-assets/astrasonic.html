@@ -65,18 +65,24 @@
             border-radius: 6px;
         }
         
-        /* 导航项 */
+        /* 导航项 - 胶囊按钮样式 */
         .nav-item {
-            display: block; padding: 12px 24px;
+            display: inline-flex; align-items: center;
+            padding: 8px 16px; margin: 4px 0;
             color: var(--text-secondary); font-weight: 500; font-size: 14px;
-            transition: 0.15s; cursor: pointer;
-            border-left: 3px solid transparent;
+            transition: all 0.2s; cursor: pointer;
+            background: var(--bg-tertiary);
+            border-radius: 20px;
+            border: 1px solid transparent;
         }
-        .nav-item:hover { color: var(--text-primary); background: var(--bg-hover); }
+        .nav-item:hover { 
+            color: var(--text-primary); 
+            background: var(--bg-hover); 
+        }
         .nav-item.active {
-            color: var(--text-primary);
-            background: var(--bg-hover);
-            border-left-color: var(--accent-orange);
+            color: #fff;
+            background: var(--accent-orange);
+            border-color: var(--accent-orange);
         }
         
         /* 侧边栏区块 */
@@ -117,45 +123,93 @@
 
         .quick-tags { padding: 0 24px 16px; display: flex; flex-wrap: wrap; gap: 8px; }
         .quick-tag {
-            padding: 6px 12px; font-size: 12px;
-            background: var(--bg-tertiary); border-radius: 4px;
+            padding: 6px 14px; font-size: 12px;
+            background: var(--bg-tertiary); border-radius: 16px;
             color: var(--text-secondary); cursor: pointer;
-            transition: 0.15s;
+            transition: all 0.2s;
+            border: 1px solid transparent;
         }
         .quick-tag:hover { background: var(--bg-hover); color: var(--text-primary); }
+        .quick-tag.active {
+            color: #fff;
+            background: var(--accent-orange);
+            border-color: var(--accent-orange);
+        }
         
         /* 手风琴折叠 */
         .accordion { padding: 0 24px 16px; display: none; }
         .sidebar-section.expanded .accordion { display: block; }
         .accordion-item {
-            padding: 8px 0; color: var(--text-secondary); cursor: pointer;
-            font-size: 13px; transition: 0.15s;
+            display: inline-flex; align-items: center;
+            padding: 6px 12px; margin: 4px 0;
+            color: var(--text-secondary); cursor: pointer;
+            font-size: 13px; transition: all 0.2s;
+            background: var(--bg-tertiary);
+            border-radius: 16px;
+            border: 1px solid transparent;
         }
-        .accordion-item:hover { color: var(--text-primary); }
-        .accordion-item.active { color: var(--text-primary); }
+        .accordion-item:hover { 
+            color: var(--text-primary); 
+            background: var(--bg-hover);
+        }
+        .accordion-item.active { 
+            color: #fff;
+            background: var(--accent-orange);
+            border-color: var(--accent-orange);
+        }
         
-        /* 标签云 */
+        /* 标签云容器 */
         .tag-cloud { 
             padding: 0 24px 16px; 
             display: flex; 
             flex-wrap: wrap; 
             gap: 8px; 
-            max-height: none;
-            overflow: visible;
         }
         .sidebar-section.expanded .tag-cloud { display: flex; }
-        .tag {
-            padding: 4px 10px; font-size: 11px;
-            background: var(--bg-tertiary); border-radius: 3px;
-            color: var(--text-muted); cursor: pointer; transition: 0.15s;
-        }
-        .tag:hover { background: var(--bg-hover); color: var(--text-secondary); }
         
-        /* 情绪标签 - Audiomachine 风格 */
-        .mood-tags { padding: 0 24px 16px; display: flex; flex-wrap: wrap; gap: 8px; align-items: baseline; }
-        .mood-tag { font-size: 11px; color: var(--text-muted); cursor: pointer; transition: 0.15s; letter-spacing: 0.5px; }
-        .mood-tag:hover { color: var(--text-primary); text-shadow: 0 0 8px rgba(255,255,255,0.3); }
-        .mood-tag-large { font-size: 15px; font-weight: 600; color: var(--text-primary); }
+        /* 标签 - 胶囊按钮样式 */
+        .tag {
+            padding: 6px 12px; font-size: 11px;
+            background: var(--bg-tertiary); 
+            border-radius: 16px;
+            color: var(--text-secondary); 
+            cursor: pointer; 
+            transition: all 0.2s;
+            border: 1px solid transparent;
+        }
+        .tag:hover { 
+            background: var(--bg-hover); 
+            color: var(--text-primary); 
+        }
+        .tag.active {
+            color: #fff;
+            background: var(--accent-orange);
+            border-color: var(--accent-orange);
+        }
+        
+        /* 情绪标签 - 胶囊按钮样式 */
+        .mood-tags { padding: 0 24px 16px; display: flex; flex-wrap: wrap; gap: 8px; }
+        .mood-tag { 
+            font-size: 11px; 
+            color: var(--text-secondary); 
+            cursor: pointer; 
+            transition: all 0.2s; 
+            letter-spacing: 0.5px;
+            background: var(--bg-tertiary);
+            padding: 6px 12px;
+            border-radius: 16px;
+            border: 1px solid transparent;
+        }
+        .mood-tag:hover { 
+            color: var(--text-primary); 
+            background: var(--bg-hover);
+        }
+        .mood-tag.active {
+            color: #fff;
+            background: var(--accent-orange);
+            border-color: var(--accent-orange);
+        }
+        .mood-tag-large { font-size: 13px; font-weight: 600; }
         
         /* 乐器数量 */
         .accordion-item .count { float: right; font-size: 10px; color: var(--text-muted); }
@@ -165,8 +219,25 @@
         .filter-group { margin-bottom: 12px; }
         .filter-label { display: block; font-size: 10px; color: var(--text-muted); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 6px; }
         .filter-options { display: flex; gap: 6px; flex-wrap: wrap; }
-        .filter-option { font-size: 10px; padding: 3px 8px; background: var(--bg-tertiary); border-radius: 3px; color: var(--text-muted); cursor: pointer; transition: 0.15s; }
-        .filter-option:hover { background: var(--bg-hover); color: var(--text-secondary); }
+        .filter-option { 
+            font-size: 11px; 
+            padding: 6px 12px; 
+            background: var(--bg-tertiary); 
+            border-radius: 16px; 
+            color: var(--text-secondary); 
+            cursor: pointer; 
+            transition: all 0.2s;
+            border: 1px solid transparent;
+        }
+        .filter-option:hover { 
+            background: var(--bg-hover); 
+            color: var(--text-primary); 
+        }
+        .filter-option.active {
+            color: #fff;
+            background: var(--accent-orange);
+            border-color: var(--accent-orange);
+        }
         
         /* 主内容区 */
         .main { 
