@@ -2,10 +2,12 @@ import { useEffect, useState, useCallback } from 'react'
 import * as Tone from 'tone'
 import { useSynthStore } from './store/synthStore'
 import PresetPanel from './components/PresetPanel'
+import EffectsPanel from './components/EffectsPanel'
 import Keyboard from './components/Keyboard'
 import Visualizer from './components/Visualizer'
 import Controls from './components/Controls'
 import './components/PresetPanel.css'
+import './components/EffectsPanel.css'
 import './components/Keyboard.css'
 import './components/Visualizer.css'
 import './components/Controls.css'
@@ -95,6 +97,9 @@ function App() {
 
         {/* Preset Panel */}
         <PresetPanel />
+
+        {/* Effects Panel */}
+        <EffectsPanel />
 
         {/* Keyboard */}
         <Keyboard onNoteOn={initAudio} />
