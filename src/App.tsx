@@ -3,11 +3,13 @@ import * as Tone from 'tone'
 import { useSynthStore } from './store/synthStore'
 import PresetPanel from './components/PresetPanel'
 import EffectsPanel from './components/EffectsPanel'
+import Arpeggiator from './components/Arpeggiator'
 import Keyboard from './components/Keyboard'
 import Visualizer from './components/AudioVisualizer'
 import Controls from './components/Controls'
 import './components/PresetPanel.css'
 import './components/AudioVisualizer.css'
+import './components/Arpeggiator.css'
 import './components/EffectsPanel.css'
 import './components/Keyboard.css'
 import './components/Visualizer.css'
@@ -101,6 +103,9 @@ function App() {
 
         {/* Effects Panel */}
         <EffectsPanel />
+
+        {/* Arpeggiator */}
+        <Arpeggiator />
 
         {/* Keyboard */}
         <Keyboard onNoteOn={initAudio} />

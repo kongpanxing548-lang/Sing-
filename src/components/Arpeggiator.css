@@ -1,0 +1,110 @@
+.arpeggiator {
+  background: var(--bg-card);
+  border-radius: 12px;
+  padding: 20px;
+  border: 1px solid var(--border-color);
+}
+
+.arp-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.arp-header h2 {
+  font-size: 16px;
+  font-weight: 600;
+  background: linear-gradient(135deg, var(--accent-secondary), var(--accent-tertiary));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.play-button {
+  padding: 10px 20px;
+  background: var(--bg-tertiary);
+  border: 1px solid var(--border-color);
+  border-radius: 8px;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text-secondary);
+  transition: all 0.2s ease;
+}
+
+.play-button:hover {
+  background: var(--bg-secondary);
+  border-color: var(--accent-secondary);
+}
+
+.play-button.active {
+  background: rgba(255, 0, 170, 0.2);
+  border-color: var(--accent-secondary);
+  color: var(--accent-secondary);
+  box-shadow: 0 0 15px rgba(255, 0, 170, 0.3);
+}
+
+.arp-controls {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px;
+}
+
+.arp-controls .control-group {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  min-width: 120px;
+  flex: 1;
+}
+
+.arp-controls .control-group label {
+  font-size: 11px;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.arp-controls .control-slider {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.arp-controls input[type="range"] {
+  flex: 1;
+}
+
+.arp-controls .value {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--accent-secondary);
+  min-width: 40px;
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+
+.arp-controls select {
+  background: var(--bg-tertiary);
+  border: 1px solid var(--border-color);
+  border-radius: 6px;
+  padding: 8px 12px;
+  font-size: 12px;
+  color: var(--text-primary);
+  cursor: pointer;
+}
+
+.arp-controls select:focus {
+  outline: none;
+  border-color: var(--accent-secondary);
+}
+
+@media (max-width: 768px) {
+  .arp-controls {
+    flex-direction: column;
+  }
+  
+  .arp-controls .control-group {
+    width: 100%;
+  }
+}
