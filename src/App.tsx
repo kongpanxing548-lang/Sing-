@@ -4,12 +4,14 @@ import { useSynthStore } from './store/synthStore'
 import PresetPanel from './components/PresetPanel'
 import EffectsPanel from './components/EffectsPanel'
 import Arpeggiator from './components/Arpeggiator'
+import Recorder from './components/Recorder'
 import Keyboard from './components/Keyboard'
 import Visualizer from './components/AudioVisualizer'
 import Controls from './components/Controls'
 import './components/PresetPanel.css'
 import './components/AudioVisualizer.css'
 import './components/Arpeggiator.css'
+import './components/Recorder.css'
 import './components/EffectsPanel.css'
 import './components/Keyboard.css'
 import './components/Visualizer.css'
@@ -106,6 +108,9 @@ function App() {
 
         {/* Arpeggiator */}
         <Arpeggiator />
+
+        {/* Recorder */}
+        <Recorder />
 
         {/* Keyboard */}
         <Keyboard onNoteOn={initAudio} />
