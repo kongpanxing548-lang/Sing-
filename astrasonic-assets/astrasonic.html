@@ -137,8 +137,15 @@
         }
         
         /* 手风琴折叠 */
-        .accordion { padding: 0 24px 16px; display: none; }
-        .sidebar-section.expanded .accordion { display: block; }
+        .accordion { 
+            padding: 8px 24px 16px; 
+            display: none; 
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+        .sidebar-section.expanded .accordion { 
+            display: flex; 
+        }
         .accordion-item {
             display: inline-flex; align-items: center;
             padding: 6px 12px; margin: 4px 0;
@@ -160,7 +167,7 @@
         
         /* 标签云容器 */
         .tag-cloud { 
-            padding: 0 24px 16px; 
+            padding: 8px 24px 16px; 
             display: flex; 
             flex-wrap: wrap; 
             gap: 8px; 
@@ -188,7 +195,7 @@
         }
         
         /* 情绪标签 - 胶囊按钮样式 */
-        .mood-tags { padding: 0 24px 16px; display: flex; flex-wrap: wrap; gap: 8px; }
+        .mood-tags { padding: 8px 24px 16px; display: flex; flex-wrap: wrap; gap: 8px; }
         .mood-tag { 
             font-size: 11px; 
             color: var(--text-secondary); 
@@ -215,10 +222,30 @@
         .accordion-item .count { float: right; font-size: 10px; color: var(--text-muted); }
         
         /* 筛选器 */
-        .filters { padding: 8px 24px 16px !important; }
-        .filter-group { margin-bottom: 12px; }
-        .filter-label { display: block; font-size: 10px; color: var(--text-muted); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 6px; }
-        .filter-options { display: flex; gap: 6px; flex-wrap: wrap; }
+        .filters { 
+            padding: 8px 24px 16px !important; 
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+        }
+        .filter-group { 
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            gap: 8px;
+        }
+        .filter-label { 
+            font-size: 10px; 
+            color: var(--text-muted); 
+            text-transform: uppercase; 
+            letter-spacing: 1px; 
+            margin-right: 8px;
+        }
+        .filter-options { 
+            display: flex; 
+            gap: 8px; 
+            flex-wrap: wrap; 
+        }
         .filter-option { 
             font-size: 11px; 
             padding: 6px 12px; 
