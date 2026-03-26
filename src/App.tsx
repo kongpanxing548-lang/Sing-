@@ -5,6 +5,7 @@ import PresetPanel from './components/PresetPanel'
 import EffectsPanel from './components/EffectsPanel'
 import Arpeggiator from './components/Arpeggiator'
 import Recorder from './components/Recorder'
+import MidiController from './components/MidiController'
 import Keyboard from './components/Keyboard'
 import Visualizer from './components/AudioVisualizer'
 import Controls from './components/Controls'
@@ -12,6 +13,7 @@ import './components/PresetPanel.css'
 import './components/AudioVisualizer.css'
 import './components/Arpeggiator.css'
 import './components/Recorder.css'
+import './components/MidiController.css'
 import './components/EffectsPanel.css'
 import './components/Keyboard.css'
 import './components/Visualizer.css'
@@ -111,6 +113,9 @@ function App() {
 
         {/* Recorder */}
         <Recorder />
+
+        {/* MIDI Controller */}
+        <MidiController />
 
         {/* Keyboard */}
         <Keyboard onNoteOn={initAudio} />
