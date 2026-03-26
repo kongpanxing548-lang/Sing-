@@ -6,6 +6,8 @@ import EffectsPanel from './components/EffectsPanel'
 import Arpeggiator from './components/Arpeggiator'
 import Recorder from './components/Recorder'
 import MidiController from './components/MidiController'
+import PresetManager from './components/PresetManager'
+import TouchKeyboard from './components/TouchKeyboard'
 import Keyboard from './components/Keyboard'
 import Visualizer from './components/AudioVisualizer'
 import Controls from './components/Controls'
@@ -14,6 +16,8 @@ import './components/AudioVisualizer.css'
 import './components/Arpeggiator.css'
 import './components/Recorder.css'
 import './components/MidiController.css'
+import './components/PresetManager.css'
+import './components/TouchKeyboard.css'
 import './components/EffectsPanel.css'
 import './components/Keyboard.css'
 import './components/Visualizer.css'
@@ -116,6 +120,12 @@ function App() {
 
         {/* MIDI Controller */}
         <MidiController />
+
+        {/* Preset Manager */}
+        <PresetManager />
+
+        {/* Touch Keyboard */}
+        <TouchKeyboard onNoteOn={initAudio} />
 
         {/* Keyboard */}
         <Keyboard onNoteOn={initAudio} />

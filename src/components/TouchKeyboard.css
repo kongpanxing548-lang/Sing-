@@ -1,0 +1,144 @@
+.touch-keyboard {
+  background: var(--bg-card);
+  border-radius: 12px;
+  padding: 16px;
+  border: 1px solid var(--border-color);
+  display: none; /* 默认隐藏，移动端显示 */
+}
+
+.touch-keyboard-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 12px;
+}
+
+.touch-keyboard-header span:first-child {
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.touch-hint {
+  font-size: 11px;
+  color: var(--accent-primary);
+  background: rgba(0, 212, 255, 0.1);
+  padding: 4px 8px;
+  border-radius: 4px;
+}
+
+.touch-keys-container {
+  position: relative;
+  height: 140px;
+  user-select: none;
+  touch-action: none;
+}
+
+.touch-white-keys {
+  display: flex;
+  height: 100%;
+  gap: 3px;
+}
+
+.touch-key.white-key {
+  flex: 1;
+  background: linear-gradient(180deg, #ffffff 0%, #e8e8e8 100%);
+  border: 1px solid #ccc;
+  border-radius: 0 0 6px 6px;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  padding-bottom: 8px;
+  cursor: pointer;
+  transition: all 0.08s ease;
+}
+
+.touch-key.white-key:active,
+.touch-key.white-key.active {
+  background: linear-gradient(180deg, var(--accent-primary) 0%, #00a8cc 100%);
+  transform: translateY(2px);
+  box-shadow: 0 0 15px var(--accent-primary);
+}
+
+.touch-key.white-key .key-label {
+  font-size: 11px;
+  font-weight: 600;
+  color: #666;
+}
+
+.touch-key.white-key.active .key-label {
+  color: white;
+}
+
+.touch-black-keys {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 60%;
+  pointer-events: none;
+}
+
+.touch-key.black-key {
+  position: absolute;
+  width: 8%;
+  max-width: 32px;
+  height: 100%;
+  background: linear-gradient(180deg, #333 0%, #111 100%);
+  border-radius: 0 0 4px 4px;
+  z-index: 10;
+  pointer-events: auto;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  padding-bottom: 6px;
+  cursor: pointer;
+  box-shadow: 0 3px 6px rgba(0, 0, 0, 0.4);
+  transition: all 0.08s ease;
+}
+
+.touch-key.black-key:active,
+.touch-key.black-key.active {
+  background: linear-gradient(180deg, var(--accent-secondary) 0%, #cc0088 100%);
+  transform: translateY(2px);
+  box-shadow: 0 0 15px var(--accent-secondary);
+}
+
+.touch-key.black-key .key-shortcut {
+  font-size: 9px;
+  color: #666;
+  font-weight: 600;
+}
+
+.touch-key.black-key.active .key-shortcut {
+  color: white;
+}
+
+.touch-keyboard-footer {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 8px;
+  font-size: 10px;
+  color: var(--text-muted);
+}
+
+/* 移动端显示 */
+@media (max-width: 768px) {
+  .touch-keyboard {
+    display: block;
+  }
+  
+  .keyboard {
+    display: none;
+  }
+}
+
+/* 平板 */
+@media (min-width: 769px) {
+  .touch-keyboard:hover {
+    display: none;
+  }
+  
+  .touch-keyboard:active {
+    display: block;
+  }
+}
