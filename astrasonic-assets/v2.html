@@ -1,0 +1,848 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ASTRASONIC - 高品质场景化版权音乐资产库</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Noto+Sans+SC:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-primary: #0f0f10;
+            --bg-secondary: #1a1b1f;
+            --bg-tertiary: #202125;
+            --bg-hover: #25262b;
+            --border-subtle: #2a2b30;
+            --border-accent: #3a3b40;
+            --text-primary: #ffffff;
+            --text-secondary: #a0a0a5;
+            --text-muted: #606065;
+            --accent-orange: #ff5500;
+            --accent-cyan: #00a8ff;
+            --accent-purple: #9945ff;
+            --accent-yellow: #ffcc00;
+            --color-primary: #ff5500;
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Inter', 'Noto Sans SC', -apple-system, sans-serif;
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            font-size: 14px;
+            line-height: 1.5;
+            -webkit-font-smoothing: antialiased;
+        }
+        a { text-decoration: none; color: inherit; }
+        
+        .app { display: flex; min-height: 100vh; }
+        
+        .sidebar {
+            width: 33%;
+            min-width: 320px;
+            max-width: 50%;
+            background: var(--bg-secondary);
+            border-right: 1px solid var(--border-subtle);
+            height: 100vh; position: fixed; top: 0; left: 0;
+            overflow-y: auto; overflow-x: hidden;
+        }
+        .sidebar::-webkit-scrollbar { width: 4px; }
+        .sidebar::-webkit-scrollbar-track { background: var(--bg-secondary); }
+        .sidebar::-webkit-scrollbar-thumb { background: var(--border-accent); border-radius: 2px; }
+        
+        .logo {
+            padding: 20px 24px 24px;
+            font-size: 18px; font-weight: 800;
+            letter-spacing: 4px; color: var(--text-primary);
+            border-bottom: 1px solid var(--border-subtle);
+            display: flex; align-items: center; gap: 10px;
+        }
+        .logo-icon {
+            width: 24px; height: 24px;
+            background: linear-gradient(135deg, var(--accent-orange), var(--accent-purple));
+            border-radius: 6px;
+        }
+        
+        .nav-item {
+            display: inline-flex; align-items: center;
+            padding: 8px 16px; margin: 4px 0;
+            color: var(--text-secondary); font-weight: 500; font-size: 14px;
+            transition: all 0.2s; cursor: pointer;
+            background: var(--bg-tertiary);
+            border-radius: 20px;
+            border: 1px solid transparent;
+        }
+        .nav-item:hover { color: var(--text-primary); background: var(--bg-hover); }
+        .nav-item.active {
+            color: #fff;
+            background: var(--accent-orange);
+            border-color: var(--accent-orange);
+        }
+        
+        .sidebar-section { border-bottom: 1px solid var(--border-subtle); }
+        .section-header {
+            padding: 16px 24px 12px;
+            font-size: 13px; font-weight: 700;
+            color: var(--text-primary); text-transform: none;
+            letter-spacing: 0.5px; cursor: pointer;
+            display: flex; justify-content: space-between; align-items: center;
+        }
+        .section-header:hover { color: var(--text-secondary); }
+        .section-header .arrow { font-size: 8px; transition: 0.2s; }
+        .section-header.collapsed .arrow { transform: rotate(-90deg); }
+        
+        /* 修复后的筛选标签样式 */
+        .filter-tag { 
+            cursor: pointer; 
+            transition: all 0.2s; 
+            background: var(--bg-tertiary); 
+            border: 1px solid transparent; 
+            border-radius: 16px; 
+            padding: 4px 10px; 
+            color: var(--text-secondary);
+        }
+        .filter-tag:hover { 
+            background: var(--bg-hover); 
+            color: var(--text-primary); 
+        }
+        .filter-tag.active { 
+            background: var(--accent-orange); 
+            color: #fff; 
+            border-color: var(--accent-orange); 
+        }
+
+        .quick-tags { padding: 0 24px 16px; display: flex; flex-wrap: wrap; gap: 8px; }
+        .quick-tag {
+            padding: 6px 14px; font-size: 12px;
+            background: var(--bg-tertiary); border-radius: 16px;
+            color: var(--text-secondary); cursor: pointer;
+            transition: all 0.2s;
+            border: 1px solid transparent;
+        }
+        .quick-tag:hover { background: var(--bg-hover); color: var(--text-primary); }
+        .quick-tag.active {
+            color: #fff;
+            background: var(--accent-orange);
+            border-color: var(--accent-orange);
+        }
+        
+        .accordion { 
+            padding: 8px 24px 16px; 
+            display: none; 
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+        .sidebar-section.expanded .accordion { display: flex; }
+        .accordion-item {
+            display: inline-flex; align-items: center;
+            padding: 6px 12px; margin: 4px 0;
+            color: var(--text-secondary); cursor: pointer;
+            font-size: 13px; transition: all 0.2s;
+            background: var(--bg-tertiary);
+            border-radius: 16px;
+            border: 1px solid transparent;
+        }
+        .accordion-item:hover { color: var(--text-primary); background: var(--bg-hover); }
+        .accordion-item.active { 
+            color: #fff;
+            background: var(--accent-orange);
+            border-color: var(--accent-orange);
+        }
+        
+        .tag-cloud { 
+            padding: 8px 24px 16px; 
+            display: flex; 
+            flex-wrap: wrap; 
+            gap: 8px; 
+        }
+        .sidebar-section.expanded .tag-cloud { display: flex; }
+        
+        .tag {
+            padding: 6px 12px; font-size: 11px;
+            background: var(--bg-tertiary); 
+            border-radius: 16px;
+            color: var(--text-secondary); 
+            cursor: pointer; 
+            transition: all 0.2s;
+            border: 1px solid transparent;
+        }
+        .tag:hover { background: var(--bg-hover); color: var(--text-primary); }
+        .tag.active {
+            color: #fff;
+            background: var(--accent-orange);
+            border-color: var(--accent-orange);
+        }
+        
+        .mood-tags { padding: 8px 24px 16px; display: flex; flex-wrap: wrap; gap: 8px; }
+        .mood-tag { 
+            font-size: 11px; 
+            color: var(--text-secondary); 
+            cursor: pointer; 
+            transition: all 0.2s; 
+            letter-spacing: 0.5px;
+            background: var(--bg-tertiary);
+            padding: 6px 12px;
+            border-radius: 16px;
+            border: 1px solid transparent;
+        }
+        .mood-tag:hover { color: var(--text-primary); background: var(--bg-hover); }
+        .mood-tag.active {
+            color: #fff;
+            background: var(--accent-orange);
+            border-color: var(--accent-orange);
+        }
+        .mood-tag-large { font-size: 13px; font-weight: 600; }
+        
+        .accordion-item .count { float: right; font-size: 10px; color: var(--text-muted); }
+        
+        .filters { 
+            padding: 8px 24px 16px; 
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+        }
+        .filter-group { 
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            gap: 8px;
+        }
+        .filter-label { 
+            font-size: 10px; 
+            color: var(--text-muted); 
+            text-transform: uppercase; 
+            letter-spacing: 1px; 
+            margin-right: 8px;
+        }
+        .filter-options { display: flex; gap: 8px; flex-wrap: wrap; }
+        .filter-option { 
+            font-size: 11px; 
+            padding: 6px 12px; 
+            background: var(--bg-tertiary); 
+            border-radius: 16px; 
+            color: var(--text-secondary); 
+            cursor: pointer; 
+            transition: all 0.2s;
+            border: 1px solid transparent;
+        }
+        .filter-option:hover { background: var(--bg-hover); color: var(--text-primary); }
+        .filter-option.active {
+            color: #fff;
+            background: var(--accent-orange);
+            border-color: var(--accent-orange);
+        }
+        
+        .main { flex: 1; margin-left: 33%; }
+        .main-inner { width: 100%; max-width: 100%; padding: 24px 40px; box-sizing: border-box; }
+        
+        .topbar {
+            height: 56px; background: var(--bg-primary);
+            border-bottom: 1px solid var(--border-subtle);
+            display: flex; align-items: center; justify-content: space-between;
+            padding: 0 24px; position: sticky; top: 0; z-index: 100;
+        }
+        .search-box {
+            flex: 1; max-width: 500px;
+            display: flex; align-items: center; gap: 10px;
+            background: var(--bg-secondary); border: 1px solid var(--border-subtle);
+            border-radius: 6px; padding: 0 14px; height: 38px;
+            transition: 0.2s;
+        }
+        .search-box:focus-within { border-color: var(--border-accent); }
+        .search-box input {
+            flex: 1; background: none; border: none; outline: none;
+            color: var(--text-primary); font-size: 14px;
+        }
+        .search-box input::placeholder { color: var(--text-muted); }
+        .search-box .icon { color: var(--text-muted); font-size: 15px; }
+        
+        .auth { display: flex; gap: 10px; }
+        .btn {
+            padding: 8px 18px; font-size: 12px; font-weight: 500;
+            border-radius: 5px; cursor: pointer; transition: 0.15s;
+            border: none;
+        }
+        .btn-secondary { background: var(--bg-tertiary); color: var(--text-secondary); }
+        .btn-secondary:hover { background: var(--bg-hover); color: var(--text-primary); }
+        .btn-primary { background: var(--text-primary); color: var(--bg-primary); }
+        .btn-primary:hover { background: #ddd; }
+        
+        .hero-banner {
+            width: 100%;
+            height: 220px;
+            background: linear-gradient(135deg, #1a1a2e 0%, #0f0f15 50%, #1a1a2e 100%);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 40px 60px;
+            margin-bottom: 40px;
+            position: relative;
+            overflow: hidden;
+            box-sizing: border-box;
+        }
+        .hero-banner::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: radial-gradient(ellipse at 50% 50%, rgba(255,85,0,0.12) 0%, transparent 60%);
+        }
+        .hero-content {
+            position: relative;
+            z-index: 1;
+            text-align: left;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            max-width: 70%;
+        }
+        .hero-title {
+            font-size: 52px;
+            font-weight: 800;
+            letter-spacing: 0.15em;
+            margin-bottom: 8px;
+            line-height: 1.2;
+            text-transform: uppercase;
+        }
+        .hero-brand {
+            background: linear-gradient(135deg, #ff5500, #ff8800);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-align: left;
+        }
+        .hero-subtitle {
+            font-size: 14px;
+            color: rgba(255,255,255,0.6);
+            letter-spacing: 6px;
+            font-weight: 400;
+            text-align: left;
+            margin-bottom: 16px;
+            line-height: 1.3;
+        }
+        .hero-tagline {
+            font-size: 24px;
+            color: var(--text-primary);
+            margin-bottom: 8px;
+            font-weight: 500;
+            text-align: left;
+            line-height: 1.3;
+        }
+        .hero-desc {
+            font-size: 13px;
+            color: var(--text-muted);
+            text-align: left;
+            line-height: 1.4;
+        }
+        .hero-visual { position: relative; z-index: 1; }
+        .hero-logo { width: 180px; height: auto; }
+        
+        .section { margin-bottom: 40px; }
+        .section-header-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-direction: row;
+            margin-bottom: 20px;
+        }
+        .section-title { font-size: 16px; font-weight: 600; letter-spacing: 0.5px; }
+        .section-more { font-size: 12px; color: var(--text-muted); cursor: pointer; }
+        .section-more:hover { color: var(--text-secondary); }
+        
+        .card-grid {
+            display: grid;
+            grid-template-columns: repeat(6, 1fr);
+            gap: 16px;
+            width: 100%;
+            box-sizing: border-box;
+        }
+        
+        .card {
+            cursor: pointer; transition: 0.2s;
+            display: flex;
+            flex-direction: column;
+            width: 100%;
+        }
+        .card-cover {
+            width: 100%;
+            aspect-ratio: 1 / 1;
+            border-radius: 6px;
+            overflow: hidden;
+            position: relative; background: var(--bg-tertiary);
+        }
+        .card-cover img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        .card-cover .overlay {
+            position: absolute; inset: 0;
+            background: rgba(0,0,0,0.6);
+            display: flex; align-items: center; justify-content: center;
+            opacity: 0; transition: 0.2s;
+        }
+        .card:hover .card-cover .overlay { opacity: 1; }
+        .card-cover .play-btn {
+            width: 44px; height: 44px; border-radius: 50%;
+            background: rgba(255,255,255,0.15); backdrop-filter: blur(10px);
+            display: flex; align-items: center; justify-content: center;
+            font-size: 16px; color: white;
+            transform: scale(0.9); transition: 0.2s;
+        }
+        .card:hover .card-cover .play-btn { transform: scale(1); }
+        
+        .card-info { padding: 12px 4px 0; }
+        .card-title {
+            font-size: 13px; font-weight: 600; color: var(--text-primary);
+            white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+        }
+        .card-id {
+            font-size: 11px; color: var(--text-muted); margin-top: 4px;
+            font-family: monospace;
+        }
+        
+        .player {
+            position: fixed; bottom: 0; left: 33%; right: 0;
+            height: 64px; background: var(--bg-secondary);
+            border-top: 1px solid var(--border-subtle);
+            display: flex; align-items: center; padding: 0 20px; gap: 20px;
+            z-index: 200;
+        }
+        .player-cover {
+            width: 44px; height: 44px; border-radius: 4px;
+            background: linear-gradient(135deg, #1a1a2e, #16213e);
+            overflow: hidden;
+        }
+        .player-cover img { width: 100%; height: 100%; object-fit: cover; }
+        .player-info { width: 180px; }
+        .player-title { font-size: 12px; font-weight: 500; }
+        .player-artist { font-size: 10px; color: var(--text-muted); margin-top: 2px; }
+        
+        .player-wave { flex: 1; height: 36px; display: flex; align-items: center; gap: 2px; }
+        .wave-bar {
+            flex: 1; background: var(--border-accent); border-radius: 1px;
+            min-height: 4px; transition: 0.1s;
+        }
+        
+        .player-controls { display: flex; align-items: center; gap: 14px; }
+        .ctrl-btn {
+            background: none; border: none; color: var(--text-secondary);
+            cursor: pointer; font-size: 14px; padding: 4px;
+            transition: 0.15s;
+        }
+        .ctrl-btn:hover { color: var(--text-primary); }
+        .ctrl-btn.play {
+            width: 36px; height: 36px; border-radius: 50%;
+            background: var(--text-primary); color: var(--bg-primary);
+            display: flex; align-items: center; justify-content: center;
+        }
+        .ctrl-btn.play:hover { background: #ddd; }
+        
+        .player-time { font-size: 10px; color: var(--text-muted); width: 70px; text-align: left; }
+        .player-extra { display: flex; gap: 12px; }
+        
+        @media (max-width: 900px) {
+            .sidebar { width: 240px; min-width: 240px; max-width: 240px; }
+            .main { margin-left: 240px; }
+            .player { left: 240px; }
+            .main-inner { padding: 16px 20px; }
+            .hero-banner { height: 180px; padding: 30px 40px; }
+        }
+        
+        @media (max-width: 768px) {
+            .sidebar { width: 100%; min-width: 100%; max-width: 100%; }
+            .main { margin-left: 0; }
+            .player { left: 0; }
+        }
+        
+        .splash-screen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: url('splash-bg.png') no-repeat center center;
+            background-size: cover;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 9999;
+            cursor: pointer;
+            animation: splashFadeIn 1s ease-out;
+            overflow: hidden;
+        }
+        @keyframes splashFadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        .splash-screen.fade-out {
+            animation: splashFadeOut 0.6s ease-in forwards;
+        }
+        @keyframes splashFadeOut {
+            from { opacity: 1; }
+            to { opacity: 0; pointer-events: none; }
+        }
+        .splash-hint {
+            position: absolute;
+            bottom: 40px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 12px;
+            color: rgba(255,255,255,0.5);
+            letter-spacing: 2px;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.5);
+        }
+        
+        .filter-status { 
+            display: none; 
+            align-items: center; 
+            gap: 12px; 
+            padding: 12px 16px; 
+            background: var(--bg-secondary); 
+            border-radius: 8px; 
+            margin: 0 20px 20px; 
+            flex-wrap: wrap; 
+        }
+        .filter-status.visible { display: flex; }
+        .filter-status .filter-label { font-size: 13px; color: var(--text-secondary); }
+        .filter-status .filter-count { color: var(--accent-orange); font-weight: 600; }
+        .filter-status .active-tags { display: flex; gap: 6px; flex-wrap: wrap; flex: 1; }
+        .filter-status .active-tag { 
+            padding: 4px 10px; 
+            background: var(--accent-orange); 
+            border-radius: 12px; 
+            font-size: 12px; 
+            display: flex; 
+            align-items: center; 
+            gap: 4px; 
+        }
+        .filter-status .active-tag .remove { cursor: pointer; opacity: 0.8; }
+        .filter-status .clear-all { 
+            padding: 6px 12px; 
+            background: transparent; 
+            border: 1px solid var(--border-subtle); 
+            border-radius: 6px; 
+            color: var(--text-secondary); 
+            font-size: 12px; 
+            cursor: pointer; 
+            transition: all 0.2s; 
+        }
+        .filter-status .clear-all:hover { border-color: var(--accent-orange); color: var(--accent-orange); }
+        
+        .no-result { display: none; text-align: center; padding: 60px 20px; color: var(--text-muted); }
+        .no-result.visible { display: block; }
+        .no-result-icon { font-size: 48px; margin-bottom: 16px; }
+        .no-result-title { font-size: 18px; color: var(--text-secondary); margin-bottom: 8px; }
+        .no-result-desc { font-size: 14px; }
+        
+        .card.hidden { display: none; }
+    </style>
+</head>
+<body>
+    <div class="splash-screen" onclick="closeSplash()">
+        <p class="splash-hint">点击任意处进入 · Click to Enter</p>
+    </div>
+    
+    <div class="app">
+        <aside class="sidebar">
+            <div class="logo">
+                <div class="logo-icon"></div>
+                ASTRASONIC
+            </div>
+            
+            <nav class="sidebar-section">
+                <a href="#" class="nav-item active">音乐库 Library</a>
+                <a href="#" class="nav-item">专辑 Albums</a>
+                <a href="#" class="nav-item">播放列表 Playlists</a>
+            </nav>
+            
+            <div class="sidebar-section">
+                <div class="section-header">快捷搜索 Quick Search <span class="arrow">▼</span></div>
+                <div class="quick-tags">
+                    <span class="quick-tag filter-tag" data-filter="quick" data-value="battle">史诗战斗</span>
+                    <span class="quick-tag filter-tag" data-filter="quick" data-value="fantasy">奇幻冒险</span>
+                    <span class="quick-tag filter-tag" data-filter="quick" data-value="ocean">海洋探索</span>
+                    <span class="quick-tag filter-tag" data-filter="quick" data-value="horror">恐怖悬疑</span>
+                    <span class="quick-tag filter-tag" data-filter="quick" data-value="oriental">东方史诗</span>
+                    <span class="quick-tag filter-tag" data-filter="quick" data-value="gameui">游戏UI</span>
+                </div>
+            </div>
+            
+            <div class="sidebar-section expanded">
+                <div class="section-header" onclick="toggleSection(this)">场景分类 Scene <span class="arrow">▼</span></div>
+                <div class="accordion">
+                    <div class="accordion-item filter-tag" data-filter="scene" data-value="game">游戏音乐</div>
+                    <div class="accordion-item filter-tag" data-filter="scene" data-value="short">短视频</div>
+                    <div class="accordion-item filter-tag" data-filter="scene" data-value="commercial">商业广告</div>
+                    <div class="accordion-item filter-tag" data-filter="scene" data-value="shop">商铺场景</div>
+                    <div class="accordion-item filter-tag" data-filter="scene" data-value="sleep">睡眠冥想</div>
+                    <div class="accordion-item filter-tag" data-filter="scene" data-value="kids">儿童音乐</div>
+                </div>
+            </div>
+            
+            <div class="sidebar-section expanded">
+                <div class="section-header" onclick="toggleSection(this)">音乐风格 Styles <span class="arrow">▼</span></div>
+                <div class="accordion">
+                    <div class="accordion-item filter-tag" data-filter="style" data-value="epic">史诗 Epic</div>
+                    <div class="accordion-item filter-tag" data-filter="style" data-value="electronic">电子 Electronic</div>
+                    <div class="accordion-item filter-tag" data-filter="style" data-value="oriental">东方 Oriental</div>
+                    <div class="accordion-item filter-tag" data-filter="style" data-value="chinese">国风 Chinese</div>
+                    <div class="accordion-item filter-tag" data-filter="style" data-value="pop">流行 Pop</div>
+                    <div class="accordion-item filter-tag" data-filter="style" data-value="classical">古典 Classical</div>
+                    <div class="accordion-item filter-tag" data-filter="style" data-value="healing">治愈 Healing</div>
+                    <div class="accordion-item filter-tag" data-filter="style" data-value="dynamic">动感 Dynamic</div>
+                </div>
+            </div>
+            
+            <div class="sidebar-section expanded">
+                <div class="section-header" onclick="toggleSection(this)">情绪 Mood <span class="arrow">▼</span></div>
+                <div class="mood-tags">
+                    <span class="mood-tag filter-tag" data-filter="mood" data-value="enchanted">魔法 Enchanted</span>
+                    <span class="mood-tag filter-tag" data-filter="mood" data-value="tension">紧张 Tension</span>
+                    <span class="mood-tag filter-tag" data-filter="mood" data-value="romance">浪漫 Romance</span>
+                    <span class="mood-tag filter-tag" data-filter="mood" data-value="action">动作 Action</span>
+                    <span class="mood-tag filter-tag" data-filter="mood" data-value="mystery">神秘 Mystery</span>
+                </div>
+            </div>
+            
+            <div class="sidebar-section expanded">
+                <div class="section-header" onclick="toggleSection(this)">关键词 Keywords <span class="arrow">▼</span></div>
+                <div class="tag-cloud">
+                    <span class="tag filter-tag" data-filter="keyword" data-value="battle">战斗</span>
+                    <span class="tag filter-tag" data-filter="keyword" data-value="dark">暗黑</span>
+                    <span class="tag filter-tag" data-filter="keyword" data-value="passion">激昂</span>
+                    <span class="tag filter-tag" data-filter="keyword" data-value="emotional">情感</span>
+                    <span class="tag filter-tag" data-filter="keyword" data-value="mystery">神秘</span>
+                    <span class="tag filter-tag" data-filter="keyword" data-value="heroic">英雄</span>
+                    <span class="tag filter-tag" data-filter="keyword" data-value="tense">紧张</span>
+                    <span class="tag filter-tag" data-filter="keyword" data-value="cinematic">电影感</span>
+                </div>
+            </div>
+        </aside>
+        
+        <main class="main">
+            <header class="topbar">
+                <div class="search-box">
+                    <span class="icon">🔍</span>
+                    <input type="text" placeholder="搜索音乐、场景、风格、标签..." id="topSearchInput">
+                </div>
+                <div class="auth">
+                    <button class="btn btn-secondary">注册</button>
+                    <button class="btn btn-primary">登录</button>
+                </div>
+            </header>
+            
+            <div class="filter-status visible" id="filterStatus">
+                <span class="filter-label">找到 <span class="filter-count" id="filterCount">14</span> 个结果</span>
+                <div class="active-tags" id="activeTags"></div>
+                <button class="clear-all" onclick="clearAllFilters()">清除全部</button>
+            </div>
+            
+            <div class="no-result" id="noResult">
+                <div class="no-result-icon">🔍</div>
+                <div class="no-result-title">没有找到匹配的音乐</div>
+                <div class="no-result-desc">尝试清除筛选条件或更改搜索关键词</div>
+            </div>
+            
+            <div class="main-inner">
+                <div class="hero-banner">
+                    <div class="hero-content">
+                        <h1 class="hero-title"><span class="hero-brand">ASTRASONIC</span></h1>
+                        <p class="hero-subtitle">Sound Across the Universe</p>
+                        <p class="hero-tagline">连接创作者与内容世界的音频空间站</p>
+                        <p class="hero-desc">游戏音频 · 场景音乐 · 商业授权 · AI音频资产</p>
+                    </div>
+                    <div class="hero-visual">
+                        <img src="logo-transparent.png" alt="Logo" class="hero-logo">
+                    </div>
+                </div>
+                
+                <div class="section">
+                    <div class="section-header-row">
+                        <h2 class="section-title">最新发布 New Releases</h2>
+                    </div>
+                    <div class="card-grid" id="cardGrid">
+                        <div class="card" data-scene="game" data-style="epic" data-mood="heroic" data-keyword="battle">
+                            <div class="card-cover">
+                                <img src="https://images.unsplash.com/photo-1511379938547-c1f69419868d?w=400&h=400&fit=crop" alt="Cover">
+                                <div class="overlay"><div class="play-btn">▶</div></div>
+                            </div>
+                            <div class="card-info">
+                                <div class="card-title">赤壁之战 Battle of Red Cliffs</div>
+                                <div class="card-id">AS-2026-001</div>
+                            </div>
+                        </div>
+                        <div class="card" data-scene="commercial" data-style="oriental" data-mood="romance" data-keyword="emotional">
+                            <div class="card-cover">
+                                <img src="https://images.unsplash.com/photo-1493676304819-0d7a8d026dcf?w=400&h=400&fit=crop" alt="Cover">
+                                <div class="overlay"><div class="play-btn">▶</div></div>
+                            </div>
+                            <div class="card-info">
+                                <div class="card-title">东方传说 Eastern Legends</div>
+                                <div class="card-id">AS-2026-002</div>
+                            </div>
+                        </div>
+                        <div class="card" data-scene="short" data-style="electronic" data-mood="tension" data-keyword="dark">
+                            <div class="card-cover">
+                                <img src="https://images.unsplash.com/photo-1470225620780-dba8ba36b745?w=400&h=400&fit=crop" alt="Cover">
+                                <div class="overlay"><div class="play-btn">▶</div></div>
+                            </div>
+                            <div class="card-info">
+                                <div class="card-title">赛博追击 Cyber Chase</div>
+                                <div class="card-id">AS-2026-003</div>
+                            </div>
+                        </div>
+                        <div class="card" data-scene="game" data-style="chinese" data-mood="mystery" data-keyword="mystery">
+                            <div class="card-cover">
+                                <img src="https://images.unsplash.com/photo-1514320291840-2e0a9bf2a9ae?w=400&h=400&fit=crop" alt="Cover">
+                                <div class="overlay"><div class="play-btn">▶</div></div>
+                            </div>
+                            <div class="card-info">
+                                <div class="card-title">神秘领域 Mystic Realm</div>
+                                <div class="card-id">AS-2026-004</div>
+                            </div>
+                        </div>
+                        <div class="card" data-scene="shop" data-style="electronic" data-mood="action" data-keyword="passion">
+                            <div class="card-cover">
+                                <img src="https://images.unsplash.com/photo-1511671782779-c97d3d27a1d4?w=400&h=400&fit=crop" alt="Cover">
+                                <div class="overlay"><div class="play-btn">▶</div></div>
+                            </div>
+                            <div class="card-info">
+                                <div class="card-title">霓虹冲刺 Neon Rush</div>
+                                <div class="card-id">AS-2026-005</div>
+                            </div>
+                        </div>
+                        <div class="card" data-scene="game" data-style="epic" data-mood="tension" data-keyword="battle">
+                            <div class="card-cover">
+                                <img src="https://images.unsplash.com/photo-1550745165-9bc0b252726f?w=400&h=400&fit=crop" alt="Cover">
+                                <div class="overlay"><div class="play-btn">▶</div></div>
+                            </div>
+                            <div class="card-info">
+                                <div class="card-title">像素梦境 Pixel Dreams</div>
+                                <div class="card-id">AS-2026-006</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+    
+    <script src="js/filter.js"></script>
+    <script>
+        // 启动画面
+        function closeSplash() {
+            document.querySelector('.splash-screen').classList.add('fade-out');
+            setTimeout(() => {
+                document.querySelector('.splash-screen').style.display = 'none';
+            }, 600);
+        }
+        
+        // 手风琴
+        function toggleSection(header) {
+            const section = header.parentElement;
+            section.classList.toggle('expanded');
+            header.classList.toggle('collapsed');
+        }
+        
+        // 清除筛选
+        function clearAllFilters() {
+            document.querySelectorAll('.filter-tag.active').forEach(tag => {
+                tag.classList.remove('active');
+            });
+            document.getElementById('topSearchInput').value = '';
+            filterCards();
+        }
+        
+        // 筛选功能
+        function filterCards() {
+            const activeFilters = {};
+            document.querySelectorAll('.filter-tag.active').forEach(tag => {
+                const filter = tag.dataset.filter;
+                const value = tag.dataset.value;
+                if (!activeFilters[filter]) activeFilters[filter] = [];
+                activeFilters[filter].push(value);
+            });
+            
+            const searchTerm = document.getElementById('topSearchInput').value.toLowerCase();
+            const cards = document.querySelectorAll('.card');
+            let visibleCount = 0;
+            
+            cards.forEach(card => {
+                let shouldShow = true;
+                
+                // 检查筛选条件
+                for (const [filter, values] of Object.entries(activeFilters)) {
+                    const cardValue = card.dataset[filter];
+                    if (cardValue && !values.includes(cardValue)) {
+                        shouldShow = false;
+                        break;
+                    }
+                }
+                
+                // 检查搜索词
+                if (searchTerm && shouldShow) {
+                    const title = card.querySelector('.card-title').textContent.toLowerCase();
+                    const id = card.querySelector('.card-id').textContent.toLowerCase();
+                    if (!title.includes(searchTerm) && !id.includes(searchTerm)) {
+                        shouldShow = false;
+                    }
+                }
+                
+                if (shouldShow) {
+                    card.classList.remove('hidden');
+                    visibleCount++;
+                } else {
+                    card.classList.add('hidden');
+                }
+            });
+            
+            document.getElementById('filterCount').textContent = visibleCount;
+            
+            // 显示/隐藏无结果提示
+            const noResult = document.getElementById('noResult');
+            if (visibleCount === 0) {
+                noResult.classList.add('visible');
+            } else {
+                noResult.classList.remove('visible');
+            }
+            
+            // 更新活动标签显示
+            updateActiveTags();
+        }
+        
+        function updateActiveTags() {
+            const container = document.getElementById('activeTags');
+            container.innerHTML = '';
+            document.querySelectorAll('.filter-tag.active').forEach(tag => {
+                const span = document.createElement('span');
+                span.className = 'active-tag';
+                span.innerHTML = tag.textContent + '<span class="remove" onclick="removeFilter(this)">×</span>';
+                container.appendChild(span);
+            });
+        }
+        
+        function removeFilter(el) {
+            const tagText = el.parentElement.textContent.replace('×', '').trim();
+            document.querySelectorAll('.filter-tag').forEach(tag => {
+                if (tag.textContent.trim() === tagText) {
+                    tag.classList.remove('active');
+                }
+            });
+            filterCards();
+        }
+        
+        // 绑定事件
+        document.querySelectorAll('.filter-tag').forEach(tag => {
+            tag.addEventListener('click', function() {
+                this.classList.toggle('active');
+                filterCards();
+            });
+        });
+        
+        document.getElementById('topSearchInput').addEventListener('input', filterCards);
+        
+        // 初始化
+        filterCards();
+    </script>
+</body>
+</html>
