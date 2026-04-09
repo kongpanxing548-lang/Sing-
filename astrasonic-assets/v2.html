@@ -22,7 +22,6 @@
             --accent-cyan: #00a8ff;
             --accent-purple: #9945ff;
             --accent-yellow: #ffcc00;
-            --color-primary: #ff5500;
         }
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body {
@@ -35,8 +34,10 @@
         }
         a { text-decoration: none; color: inherit; }
         
+        /* 布局 */
         .app { display: flex; min-height: 100vh; }
         
+        /* 侧边栏 - 响应式宽度，参考 Audiomachine */
         .sidebar {
             width: 33%;
             min-width: 320px;
@@ -50,6 +51,7 @@
         .sidebar::-webkit-scrollbar-track { background: var(--bg-secondary); }
         .sidebar::-webkit-scrollbar-thumb { background: var(--border-accent); border-radius: 2px; }
         
+        /* Logo */
         .logo {
             padding: 20px 24px 24px;
             font-size: 18px; font-weight: 800;
@@ -63,6 +65,7 @@
             border-radius: 6px;
         }
         
+        /* 导航项 - 胶囊按钮样式 */
         .nav-item {
             display: inline-flex; align-items: center;
             padding: 8px 16px; margin: 4px 0;
@@ -72,13 +75,17 @@
             border-radius: 20px;
             border: 1px solid transparent;
         }
-        .nav-item:hover { color: var(--text-primary); background: var(--bg-hover); }
+        .nav-item:hover { 
+            color: var(--text-primary); 
+            background: var(--bg-hover); 
+        }
         .nav-item.active {
             color: #fff;
             background: var(--accent-orange);
             border-color: var(--accent-orange);
         }
         
+        /* 侧边栏区块 */
         .sidebar-section { border-bottom: 1px solid var(--border-subtle); }
         .section-header {
             padding: 16px 24px 12px;
@@ -91,24 +98,27 @@
         .section-header .arrow { font-size: 8px; transition: 0.2s; }
         .section-header.collapsed .arrow { transform: rotate(-90deg); }
         
-        /* 修复后的筛选标签样式 */
+        /* 快捷搜索标签 */
+
+        /* 筛选标签样式 */
         .filter-tag { 
             cursor: pointer; 
             transition: all 0.2s; 
-            background: var(--bg-tertiary); 
+            background: var(--bg-tertiary) !important; 
             border: 1px solid transparent; 
             border-radius: 16px; 
             padding: 4px 10px; 
-            color: var(--text-secondary);
+            color: var(--text-secondary) !important;
         }
         .filter-tag:hover { 
-            background: var(--bg-hover); 
-            color: var(--text-primary); 
+            background: var(--bg-hover) !important; 
+            color: var(--text-primary) !important; 
         }
-        .filter-tag.active { 
-            background: var(--accent-orange); 
-            color: #fff; 
-            border-color: var(--accent-orange); 
+        .filter-tag.active, 
+         
+            background: var(--color-primary) !important; 
+            color: #fff !important; 
+            border-color: var(--color-primary) !important; 
         }
 
         .quick-tags { padding: 0 24px 16px; display: flex; flex-wrap: wrap; gap: 8px; }
@@ -126,13 +136,16 @@
             border-color: var(--accent-orange);
         }
         
+        /* 手风琴折叠 */
         .accordion { 
             padding: 8px 24px 16px; 
             display: none; 
             flex-wrap: wrap;
             gap: 8px;
         }
-        .sidebar-section.expanded .accordion { display: flex; }
+        .sidebar-section.expanded .accordion { 
+            display: flex; 
+        }
         .accordion-item {
             display: inline-flex; align-items: center;
             padding: 6px 12px; margin: 4px 0;
@@ -142,13 +155,17 @@
             border-radius: 16px;
             border: 1px solid transparent;
         }
-        .accordion-item:hover { color: var(--text-primary); background: var(--bg-hover); }
+        .accordion-item:hover { 
+            color: var(--text-primary); 
+            background: var(--bg-hover);
+        }
         .accordion-item.active { 
             color: #fff;
             background: var(--accent-orange);
             border-color: var(--accent-orange);
         }
         
+        /* 标签云容器 */
         .tag-cloud { 
             padding: 8px 24px 16px; 
             display: flex; 
@@ -157,6 +174,7 @@
         }
         .sidebar-section.expanded .tag-cloud { display: flex; }
         
+        /* 标签 - 胶囊按钮样式 */
         .tag {
             padding: 6px 12px; font-size: 11px;
             background: var(--bg-tertiary); 
@@ -166,13 +184,17 @@
             transition: all 0.2s;
             border: 1px solid transparent;
         }
-        .tag:hover { background: var(--bg-hover); color: var(--text-primary); }
+        .tag:hover { 
+            background: var(--bg-hover); 
+            color: var(--text-primary); 
+        }
         .tag.active {
             color: #fff;
             background: var(--accent-orange);
             border-color: var(--accent-orange);
         }
         
+        /* 情绪标签 - 胶囊按钮样式 */
         .mood-tags { padding: 8px 24px 16px; display: flex; flex-wrap: wrap; gap: 8px; }
         .mood-tag { 
             font-size: 11px; 
@@ -185,7 +207,10 @@
             border-radius: 16px;
             border: 1px solid transparent;
         }
-        .mood-tag:hover { color: var(--text-primary); background: var(--bg-hover); }
+        .mood-tag:hover { 
+            color: var(--text-primary); 
+            background: var(--bg-hover);
+        }
         .mood-tag.active {
             color: #fff;
             background: var(--accent-orange);
@@ -193,10 +218,12 @@
         }
         .mood-tag-large { font-size: 13px; font-weight: 600; }
         
+        /* 乐器数量 */
         .accordion-item .count { float: right; font-size: 10px; color: var(--text-muted); }
         
+        /* 筛选器 */
         .filters { 
-            padding: 8px 24px 16px; 
+            padding: 8px 24px 16px !important; 
             display: flex;
             flex-wrap: wrap;
             gap: 12px;
@@ -214,7 +241,11 @@
             letter-spacing: 1px; 
             margin-right: 8px;
         }
-        .filter-options { display: flex; gap: 8px; flex-wrap: wrap; }
+        .filter-options { 
+            display: flex; 
+            gap: 8px; 
+            flex-wrap: wrap; 
+        }
         .filter-option { 
             font-size: 11px; 
             padding: 6px 12px; 
@@ -225,16 +256,30 @@
             transition: all 0.2s;
             border: 1px solid transparent;
         }
-        .filter-option:hover { background: var(--bg-hover); color: var(--text-primary); }
+        .filter-option:hover { 
+            background: var(--bg-hover); 
+            color: var(--text-primary); 
+        }
         .filter-option.active {
             color: #fff;
             background: var(--accent-orange);
             border-color: var(--accent-orange);
         }
         
-        .main { flex: 1; margin-left: 33%; }
-        .main-inner { width: 100%; max-width: 100%; padding: 24px 40px; box-sizing: border-box; }
+        /* 主内容区 */
+        .main { 
+            flex: 1; 
+            margin-left: 33%; 
+        }
         
+        .main-inner {
+            width: 100%;
+            max-width: 100%;
+            padding: 24px 40px;
+            box-sizing: border-box;
+        }
+        
+        /* 顶部搜索栏 */
         .topbar {
             height: 56px; background: var(--bg-primary);
             border-bottom: 1px solid var(--border-subtle);
@@ -256,6 +301,7 @@
         .search-box input::placeholder { color: var(--text-muted); }
         .search-box .icon { color: var(--text-muted); font-size: 15px; }
         
+        /* 认证按钮 */
         .auth { display: flex; gap: 10px; }
         .btn {
             padding: 8px 18px; font-size: 12px; font-weight: 500;
@@ -267,6 +313,15 @@
         .btn-primary { background: var(--text-primary); color: var(--bg-primary); }
         .btn-primary:hover { background: #ddd; }
         
+        /* 内容区 */
+        .main-inner {
+            width: 100%;
+            margin: 0 auto;
+            padding: 24px 40px;
+            box-sizing: border-box;
+        }
+        
+        /* 英雄横幅 */
         .hero-banner {
             width: 100%;
             height: 220px;
@@ -333,9 +388,27 @@
             text-align: left;
             line-height: 1.4;
         }
-        .hero-visual { position: relative; z-index: 1; }
-        .hero-logo { width: 180px; height: auto; }
+        .hero-visual {
+            position: relative;
+            z-index: 1;
+        }
+        .hero-circle {
+            width: 180px;
+            height: 180px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, rgba(255,85,0,0.2), rgba(153,69,255,0.2));
+            border: 1px solid rgba(255,255,255,0.1);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 64px;
+        }
+        .hero-logo {
+            width: 180px;
+            height: auto;
+        }
         
+        /* 区块 */
         .section { margin-bottom: 40px; }
         .section-header-row {
             display: flex;
@@ -348,6 +421,7 @@
         .section-more { font-size: 12px; color: var(--text-muted); cursor: pointer; }
         .section-more:hover { color: var(--text-secondary); }
         
+        /* 卡片网格 - 固定列数+扩展 */
         .card-grid {
             display: grid;
             grid-template-columns: repeat(6, 1fr);
@@ -356,6 +430,7 @@
             box-sizing: border-box;
         }
         
+        /* 资产卡片 */
         .card {
             cursor: pointer; transition: 0.2s;
             display: flex;
@@ -400,6 +475,28 @@
             font-family: monospace;
         }
         
+        /* 横向滚动 */
+        .card-row {
+            display: flex;
+            gap: 16px;
+            overflow-x: auto;
+            padding-bottom: 8px;
+            justify-content: center;
+        }
+        .card-row::-webkit-scrollbar { height: 4px; }
+        .card-row::-webkit-scrollbar-track { background: var(--bg-secondary); }
+        .card-row::-webkit-scrollbar-thumb { background: var(--border-accent); border-radius: 2px; }
+        .card-row .card { min-width: 160px; width: 160px; flex-shrink: 0; }
+        
+        /* 分页点 */
+        .dots { display: flex; gap: 6px; justify-content: center; margin-top: 12px; }
+        .dot {
+            width: 6px; height: 6px; border-radius: 50%;
+            background: var(--border-accent); cursor: pointer;
+        }
+        .dot.active { background: var(--text-secondary); }
+        
+        /* 底部播放器 */
         .player {
             position: fixed; bottom: 0; left: 33%; right: 0;
             height: 64px; background: var(--bg-secondary);
@@ -438,8 +535,10 @@
         .ctrl-btn.play:hover { background: #ddd; }
         
         .player-time { font-size: 10px; color: var(--text-muted); width: 70px; text-align: left; }
+        
         .player-extra { display: flex; gap: 12px; }
         
+        /* 响应式 */
         @media (max-width: 900px) {
             .sidebar { width: 240px; min-width: 240px; max-width: 240px; }
             .main { margin-left: 240px; }
@@ -448,12 +547,14 @@
             .hero-banner { height: 180px; padding: 30px 40px; }
         }
         
+        /* 移动端 */
         @media (max-width: 768px) {
             .sidebar { width: 100%; min-width: 100%; max-width: 100%; }
             .main { margin-left: 0; }
             .player { left: 0; }
         }
         
+        /* 启动画面 Splash Screen */
         .splash-screen {
             position: fixed;
             top: 0;
@@ -491,7 +592,81 @@
             letter-spacing: 2px;
             text-shadow: 0 2px 4px rgba(0,0,0,0.5);
         }
+        }
+        .splash-slogan-cn {
+            font-family: 'Noto Sans SC', sans-serif;
+            font-size: 14px;
+            color: rgba(255,255,255,0.5);
+            letter-spacing: 4px;
+        }
+        .splash-hint {
+            position: absolute;
+            bottom: 40px;
+            font-size: 11px;
+            color: rgba(255,255,255,0.3);
+            letter-spacing: 2px;
+        }
+
         
+        /* 筛选标签高亮 */
+
+        
+        /* 筛选状态栏 */
+        .filter-status { display: none; align-items: center; gap: 12px; padding: 12px 16px; background: var(--bg-secondary); border-radius: 8px; margin: 0 20px 20px; flex-wrap: wrap; }
+        .filter-status.visible { display: flex; }
+        .filter-status .filter-label { font-size: 13px; color: var(--text-secondary); }
+        .filter-status .filter-count { color: var(--color-primary); font-weight: 600; }
+        .filter-status .active-tags { display: flex; gap: 6px; flex-wrap: wrap; flex: 1; }
+        .filter-status .active-tag { padding: 4px 10px; background: var(--color-primary); border-radius: 12px; font-size: 12px; display: flex; align-items: center; gap: 4px; }
+        .filter-status .active-tag .remove { cursor: pointer; opacity: 0.8; }
+        .filter-status .clear-all { padding: 6px 12px; background: transparent; border: 1px solid var(--border-color); border-radius: 6px; color: var(--text-secondary); font-size: 12px; cursor: pointer; transition: all 0.2s; }
+        .filter-status .clear-all:hover { border-color: var(--color-primary); color: var(--color-primary); }
+        
+        /* 无结果提示 */
+        .no-result { display: none; text-align: center; padding: 60px 20px; color: var(--text-muted); }
+        .no-result.visible { display: block; }
+        .no-result-icon { font-size: 48px; margin-bottom: 16px; }
+        .no-result-title { font-size: 18px; color: var(--text-secondary); margin-bottom: 8px; }
+        .no-result-desc { font-size: 14px; }
+        
+        /* 卡片隐藏 */
+        .card.hidden { display: none; }
+
+
+        
+        /* 全局高亮样式 - 最高优先级 */
+        .filter-tag.active,
+        .filter-tag.active:hover,
+        .accordion-item.filter-tag.active,
+        .accordion-item.filter-tag.active:hover,
+        .quick-tag.filter-tag.active,
+        .quick-tag.filter-tag.active:hover,
+        .mood-tag.filter-tag.active,
+        .mood-tag
+            background: var(--color-primary) !important;
+            color: #ffffff !important;
+            border-color: var(--color-primary) !important;
+        }
+
+    
+        .filter-tag { 
+            cursor: pointer; 
+            transition: all 0.2s; 
+            background: var(--bg-tertiary); 
+            border: 1px solid transparent; 
+            border-radius: 16px; 
+            padding: 4px 10px; 
+            color: var(--text-secondary);
+        }
+        .filter-tag:hover { 
+            background: var(--bg-hover); 
+            color: var(--text-primary); 
+        }
+        .filter-tag.active { 
+            background: var(--accent-orange); 
+            color: #fff; 
+            border-color: var(--accent-orange); 
+        }
         .filter-status { 
             display: none; 
             align-items: center; 
@@ -527,60 +702,131 @@
             transition: all 0.2s; 
         }
         .filter-status .clear-all:hover { border-color: var(--accent-orange); color: var(--accent-orange); }
-        
         .no-result { display: none; text-align: center; padding: 60px 20px; color: var(--text-muted); }
         .no-result.visible { display: block; }
         .no-result-icon { font-size: 48px; margin-bottom: 16px; }
         .no-result-title { font-size: 18px; color: var(--text-secondary); margin-bottom: 8px; }
         .no-result-desc { font-size: 14px; }
-        
         .card.hidden { display: none; }
+
+    </style>
+
+        <style>
+        .filter-tag { background-color: var(--bg-tertiary) !important; padding: 4px 10px; border-radius: 16px; }
+        .filter-tag.active { background-color: #ff5500 !important; color: #ffffff !important; }
+        
+        .filter-tag { 
+            cursor: pointer; 
+            transition: all 0.2s; 
+            background: var(--bg-tertiary); 
+            border: 1px solid transparent; 
+            border-radius: 16px; 
+            padding: 4px 10px; 
+            color: var(--text-secondary);
+        }
+        .filter-tag:hover { 
+            background: var(--bg-hover); 
+            color: var(--text-primary); 
+        }
+        .filter-tag.active { 
+            background: var(--accent-orange); 
+            color: #fff; 
+            border-color: var(--accent-orange); 
+        }
+        .filter-status { 
+            display: none; 
+            align-items: center; 
+            gap: 12px; 
+            padding: 12px 16px; 
+            background: var(--bg-secondary); 
+            border-radius: 8px; 
+            margin: 0 20px 20px; 
+            flex-wrap: wrap; 
+        }
+        .filter-status.visible { display: flex; }
+        .filter-status .filter-label { font-size: 13px; color: var(--text-secondary); }
+        .filter-status .filter-count { color: var(--accent-orange); font-weight: 600; }
+        .filter-status .active-tags { display: flex; gap: 6px; flex-wrap: wrap; flex: 1; }
+        .filter-status .active-tag { 
+            padding: 4px 10px; 
+            background: var(--accent-orange); 
+            border-radius: 12px; 
+            font-size: 12px; 
+            display: flex; 
+            align-items: center; 
+            gap: 4px; 
+        }
+        .filter-status .active-tag .remove { cursor: pointer; opacity: 0.8; }
+        .filter-status .clear-all { 
+            padding: 6px 12px; 
+            background: transparent; 
+            border: 1px solid var(--border-subtle); 
+            border-radius: 6px; 
+            color: var(--text-secondary); 
+            font-size: 12px; 
+            cursor: pointer; 
+            transition: all 0.2s; 
+        }
+        .filter-status .clear-all:hover { border-color: var(--accent-orange); color: var(--accent-orange); }
+        .no-result { display: none; text-align: center; padding: 60px 20px; color: var(--text-muted); }
+        .no-result.visible { display: block; }
+        .no-result-icon { font-size: 48px; margin-bottom: 16px; }
+        .no-result-title { font-size: 18px; color: var(--text-secondary); margin-bottom: 8px; }
+        .no-result-desc { font-size: 14px; }
+        .card.hidden { display: none; }
+
     </style>
 </head>
 <body>
+    <!-- 启动画面 -->
     <div class="splash-screen" onclick="closeSplash()">
         <p class="splash-hint">点击任意处进入 · Click to Enter</p>
     </div>
     
     <div class="app">
+        <!-- 侧边栏 -->
         <aside class="sidebar">
             <div class="logo">
                 <div class="logo-icon"></div>
                 ASTRASONIC
             </div>
             
+            <!-- 主导航 -->
             <nav class="sidebar-section">
                 <a href="#" class="nav-item active">音乐库 Library</a>
                 <a href="#" class="nav-item">专辑 Albums</a>
                 <a href="#" class="nav-item">播放列表 Playlists</a>
             </nav>
             
+            <!-- 快捷搜索 -->
             <div class="sidebar-section">
                 <div class="section-header">快捷搜索 Quick Search <span class="arrow">▼</span></div>
                 <div class="quick-tags">
-                    <span class="quick-tag filter-tag" data-filter="quick" data-value="battle">史诗战斗</span>
-                    <span class="quick-tag filter-tag" data-filter="quick" data-value="fantasy">奇幻冒险</span>
-                    <span class="quick-tag filter-tag" data-filter="quick" data-value="ocean">海洋探索</span>
-                    <span class="quick-tag filter-tag" data-filter="quick" data-value="horror">恐怖悬疑</span>
-                    <span class="quick-tag filter-tag" data-filter="quick" data-value="oriental">东方史诗</span>
-                    <span class="quick-tag filter-tag" data-filter="quick" data-value="gameui">游戏UI</span>
+                    <span class="quick-tag" data-filter="quick" data-value="battle">⚡ 史诗战斗 Epic Battle</span>
+                    <span class="quick-tag" data-filter="quick" data-value="fantasy">🔮 奇幻冒险 Fantasy Adventure</span>
+                    <span class="quick-tag" data-filter="quick" data-value="ocean">🌊 海洋探索 Ocean</span>
+                    <span class="quick-tag" data-filter="quick" data-value="horror">🌙 恐怖悬疑 Horror</span>
+                    <span class="quick-tag" data-filter="quick" data-value="oriental">🏰 东方史诗 Oriental Epic</span>
+                    <span class="quick-tag" data-filter="quick" data-value="gameui">🎮 游戏UI Game UI</span>
                 </div>
             </div>
             
+            <!-- 场景分类 -->
             <div class="sidebar-section expanded">
-                <div class="section-header" onclick="toggleSection(this)">场景分类 Scene <span class="arrow">▼</span></div>
+                <div class="section-header" onclick="toggleSection(this)">场景分类 Scene Categories <span class="arrow">▼</span></div>
                 <div class="accordion">
-                    <div class="accordion-item filter-tag" data-filter="scene" data-value="game">游戏音乐</div>
-                    <div class="accordion-item filter-tag" data-filter="scene" data-value="short">短视频</div>
-                    <div class="accordion-item filter-tag" data-filter="scene" data-value="commercial">商业广告</div>
-                    <div class="accordion-item filter-tag" data-filter="scene" data-value="shop">商铺场景</div>
-                    <div class="accordion-item filter-tag" data-filter="scene" data-value="sleep">睡眠冥想</div>
-                    <div class="accordion-item filter-tag" data-filter="scene" data-value="kids">儿童音乐</div>
+                    <div class="accordion-item filter-tag" data-filter="scene" data-value="game">🎮 游戏音乐 Game Music</div>
+                    <div class="accordion-item filter-tag" data-filter="scene" data-value="short">📱 短视频生态 Short Video</div>
+                    <div class="accordion-item filter-tag" data-filter="scene" data-value="commercial">📺 商业广告 Commercial Commercial</div>
+                    <div class="accordion-item filter-tag" data-filter="scene" data-value="shop">🏠 商铺场景 Retail Retail</div>
+                    <div class="accordion-item filter-tag" data-filter="scene" data-value="sleep">😴 睡眠冥想 Sleep Sleep</div>
+                    <div class="accordion-item filter-tag" data-filter="scene" data-value="kids">👶 儿童音乐 Kids</div>
                 </div>
             </div>
             
+            <!-- 音乐风格 -->
             <div class="sidebar-section expanded">
-                <div class="section-header" onclick="toggleSection(this)">音乐风格 Styles <span class="arrow">▼</span></div>
+                <div class="section-header" onclick="toggleSection(this)">音乐风格 Music Styles <span class="arrow">▼</span></div>
                 <div class="accordion">
                     <div class="accordion-item filter-tag" data-filter="style" data-value="epic">史诗 Epic</div>
                     <div class="accordion-item filter-tag" data-filter="style" data-value="electronic">电子 Electronic</div>
@@ -593,77 +839,170 @@
                 </div>
             </div>
             
+            <!-- 音效设计 -->
             <div class="sidebar-section expanded">
-                <div class="section-header" onclick="toggleSection(this)">情绪 Mood <span class="arrow">▼</span></div>
-                <div class="mood-tags">
-                    <span class="mood-tag filter-tag" data-filter="mood" data-value="enchanted">魔法 Enchanted</span>
-                    <span class="mood-tag filter-tag" data-filter="mood" data-value="tension">紧张 Tension</span>
-                    <span class="mood-tag filter-tag" data-filter="mood" data-value="romance">浪漫 Romance</span>
-                    <span class="mood-tag filter-tag" data-filter="mood" data-value="action">动作 Action</span>
-                    <span class="mood-tag filter-tag" data-filter="mood" data-value="mystery">神秘 Mystery</span>
+                <div class="section-header" onclick="toggleSection(this)">音效设计 Sound Design <span class="arrow">▼</span></div>
+                <div class="accordion">
+                    <div class="accordion-item filter-tag" data-filter="sound" data-value="rising">Rising 上升音</div>
+                    <div class="accordion-item filter-tag" data-filter="sound" data-value="hits">Hits 撞击音</div>
+                    <div class="accordion-item filter-tag" data-filter="sound" data-value="drones">Drones 持续音</div>
+                    <div class="accordion-item filter-tag" data-filter="sound" data-value="stings">Stings 刺耳音</div>
+                    <div class="accordion-item filter-tag" data-filter="sound" data-value="whooshes">Whooshes 呼啸</div>
                 </div>
             </div>
             
+            <!-- 情绪分类 - Audiomachine 风格 -->
+            <div class="sidebar-section">
+                <div class="section-header" onclick="toggleSection(this)">情绪 Mood <span class="arrow">▼</span></div>
+                <div class="mood-tags">
+                    <span class="mood-tag filter-tag" data-filter="mood" data-value="enchanted"">ENCHANTED 魔法</span>
+                    <span class="mood-tag filter-tag" data-filter="mood" data-value="tension" mood-tag-large">PULSING TENSION 紧张脉动</span>
+                    <span class="mood-tag filter-tag" data-filter="mood" data-value="romance"">MODERN ROMANCE 现代浪漫</span>
+                    <span class="mood-tag filter-tag" data-filter="mood" data-value="apocalyptic" mood-tag-large">APOCALYPTIC 末日</span>
+                    <span class="mood-tag filter-tag" data-filter="mood" data-value="trailers"">TRAILERS 预告片</span>
+                    <span class="mood-tag filter-tag" data-filter="mood" data-value="period"">PERIOD DRAMA 时代剧</span>
+                    <span class="mood-tag filter-tag" data-filter="mood" data-value="voices" mood-tag-large">VOICES 人声</span>
+                    <span class="mood-tag filter-tag" data-filter="mood" data-value="murder"">BLOODY MURDER 血腥谋杀</span>
+                    <span class="mood-tag filter-tag" data-filter="mood" data-value="action" mood-tag-large">DRIVING ACTION 驱动动作</span>
+                    <span class="mood-tag filter-tag" data-filter="mood" data-value="awards"">AWARDS SEASON 颁奖季</span>
+                    <span class="mood-tag filter-tag" data-filter="mood" data-value="crunch"">BONE CRUNCHING 骨骼碎裂</span>
+                    <span class="mood-tag filter-tag" data-filter="mood" data-value="guns"">GUNS 枪械</span>
+                    <span class="mood-tag filter-tag" data-filter="mood" data-value="family"">FAMILY 家庭</span>
+                </div>
+            </div>
+            
+            <!-- 乐器分类 -->
+            <div class="sidebar-section">
+                <div class="section-header" onclick="toggleSection(this)">乐器 Instruments <span class="arrow">▼</span></div>
+                <div class="accordion">
+                    <div class="accordion-item filter-tag" data-filter="instrument" data-value="piano">钢琴与大提琴 <span class="count">1,204</span></div>
+                    <div class="accordion-item filter-tag" data-filter="instrument" data-value="percussion">史诗打击乐 <span class="count">856</span></div>
+                    <div class="accordion-item filter-tag" data-filter="instrument" data-value="synth">合成器与电子 <span class="count">2,341</span></div>
+                    <div class="accordion-item filter-tag" data-filter="instrument" data-value="orchestra">管弦乐 <span class="count">3,120</span></div>
+                    <div class="accordion-item filter-tag" data-filter="instrument" data-value="oriental">东方乐器 <span class="count">528</span></div>
+                </div>
+            </div>
+            
+            <!-- 筛选器 -->
+            <div class="sidebar-section">
+                <div class="section-header" onclick="toggleSection(this)">筛选 Filters <span class="arrow">▼</span></div>
+                <div class="accordion filters">
+                    <div class="filter-group">
+                        <span class="filter-label">速度 Tempo</span>
+                        <div class="filter-options">
+                            <span class="filter-option filter-tag" data-filter="tempo" data-value="slow">慢速 Slow</span>
+                            <span class="filter-option filter-tag" data-filter="tempo" data-value="medium">中速 Medium</span>
+                            <span class="filter-option filter-tag" data-filter="tempo" data-value="fast">快速 Fast</span>
+                        </div>
+                    </div>
+                    <div class="filter-group">
+                        <span class="filter-label">调性 Key</span>
+                        <div class="filter-options">
+                            <span class="filter-option filter-tag" data-filter="key" data-value="minor">小调 Minor</span>
+                            <span class="filter-option filter-tag" data-filter="key" data-value="major">大调 Major</span>
+                        </div>
+                    </div>
+                    <div class="filter-group">
+                        <span class="filter-label">人声 Vocals</span>
+                        <div class="filter-options">
+                            <span class="filter-option filter-tag" data-filter="vocals" data-value="with">有 With</span>
+                            <span class="filter-option filter-tag" data-filter="vocals" data-value="without">无 Without</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- 关键词 -->
             <div class="sidebar-section expanded">
                 <div class="section-header" onclick="toggleSection(this)">关键词 Keywords <span class="arrow">▼</span></div>
                 <div class="tag-cloud">
-                    <span class="tag filter-tag" data-filter="keyword" data-value="battle">战斗</span>
-                    <span class="tag filter-tag" data-filter="keyword" data-value="dark">暗黑</span>
-                    <span class="tag filter-tag" data-filter="keyword" data-value="passion">激昂</span>
-                    <span class="tag filter-tag" data-filter="keyword" data-value="emotional">情感</span>
-                    <span class="tag filter-tag" data-filter="keyword" data-value="mystery">神秘</span>
-                    <span class="tag filter-tag" data-filter="keyword" data-value="heroic">英雄</span>
-                    <span class="tag filter-tag" data-filter="keyword" data-value="tense">紧张</span>
-                    <span class="tag filter-tag" data-filter="keyword" data-value="cinematic">电影感</span>
+                    <span class="tag filter-tag" data-filter="keyword" data-value="battle">战斗 Battle</span>
+                    <span class="tag filter-tag" data-filter="keyword" data-value="dark">暗黑 Dark</span>
+                    <span class="tag filter-tag" data-filter="keyword" data-value="passion">激昂 Passion</span>
+                    <span class="tag filter-tag" data-filter="keyword" data-value="emotional">情感 Emotional</span>
+                    <span class="tag filter-tag" data-filter="keyword" data-value="mystery">神秘 Mystery</span>
+                    <span class="tag filter-tag" data-filter="keyword" data-value="heroic">英雄 Heroic</span>
+                    <span class="tag filter-tag" data-filter="keyword" data-value="tense">紧张 Tense</span>
+                    <span class="tag filter-tag" data-filter="keyword" data-value="cinematic">电影感 Cinematic</span>
+                    <span class="tag filter-tag" data-filter="keyword" data-value="dramatic">戏剧性 Dramatic</span>
+                    <span class="tag filter-tag" data-filter="keyword" data-value="inspirational">励志 Inspirational</span>
+                    <span class="tag filter-tag" data-filter="keyword" data-value="melancholic">忧郁 Melancholic</span>
+                    <span class="tag filter-tag" data-filter="keyword" data-value="action">动作 Action</span>
+                    <span class="tag filter-tag" data-filter="keyword" data-value="romantic">浪漫 Romantic</span>
+                    <span class="tag filter-tag" data-filter="keyword" data-value="scifi">科幻 Sci-Fi</span>
+                    <span class="tag filter-tag" data-filter="keyword" data-value="fantasy">奇幻 Fantasy</span>
+                </div>
+            </div>
+            
+            <!-- 技术参数 -->
+            <div class="sidebar-section">
+                <div class="section-header" onclick="toggleSection(this)">技术参数 Technical <span class="arrow">▼</span></div>
+                <div class="accordion">
+                    <div class="accordion-item filter-tag" data-filter="technical" data-value="bpm120">BPM: 120-140</div>
+                    <div class="accordion-item filter-tag" data-filter="technical" data-value="loop">可循环 Loop</div>
+                    <div class="accordion-item filter-tag" data-filter="technical" data-value="novocals">无人声 No Vocals</div>
+                    <div class="accordion-item filter-tag" data-filter="technical" data-value="fullmix">完整版 Full Mix</div>
                 </div>
             </div>
         </aside>
         
+        <!-- 主内容 -->
         <main class="main">
+            <!-- 顶部搜索 -->
             <header class="topbar">
                 <div class="search-box">
                     <span class="icon">🔍</span>
-                    <input type="text" placeholder="搜索音乐、场景、风格、标签..." id="topSearchInput">
+                    <input type="text" placeholder="搜索音乐、场景、风格、标签... Search..." id="topSearchInput" autofocus>
                 </div>
                 <div class="auth">
-                    <button class="btn btn-secondary">注册</button>
-                    <button class="btn btn-primary">登录</button>
+                    <button class="btn btn-secondary">注册 Sign Up</button>
+                    <button class="btn btn-primary">登录 Login</button>
                 </div>
             </header>
             
-            <div class="filter-status visible" id="filterStatus">
-                <span class="filter-label">找到 <span class="filter-count" id="filterCount">14</span> 个结果</span>
+            <!-- 筛选状态栏 -->
+            
+    <div class="filter-status" style="display: block !important;" id="filterStatus">
+                <span class="filter-label">找到 <span class="filter-count" id="filterCount">0</span> 个结果</span>
                 <div class="active-tags" id="activeTags"></div>
                 <button class="clear-all" onclick="clearAllFilters()">清除全部</button>
             </div>
             
+            <!-- 无结果提示 -->
             <div class="no-result" id="noResult">
                 <div class="no-result-icon">🔍</div>
                 <div class="no-result-title">没有找到匹配的音乐</div>
                 <div class="no-result-desc">尝试清除筛选条件或更改搜索关键词</div>
             </div>
+
             
+            <!-- 内容 -->
             <div class="main-inner">
+                <!-- 英雄横幅 -->
                 <div class="hero-banner">
                     <div class="hero-content">
-                        <h1 class="hero-title"><span class="hero-brand">ASTRASONIC</span></h1>
+                        <h1 class="hero-title">
+                            <span class="hero-brand">ASTRASONIC</span>
+                        </h1>
                         <p class="hero-subtitle">Sound Across the Universe</p>
                         <p class="hero-tagline">连接创作者与内容世界的音频空间站</p>
                         <p class="hero-desc">游戏音频 · 场景音乐 · 商业授权 · AI音频资产</p>
+                        <p class="hero-desc-en">Game Audio · Scene-Based Music · Licensing · AI Audio Assets</p>
                     </div>
                     <div class="hero-visual">
-                        <img src="logo-transparent.png" alt="Logo" class="hero-logo">
+                        <img src="logo-transparent.png" alt="ASTRASONIC Logo" class="hero-logo">
                     </div>
                 </div>
                 
+                <!-- 最新发布 -->
                 <div class="section">
                     <div class="section-header-row">
                         <h2 class="section-title">最新发布 New Releases</h2>
                     </div>
-                    <div class="card-grid" id="cardGrid">
-                        <div class="card" data-scene="game" data-style="epic" data-mood="heroic" data-keyword="battle">
+                    <div class="card-grid">
+                        <div class="card" data-scene="game" data-style="epic" data-mood="heroic">
                             <div class="card-cover">
-                                <img src="https://images.unsplash.com/photo-1511379938547-c1f69419868d?w=400&h=400&fit=crop" alt="Cover">
+                                <img src="https://images.unsplash.com/photo-1511379938547-c1f69419868d?w=400&h=400&fit=crop" alt="Dynasty Warriors">
                                 <div class="overlay"><div class="play-btn">▶</div></div>
                             </div>
                             <div class="card-info">
@@ -671,9 +1010,9 @@
                                 <div class="card-id">AS-2026-001</div>
                             </div>
                         </div>
-                        <div class="card" data-scene="commercial" data-style="oriental" data-mood="romance" data-keyword="emotional">
+                        <div class="card" data-scene="commercial" data-style="oriental" data-mood="romantic">
                             <div class="card-cover">
-                                <img src="https://images.unsplash.com/photo-1493676304819-0d7a8d026dcf?w=400&h=400&fit=crop" alt="Cover">
+                                <img src="https://images.unsplash.com/photo-1493676304819-0d7a8d026dcf?w=400&h=400&fit=crop" alt="Eastern Legends">
                                 <div class="overlay"><div class="play-btn">▶</div></div>
                             </div>
                             <div class="card-info">
@@ -681,9 +1020,9 @@
                                 <div class="card-id">AS-2026-002</div>
                             </div>
                         </div>
-                        <div class="card" data-scene="short" data-style="electronic" data-mood="tension" data-keyword="dark">
+                        <div class="card" data-scene="short" data-style="electronic" data-mood="tension">
                             <div class="card-cover">
-                                <img src="https://images.unsplash.com/photo-1470225620780-dba8ba36b745?w=400&h=400&fit=crop" alt="Cover">
+                                <img src="https://images.unsplash.com/photo-1470225620780-dba8ba36b745?w=400&h=400&fit=crop" alt="Cyber Chase">
                                 <div class="overlay"><div class="play-btn">▶</div></div>
                             </div>
                             <div class="card-info">
@@ -691,9 +1030,9 @@
                                 <div class="card-id">AS-2026-003</div>
                             </div>
                         </div>
-                        <div class="card" data-scene="game" data-style="chinese" data-mood="mystery" data-keyword="mystery">
+                        <div class="card" data-scene="game" data-style="chinese" data-mood="heroic">
                             <div class="card-cover">
-                                <img src="https://images.unsplash.com/photo-1514320291840-2e0a9bf2a9ae?w=400&h=400&fit=crop" alt="Cover">
+                                <img src="https://images.unsplash.com/photo-1514320291840-2e0a9bf2a9ae?w=400&h=400&fit=crop" alt="Mystic Realm">
                                 <div class="overlay"><div class="play-btn">▶</div></div>
                             </div>
                             <div class="card-info">
@@ -701,9 +1040,9 @@
                                 <div class="card-id">AS-2026-004</div>
                             </div>
                         </div>
-                        <div class="card" data-scene="shop" data-style="electronic" data-mood="action" data-keyword="passion">
+                        <div class="card" data-scene="shop" data-style="electronic" data-mood="romantic">
                             <div class="card-cover">
-                                <img src="https://images.unsplash.com/photo-1511671782779-c97d3d27a1d4?w=400&h=400&fit=crop" alt="Cover">
+                                <img src="https://images.unsplash.com/photo-1511671782779-c97d3d27a1d4?w=400&h=400&fit=crop" alt="Neon Rush">
                                 <div class="overlay"><div class="play-btn">▶</div></div>
                             </div>
                             <div class="card-info">
@@ -711,9 +1050,9 @@
                                 <div class="card-id">AS-2026-005</div>
                             </div>
                         </div>
-                        <div class="card" data-scene="game" data-style="epic" data-mood="tension" data-keyword="battle">
+                        <div class="card" data-scene="game" data-style="epic" data-mood="tension">
                             <div class="card-cover">
-                                <img src="https://images.unsplash.com/photo-1550745165-9bc0b252726f?w=400&h=400&fit=crop" alt="Cover">
+                                <img src="https://images.unsplash.com/photo-1550745165-9bc0b252726f?w=400&h=400&fit=crop" alt="Pixel Dreams">
                                 <div class="overlay"><div class="play-btn">▶</div></div>
                             </div>
                             <div class="card-info">
@@ -723,72 +1062,315 @@
                         </div>
                     </div>
                 </div>
+                
+                <!-- 场景分类展示 - 策划案核心 -->
+                <div class="section">
+                    <div class="section-header-row">
+                        <h2 class="section-title">场景分类 Scene Categories</h2>
+                    </div>
+                    <div class="card-grid">
+                        <div class="card" data-scene="game" data-style="epic">
+                            <div class="card-cover">
+                                <img src="https://images.unsplash.com/photo-1507838153414-b4b713384a76?w=400&h=400&fit=crop" alt="Epic Orchestra">
+                                <div class="overlay"><div class="play-btn">▶</div></div>
+                            </div>
+                            <div class="card-info">
+                                <div class="card-title">史诗管弦 Epic Orchestra</div>
+                                <div class="card-id">48 Tracks</div>
+                            </div>
+                        </div>
+                        <div class="card" data-scene="short" data-style="electronic">
+                            <div class="card-cover">
+                                <img src="https://images.unsplash.com/photo-1485579149621-3123dd979885?w=400&h=400&fit=crop" alt="Dark Ambient">
+                                <div class="overlay"><div class="play-btn">▶</div></div>
+                            </div>
+                            <div class="card-info">
+                                <div class="card-title">暗黑氛围 Dark Ambient</div>
+                                <div class="card-id">36 Tracks</div>
+                            </div>
+                        </div>
+                        <div class="card" data-scene="commercial" data-style="pop">
+                            <div class="card-cover">
+                                <img src="https://images.unsplash.com/photo-1550745165-9bc0b252726f?w=400&h=400&fit=crop" alt="8-Bit Retro">
+                                <div class="overlay"><div class="play-btn">▶</div></div>
+                            </div>
+                            <div class="card-info">
+                                <div class="card-title">8-bit 复古 Retro</div>
+                                <div class="card-id">24 Tracks</div>
+                            </div>
+                        </div>
+                        <div class="card" data-scene="shop" data-style="chinese">
+                            <div class="card-cover">
+                                <img src="https://images.unsplash.com/photo-1519892300165-cb5542fb47c7?w=400&h=400&fit=crop" alt="东方风格 Oriental">
+                                <div class="overlay"><div class="play-btn">▶</div></div>
+                            </div>
+                            <div class="card-info">
+                                <div class="card-title">东方风格 Oriental</div>
+                                <div class="card-id">32 Tracks</div>
+                            </div>
+                        </div>
+                        <div class="card" data-scene="sleep" data-style="healing">
+                            <div class="card-cover">
+                                <img src="https://images.unsplash.com/photo-1493676304819-0d7a8d026dcf?w=400&h=400&fit=crop" alt="Electronic">
+                                <div class="overlay"><div class="play-btn">▶</div></div>
+                            </div>
+                            <div class="card-info">
+                                <div class="card-title">电子合成 Electronic</div>
+                                <div class="card-id">52 Tracks</div>
+                            </div>
+                        </div>
+                        <div class="card" data-scene="kids" data-style="classical">
+                            <div class="card-cover">
+                                <img src="https://images.unsplash.com/photo-1571330735066-03aaa9429d89?w=400&h=400&fit=crop" alt="Commercial">
+                                <div class="overlay"><div class="play-btn">▶</div></div>
+                            </div>
+                            <div class="card-info">
+                                <div class="card-title">商业广告 Commercial</div>
+                                <div class="card-id">28 Tracks</div>
+                            </div>
+                        </div>
+                        <div class="card">
+                            <div class="card-cover">
+                                <img src="https://images.unsplash.com/photo-1516110833967-0b5716ca1387?w=400&h=400&fit=crop" alt="Retail">
+                                <div class="overlay"><div class="play-btn">▶</div></div>
+                            </div>
+                            <div class="card-info">
+                                <div class="card-title">商铺场景 Retail</div>
+                                <div class="card-id">18 Tracks</div>
+                            </div>
+                        </div>
+                        <div class="card">
+                            <div class="card-cover">
+                                <img src="https://images.unsplash.com/photo-1506157786151-b8491531f063?w=400&h=400&fit=crop" alt="Sleep">
+                                <div class="overlay"><div class="play-btn">▶</div></div>
+                            </div>
+                            <div class="card-info">
+                                <div class="card-title">睡眠冥想 Sleep</div>
+                                <div class="card-id">22 Tracks</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- 音效库 -->
+                <div class="section">
+                    <div class="section-header-row">
+                        <h2 class="section-title">必备音效库 Essential SFX</h2>
+                    </div>
+                    <div class="card-grid">
+                        <div class="card">
+                            <div class="card-cover">
+                                <img src="https://images.unsplash.com/photo-1598488035139-bdbb2231ce04?w=400&h=400&fit=crop" alt="Rise Builder">
+                                <div class="overlay"><div class="play-btn">▶</div></div>
+                            </div>
+                            <div class="card-info">
+                                <div class="card-title">Rise Builder</div>
+                                <div class="card-id">SFX-001</div>
+                            </div>
+                        </div>
+                        <div class="card">
+                            <div class="card-cover">
+                                <img src="https://images.unsplash.com/photo-1571330735066-03aaa9429d89?w=400&h=400&fit=crop" alt="Impact Hits">
+                                <div class="overlay"><div class="play-btn">▶</div></div>
+                            </div>
+                            <div class="card-info">
+                                <div class="card-title">Impact Hits</div>
+                                <div class="card-id">SFX-002</div>
+                            </div>
+                        </div>
+                        <div class="card">
+                            <div class="card-cover">
+                                <img src="https://images.unsplash.com/photo-1516110833967-0b5716ca1387?w=400&h=400&fit=crop" alt="Drones">
+                                <div class="overlay"><div class="play-btn">▶</div></div>
+                            </div>
+                            <div class="card-info">
+                                <div class="card-title">Drones Collection</div>
+                                <div class="card-id">SFX-003</div>
+                            </div>
+                        </div>
+                        <div class="card">
+                            <div class="card-cover">
+                                <img src="https://images.unsplash.com/photo-1506157786151-b8491531f063?w=400&h=400&fit=crop" alt="Stings">
+                                <div class="overlay"><div class="play-btn">▶</div></div>
+                            </div>
+                            <div class="card-info">
+                                <div class="card-title">Stings Pack</div>
+                                <div class="card-id">SFX-004</div>
+                            </div>
+                        </div>
+                        <div class="card">
+                            <div class="card-cover">
+                                <img src="https://images.unsplash.com/photo-1446776877081-d282a0f896e2?w=400&h=400&fit=crop" alt="Whooshes">
+                                <div class="overlay"><div class="play-btn">▶</div></div>
+                            </div>
+                            <div class="card-info">
+                                <div class="card-title">Whoosh Effects</div>
+                                <div class="card-id">SFX-005</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
         </main>
     </div>
     
-    <script src="js/filter.js"></script>
+    <!-- 底部播放器 -->
+    <div class="player">
+        <div class="player-cover">
+            <img src="https://images.unsplash.com/photo-1511379938547-c1f69419868d?w=100&h=100&fit=crop" alt="">
+        </div>
+        <div class="player-info">
+            <div class="player-title">选择一首音乐 Select a Track</div>
+            <div class="player-artist">ASTRASONIC</div>
+        </div>
+        <div class="player-wave" id="playerWave"></div>
+        <div class="player-controls">
+            <button class="ctrl-btn">⏮</button>
+            <button class="ctrl-btn play" id="playBtn">▶</button>
+            <button class="ctrl-btn">⏭</button>
+        </div>
+        <div class="player-time">0:00 / 0:00</div>
+        <div class="player-extra">
+            <button class="btn btn-primary" style="padding: 6px 14px; font-size: 11px;">获取授权 Get License</button>
+        </div>
+    </div>
+    
     <script>
-        // 启动画面
-        function closeSplash() {
-            document.querySelector('.splash-screen').classList.add('fade-out');
-            setTimeout(() => {
-                document.querySelector('.splash-screen').style.display = 'none';
-            }, 600);
-        }
-        
-        // 手风琴
+        // 手风琴切换
         function toggleSection(header) {
-            const section = header.parentElement;
-            section.classList.toggle('expanded');
+            header.parentElement.classList.toggle('expanded');
             header.classList.toggle('collapsed');
         }
         
-        // 清除筛选
-        function clearAllFilters() {
-            document.querySelectorAll('.filter-tag.active').forEach(tag => {
-                tag.classList.remove('active');
-            });
-            document.getElementById('topSearchInput').value = '';
-            filterCards();
+        // 生成波形
+        function generateWave(container) {
+            container.innerHTML = '';
+            for (let i = 0; i < 80; i++) {
+                const bar = document.createElement('div');
+                bar.className = 'wave-bar';
+                bar.style.height = Math.random() * 80 + 10 + '%';
+                container.appendChild(bar);
+            }
         }
         
-        // 筛选功能
-        function filterCards() {
-            const activeFilters = {};
-            document.querySelectorAll('.filter-tag.active').forEach(tag => {
-                const filter = tag.dataset.filter;
-                const value = tag.dataset.value;
-                if (!activeFilters[filter]) activeFilters[filter] = [];
-                activeFilters[filter].push(value);
+        const playerWave = document.getElementById('playerWave');
+        generateWave(playerWave);
+        
+        // 播放控制
+        let isPlaying = false;
+        const playBtn = document.getElementById('playBtn');
+        const bars = playerWave.querySelectorAll('.wave-bar');
+        
+        playBtn.addEventListener('click', () => {
+            isPlaying = !isPlaying;
+            playBtn.textContent = isPlaying ? '⏸' : '▶';
+            bars.forEach((bar, i) => {
+                if (isPlaying) {
+                    bar.style.background = '#fff';
+                    animateWave(bars, i);
+                } else {
+                    bar.style.background = '#333';
+                }
+            });
+        });
+        
+        function animateWave(bars, index) {
+            if (!isPlaying) return;
+            setTimeout(() => {
+                if (bars[index]) {
+                    bars[index].style.height = Math.random() * 80 + 10 + '%';
+                }
+                animateWave(bars, (index + 1) % bars.length);
+            }, 50);
+        }
+        
+        // 启动画面 - 点击关闭
+        function closeSplash() {
+            document.body.style.overflow = ''; // 恢复滚动
+            const splash = document.querySelector('.splash-screen');
+            if (splash) {
+                splash.classList.add('fade-out');
+                setTimeout(() => {
+                    splash.style.display = 'none';
+                }, 600);
+            }
+        }
+        // 页面加载时隐藏滚动条
+        document.body.style.overflow = 'hidden';
+    </script>
+
+    
+    <script>
+    // 筛选功能
+    (function() {
+        var activeFilters = {};
+        
+        function init() {
+            
+            // 绑定标签点击
+            document.querySelectorAll('.filter-tag').forEach(function(tag) {
+                
+                tag.addEventListener('click', toggleFilter);
             });
             
-            const searchTerm = document.getElementById('topSearchInput').value.toLowerCase();
-            const cards = document.querySelectorAll('.card');
-            let visibleCount = 0;
+            // 绑定搜索
+            var searchInput = document.getElementById('topSearchInput');
+            if (searchInput) {
+                searchInput.addEventListener('input', applyFilters);
+            }
             
-            cards.forEach(card => {
-                let shouldShow = true;
+            updateFilterCount();
+        }
+        
+        function toggleFilter(e) {
+            var tag = e.target;
+
+            var filterType = tag.dataset.filter;
+            var filterValue = tag.dataset.value;
+            
+            if (!filterType || !filterValue) return;
+            
+            if (!activeFilters[filterType]) {
+                activeFilters[filterType] = new Set();
+            }
+            
+            if (activeFilters[filterType].has(filterValue)) {
+                activeFilters[filterType].delete(filterValue);
+                tag.classList.remove('active');
+            } else {
+                activeFilters[filterType].add(filterValue);
+                tag.classList.add('active');
+            }
+            
+            applyFilters();
+        }
+        
+        function applyFilters() {
+            var cards = document.querySelectorAll('.card');
+            var searchInput = document.getElementById('topSearchInput');
+            var searchTerm = searchInput ? searchInput.value.toLowerCase() : '';
+            var visibleCount = 0;
+            
+            cards.forEach(function(card) {
+                var matches = true;
                 
-                // 检查筛选条件
-                for (const [filter, values] of Object.entries(activeFilters)) {
-                    const cardValue = card.dataset[filter];
-                    if (cardValue && !values.includes(cardValue)) {
-                        shouldShow = false;
+                // 标签筛选
+                for (var type in activeFilters) {
+                    if (activeFilters[type].size === 0) continue;
+                    
+                    var cardValue = card.dataset[type];
+                    if (!cardValue || !activeFilters[type].has(cardValue)) {
+                        matches = false;
                         break;
                     }
                 }
                 
-                // 检查搜索词
-                if (searchTerm && shouldShow) {
-                    const title = card.querySelector('.card-title').textContent.toLowerCase();
-                    const id = card.querySelector('.card-id').textContent.toLowerCase();
-                    if (!title.includes(searchTerm) && !id.includes(searchTerm)) {
-                        shouldShow = false;
-                    }
+                // 搜索筛选
+                if (searchTerm && card.textContent.toLowerCase().indexOf(searchTerm) === -1) {
+                    matches = false;
                 }
                 
-                if (shouldShow) {
+                if (matches) {
                     card.classList.remove('hidden');
                     visibleCount++;
                 } else {
@@ -796,53 +1378,82 @@
                 }
             });
             
-            document.getElementById('filterCount').textContent = visibleCount;
+            updateFilterUI(visibleCount);
+        }
+        
+        function updateFilterCount() {
+            var cards = document.querySelectorAll('.card');
+            updateFilterUI(cards.length);
+        }
+        
+        function updateFilterUI(visibleCount) {
+            var filterStatus = document.getElementById('filterStatus');
+            var filterCount = document.getElementById('filterCount');
+            var activeTags = document.getElementById('activeTags');
+            var noResult = document.getElementById('noResult');
+            var searchInput = document.getElementById('topSearchInput');
             
-            // 显示/隐藏无结果提示
-            const noResult = document.getElementById('noResult');
-            if (visibleCount === 0) {
-                noResult.classList.add('visible');
-            } else {
-                noResult.classList.remove('visible');
+            if (filterCount) filterCount.textContent = visibleCount;
+            
+            // 更新已选标签
+            if (activeTags) {
+                activeTags.innerHTML = '';
+                for (var type in activeFilters) {
+                    activeFilters[type].forEach(function(value) {
+                        var tagEl = document.createElement('div');
+                        tagEl.className = 'active-tag';
+                        tagEl.innerHTML = value + ' <span class="remove" onclick="removeFilter(\'' + type + '\',\'' + value + '\')">×</span>';
+                        activeTags.appendChild(tagEl);
+                    });
+                }
             }
             
-            // 更新活动标签显示
-            updateActiveTags();
+            // 显示/隐藏状态栏
+            var hasFilters = false;
+            for (var type in activeFilters) {
+                if (activeFilters[type].size > 0) hasFilters = true;
+            }
+            if (searchInput && searchInput.value) hasFilters = true;
+            
+            if (filterStatus) {
+                filterStatus.classList.toggle('visible', hasFilters);
+            }
+            
+            // 显示/隐藏无结果
+            if (noResult) {
+                noResult.classList.toggle('visible', visibleCount === 0 && hasFilters);
+            }
         }
         
-        function updateActiveTags() {
-            const container = document.getElementById('activeTags');
-            container.innerHTML = '';
-            document.querySelectorAll('.filter-tag.active').forEach(tag => {
-                const span = document.createElement('span');
-                span.className = 'active-tag';
-                span.innerHTML = tag.textContent + '<span class="remove" onclick="removeFilter(this)">×</span>';
-                container.appendChild(span);
-            });
-        }
+        window.removeFilter = function(type, value) {
+            if (activeFilters[type]) {
+                activeFilters[type].delete(value);
+                var tag = document.querySelector('.filter-tag[data-filter="' + type + '"][data-value="' + value + '"]');
+                if (tag) tag.classList.remove('active');
+            }
+            applyFilters();
+        };
         
-        function removeFilter(el) {
-            const tagText = el.parentElement.textContent.replace('×', '').trim();
-            document.querySelectorAll('.filter-tag').forEach(tag => {
-                if (tag.textContent.trim() === tagText) {
-                    tag.classList.remove('active');
-                }
+        window.clearAllFilters = function() {
+            activeFilters = {};
+            document.querySelectorAll('.filter-tag.active').forEach(function(tag) {
+                tag.classList.remove('active');
             });
-            filterCards();
-        }
-        
-        // 绑定事件
-        document.querySelectorAll('.filter-tag').forEach(tag => {
-            tag.addEventListener('click', function() {
-                this.classList.toggle('active');
-                filterCards();
-            });
-        });
-        
-        document.getElementById('topSearchInput').addEventListener('input', filterCards);
+            var searchInput = document.getElementById('topSearchInput');
+            if (searchInput) searchInput.value = '';
+            applyFilters();
+        };
         
         // 初始化
-        filterCards();
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', init);
+        } else {
+            init();
+        }
+    })();
     </script>
+
+
+    <script src="js/filter.js"></script>
 </body>
 </html>
