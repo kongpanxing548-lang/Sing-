@@ -12,7 +12,7 @@
 
 ## 在线预览
 
-访问 https://kongpanxing548-lang.github.io/Sing-/astrasonic.html
+访问 https://kongpanxing548-lang.github.io/Sing-/astrasonic-assets/astrasonic.html
 
 ## 版本
 
