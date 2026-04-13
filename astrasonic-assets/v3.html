@@ -1,0 +1,2086 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ASTRASONIC - 高品质场景化版权音乐资产库</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Noto+Sans+SC:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-primary: #0f0f10;
+            --bg-secondary: #1a1b1f;
+            --bg-tertiary: #202125;
+            --bg-hover: #25262b;
+            --border-subtle: #2a2b30;
+            --border-accent: #3a3b40;
+            --text-primary: #ffffff;
+            --text-secondary: #a0a0a5;
+            --text-muted: #606065;
+            --accent-orange: #ff5500;
+            --accent-cyan: #00a8ff;
+            --accent-purple: #9945ff;
+            --accent-yellow: #ffcc00;
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Inter', 'Noto Sans SC', -apple-system, sans-serif;
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            font-size: 14px;
+            line-height: 1.5;
+            -webkit-font-smoothing: antialiased;
+        }
+        a { text-decoration: none; color: inherit; }
+        
+        /* 布局 */
+        .app { display: flex; min-height: 100vh; }
+        
+        /* 侧边栏 - 响应式宽度，参考 Audiomachine */
+        .sidebar {
+            width: 33%;
+            min-width: 320px;
+            max-width: 50%;
+            background: var(--bg-secondary);
+            border-right: 1px solid var(--border-subtle);
+            height: 100vh; position: fixed; top: 0; left: 0;
+            overflow-y: auto; overflow-x: hidden;
+        }
+        .sidebar::-webkit-scrollbar { width: 4px; }
+        .sidebar::-webkit-scrollbar-track { background: var(--bg-secondary); }
+        .sidebar::-webkit-scrollbar-thumb { background: var(--border-accent); border-radius: 2px; }
+        
+        /* Logo */
+        .logo {
+            padding: 20px 24px 24px;
+            font-size: 18px; font-weight: 800;
+            letter-spacing: 4px; color: var(--text-primary);
+            border-bottom: 1px solid var(--border-subtle);
+            display: flex; align-items: center; gap: 10px;
+        }
+        .logo-icon {
+            width: 24px; height: 24px;
+            background: linear-gradient(135deg, var(--accent-orange), var(--accent-purple));
+            border-radius: 6px;
+        }
+        
+        /* 导航项 - 胶囊按钮样式 */
+        .nav-item {
+            display: inline-flex; align-items: center;
+            padding: 8px 16px; margin: 4px 0;
+            color: var(--text-secondary); font-weight: 500; font-size: 14px;
+            transition: all 0.2s; cursor: pointer;
+            background: var(--bg-tertiary);
+            border-radius: 20px;
+            border: 1px solid transparent;
+        }
+        .nav-item:hover { 
+            color: var(--text-primary); 
+            background: var(--bg-hover); 
+        }
+        .nav-item.active {
+            color: #fff;
+            background: var(--accent-orange);
+            border-color: var(--accent-orange);
+        }
+        
+        /* 侧边栏区块 */
+        .sidebar-section { border-bottom: 1px solid var(--border-subtle); }
+        .section-header {
+            padding: 16px 24px 12px;
+            font-size: 13px; font-weight: 700;
+            color: var(--text-primary); text-transform: none;
+            letter-spacing: 0.5px; cursor: pointer;
+            display: flex; justify-content: space-between; align-items: center;
+        }
+        .section-header:hover { color: var(--text-secondary); }
+        .section-header .arrow { font-size: 8px; transition: 0.2s; }
+        .section-header.collapsed .arrow { transform: rotate(-90deg); }
+        
+        /* 快捷搜索标签 */
+
+        /* 筛选标签样式 */
+        .filter-tag { 
+            cursor: pointer; 
+            transition: all 0.2s; 
+            background: var(--bg-tertiary) !important; 
+            border: 1px solid transparent; 
+            border-radius: 16px; 
+            padding: 4px 10px; 
+            color: var(--text-secondary) !important;
+        }
+        .filter-tag:hover { 
+            background: var(--bg-hover) !important; 
+            color: var(--text-primary) !important; 
+        }
+        .filter-tag.active, 
+         
+            background: var(--color-primary) !important; 
+            color: #fff !important; 
+            border-color: var(--color-primary) !important; 
+        }
+
+        .quick-tags { padding: 0 24px 16px; display: flex; flex-wrap: wrap; gap: 8px; }
+        .quick-tag {
+            padding: 6px 14px; font-size: 12px;
+            background: var(--bg-tertiary); border-radius: 16px;
+            color: var(--text-secondary); cursor: pointer;
+            transition: all 0.2s;
+            border: 1px solid transparent;
+        }
+        .quick-tag:hover { background: var(--bg-hover); color: var(--text-primary); }
+        .quick-tag.active {
+            color: #fff;
+            background: var(--accent-orange);
+            border-color: var(--accent-orange);
+        }
+        
+        /* 手风琴折叠 */
+        .accordion { 
+            padding: 8px 24px 16px; 
+            display: none; 
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+        .sidebar-section.expanded .accordion { 
+            display: flex; 
+        }
+        .accordion-item {
+            display: inline-flex; align-items: center;
+            padding: 6px 12px; margin: 4px 0;
+            color: var(--text-secondary); cursor: pointer;
+            font-size: 13px; transition: all 0.2s;
+            background: var(--bg-tertiary);
+            border-radius: 16px;
+            border: 1px solid transparent;
+        }
+        .accordion-item:hover { 
+            color: var(--text-primary); 
+            background: var(--bg-hover);
+        }
+        .accordion-item.active { 
+            color: #fff;
+            background: var(--accent-orange);
+            border-color: var(--accent-orange);
+        }
+        
+        /* 标签云容器 */
+        .tag-cloud { 
+            padding: 8px 24px 16px; 
+            display: flex; 
+            flex-wrap: wrap; 
+            gap: 8px; 
+        }
+        .sidebar-section.expanded .tag-cloud { display: flex; }
+        
+        /* 标签 - 胶囊按钮样式 */
+        .tag {
+            padding: 6px 12px; font-size: 11px;
+            background: var(--bg-tertiary); 
+            border-radius: 16px;
+            color: var(--text-secondary); 
+            cursor: pointer; 
+            transition: all 0.2s;
+            border: 1px solid transparent;
+        }
+        .tag:hover { 
+            background: var(--bg-hover); 
+            color: var(--text-primary); 
+        }
+        .tag.active {
+            color: #fff;
+            background: var(--accent-orange);
+            border-color: var(--accent-orange);
+        }
+        
+        /* 情绪标签 - 胶囊按钮样式 */
+        .mood-tags { padding: 8px 24px 16px; display: flex; flex-wrap: wrap; gap: 8px; }
+        .mood-tag { 
+            font-size: 11px; 
+            color: var(--text-secondary); 
+            cursor: pointer; 
+            transition: all 0.2s; 
+            letter-spacing: 0.5px;
+            background: var(--bg-tertiary);
+            padding: 6px 12px;
+            border-radius: 16px;
+            border: 1px solid transparent;
+        }
+        .mood-tag:hover { 
+            color: var(--text-primary); 
+            background: var(--bg-hover);
+        }
+        .mood-tag.active {
+            color: #fff;
+            background: var(--accent-orange);
+            border-color: var(--accent-orange);
+        }
+        .mood-tag-large { font-size: 13px; font-weight: 600; }
+        
+        /* 乐器数量 */
+        .accordion-item .count { float: right; font-size: 10px; color: var(--text-muted); }
+        
+        /* 筛选器 */
+        .filters { 
+            padding: 8px 24px 16px !important; 
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+        }
+        .filter-group { 
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            gap: 8px;
+        }
+        .filter-label { 
+            font-size: 10px; 
+            color: var(--text-muted); 
+            text-transform: uppercase; 
+            letter-spacing: 1px; 
+            margin-right: 8px;
+        }
+        .filter-options { 
+            display: flex; 
+            gap: 8px; 
+            flex-wrap: wrap; 
+        }
+        .filter-option { 
+            font-size: 11px; 
+            padding: 6px 12px; 
+            background: var(--bg-tertiary); 
+            border-radius: 16px; 
+            color: var(--text-secondary); 
+            cursor: pointer; 
+            transition: all 0.2s;
+            border: 1px solid transparent;
+        }
+        .filter-option:hover { 
+            background: var(--bg-hover); 
+            color: var(--text-primary); 
+        }
+        .filter-option.active {
+            color: #fff;
+            background: var(--accent-orange);
+            border-color: var(--accent-orange);
+        }
+        
+        /* 主内容区 */
+        .main { 
+            flex: 1; 
+            margin-left: 33%; 
+        }
+        
+        .main-inner {
+            width: 100%;
+            max-width: 100%;
+            padding: 24px 40px;
+            box-sizing: border-box;
+        }
+        
+        /* 顶部搜索栏 */
+        .topbar {
+            height: 56px; background: var(--bg-primary);
+            border-bottom: 1px solid var(--border-subtle);
+            display: flex; align-items: center; justify-content: space-between;
+            padding: 0 24px; position: sticky; top: 0; z-index: 100;
+        }
+        .search-box {
+            flex: 1; max-width: 500px;
+            display: flex; align-items: center; gap: 10px;
+            background: var(--bg-secondary); border: 1px solid var(--border-subtle);
+            border-radius: 6px; padding: 0 14px; height: 38px;
+            transition: 0.2s;
+        }
+        .search-box:focus-within { border-color: var(--border-accent); }
+        .search-box input {
+            flex: 1; background: none; border: none; outline: none;
+            color: var(--text-primary); font-size: 14px;
+        }
+        .search-box input::placeholder { color: var(--text-muted); }
+        .search-box .icon { color: var(--text-muted); font-size: 15px; }
+        
+        /* 认证按钮 */
+        .auth { display: flex; gap: 10px; }
+        .btn {
+            padding: 8px 18px; font-size: 12px; font-weight: 500;
+            border-radius: 5px; cursor: pointer; transition: 0.15s;
+            border: none;
+        }
+        .btn-secondary { background: var(--bg-tertiary); color: var(--text-secondary); }
+        .btn-secondary:hover { background: var(--bg-hover); color: var(--text-primary); }
+        .btn-primary { background: var(--text-primary); color: var(--bg-primary); }
+        .btn-primary:hover { background: #ddd; }
+        
+        /* 内容区 */
+        .main-inner {
+            width: 100%;
+            margin: 0 auto;
+            padding: 24px 40px;
+            box-sizing: border-box;
+        }
+        
+        /* 英雄横幅 */
+        .hero-banner {
+            width: 100%;
+            height: 220px;
+            background: linear-gradient(135deg, #1a1a2e 0%, #0f0f15 50%, #1a1a2e 100%);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 40px 60px;
+            margin-bottom: 40px;
+            position: relative;
+            overflow: hidden;
+            box-sizing: border-box;
+        }
+        .hero-banner::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: radial-gradient(ellipse at 50% 50%, rgba(255,85,0,0.12) 0%, transparent 60%);
+        }
+        .hero-content {
+            position: relative;
+            z-index: 1;
+            text-align: left;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            max-width: 70%;
+        }
+        .hero-title {
+            font-size: 52px;
+            font-weight: 800;
+            letter-spacing: 0.15em;
+            margin-bottom: 8px;
+            line-height: 1.2;
+            text-transform: uppercase;
+        }
+        .hero-brand {
+            background: linear-gradient(135deg, #ff5500, #ff8800);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-align: left;
+        }
+        .hero-subtitle {
+            font-size: 14px;
+            color: rgba(255,255,255,0.6);
+            letter-spacing: 6px;
+            font-weight: 400;
+            text-align: left;
+            margin-bottom: 16px;
+            line-height: 1.3;
+        }
+        .hero-tagline {
+            font-size: 24px;
+            color: var(--text-primary);
+            margin-bottom: 8px;
+            font-weight: 500;
+            text-align: left;
+            line-height: 1.3;
+        }
+        .hero-desc {
+            font-size: 13px;
+            color: var(--text-muted);
+            text-align: left;
+            line-height: 1.4;
+        }
+        .hero-visual {
+            position: relative;
+            z-index: 1;
+        }
+        .hero-circle {
+            width: 180px;
+            height: 180px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, rgba(255,85,0,0.2), rgba(153,69,255,0.2));
+            border: 1px solid rgba(255,255,255,0.1);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 64px;
+        }
+        .hero-logo {
+            width: 180px;
+            height: auto;
+        }
+        
+        /* 区块 */
+        .section { margin-bottom: 40px; }
+        .section-header-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-direction: row;
+            margin-bottom: 20px;
+        }
+        .section-title { font-size: 16px; font-weight: 600; letter-spacing: 0.5px; }
+        .section-more { font-size: 12px; color: var(--text-muted); cursor: pointer; }
+        .section-more:hover { color: var(--text-secondary); }
+        
+        /* 卡片网格 - 固定列数+扩展 */
+        .card-grid {
+            display: grid;
+            grid-template-columns: repeat(6, 1fr);
+            gap: 16px;
+            width: 100%;
+            box-sizing: border-box;
+        }
+        
+        /* 资产卡片 */
+        .card {
+            cursor: pointer; transition: 0.2s;
+            display: flex;
+            flex-direction: column;
+            width: 100%;
+        }
+        .card-cover {
+            width: 100%;
+            aspect-ratio: 1 / 1;
+            border-radius: 6px;
+            overflow: hidden;
+            position: relative; background: var(--bg-tertiary);
+        }
+        .card-cover img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        .card-cover .overlay {
+            position: absolute; inset: 0;
+            background: rgba(0,0,0,0.6);
+            display: flex; align-items: center; justify-content: center;
+            opacity: 0; transition: 0.2s;
+        }
+        .card:hover .card-cover .overlay { opacity: 1; }
+        .card-cover .play-btn {
+            width: 44px; height: 44px; border-radius: 50%;
+            background: rgba(255,255,255,0.15); backdrop-filter: blur(10px);
+            display: flex; align-items: center; justify-content: center;
+            font-size: 16px; color: white;
+            transform: scale(0.9); transition: 0.2s;
+        }
+        .card:hover .card-cover .play-btn { transform: scale(1); }
+        
+        .card-info { padding: 12px 4px 0; }
+        .card-title {
+            font-size: 13px; font-weight: 600; color: var(--text-primary);
+            white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+        }
+        .card-id {
+            font-size: 11px; color: var(--text-muted); margin-top: 4px;
+            font-family: monospace;
+        }
+        
+        /* 横向滚动 */
+        .card-row {
+            display: flex;
+            gap: 16px;
+            overflow-x: auto;
+            padding-bottom: 8px;
+            justify-content: center;
+        }
+        .card-row::-webkit-scrollbar { height: 4px; }
+        .card-row::-webkit-scrollbar-track { background: var(--bg-secondary); }
+        .card-row::-webkit-scrollbar-thumb { background: var(--border-accent); border-radius: 2px; }
+        .card-row .card { min-width: 160px; width: 160px; flex-shrink: 0; }
+        
+        /* 分页点 */
+        .dots { display: flex; gap: 6px; justify-content: center; margin-top: 12px; }
+        .dot {
+            width: 6px; height: 6px; border-radius: 50%;
+            background: var(--border-accent); cursor: pointer;
+        }
+        .dot.active { background: var(--text-secondary); }
+        
+        /* 底部播放器 */
+        .player {
+            position: fixed; bottom: 0; left: 33%; right: 0;
+            height: 64px; background: var(--bg-secondary);
+            border-top: 1px solid var(--border-subtle);
+            display: flex; align-items: center; padding: 0 20px; gap: 20px;
+            z-index: 200;
+        }
+        .player-cover {
+            width: 44px; height: 44px; border-radius: 4px;
+            background: linear-gradient(135deg, #1a1a2e, #16213e);
+            overflow: hidden;
+        }
+        .player-cover img { width: 100%; height: 100%; object-fit: cover; }
+        .player-info { width: 180px; }
+        .player-title { font-size: 12px; font-weight: 500; }
+        .player-artist { font-size: 10px; color: var(--text-muted); margin-top: 2px; }
+        
+        .player-wave { flex: 1; height: 36px; display: flex; align-items: center; gap: 2px; }
+        .wave-bar {
+            flex: 1; background: var(--border-accent); border-radius: 1px;
+            min-height: 4px; transition: 0.1s;
+        }
+        
+        .player-controls { display: flex; align-items: center; gap: 14px; }
+        .ctrl-btn {
+            background: none; border: none; color: var(--text-secondary);
+            cursor: pointer; font-size: 14px; padding: 4px;
+            transition: 0.15s;
+        }
+        .ctrl-btn:hover { color: var(--text-primary); }
+        .ctrl-btn.play {
+            width: 36px; height: 36px; border-radius: 50%;
+            background: var(--text-primary); color: var(--bg-primary);
+            display: flex; align-items: center; justify-content: center;
+        }
+        .ctrl-btn.play:hover { background: #ddd; }
+        
+        .player-time { font-size: 10px; color: var(--text-muted); width: 70px; text-align: left; }
+        
+        .player-extra { display: flex; gap: 12px; }
+        
+        /* 响应式 */
+        @media (max-width: 900px) {
+            .sidebar { width: 240px; min-width: 240px; max-width: 240px; }
+            .main { margin-left: 240px; }
+            .player { left: 240px; }
+            .main-inner { padding: 16px 20px; }
+            .hero-banner { height: 180px; padding: 30px 40px; }
+        }
+        
+        /* 移动端 */
+        @media (max-width: 768px) {
+            .sidebar { width: 100%; min-width: 100%; max-width: 100%; }
+            .main { margin-left: 0; }
+            .player { left: 0; }
+        }
+        
+        /* 启动画面 Splash Screen */
+        .splash-screen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: url('splash-bg.png') no-repeat center center;
+            background-size: cover;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 9999;
+            cursor: pointer;
+            animation: splashFadeIn 1s ease-out;
+            overflow: hidden;
+        }
+        @keyframes splashFadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        .splash-screen.fade-out {
+            animation: splashFadeOut 0.6s ease-in forwards;
+        }
+        @keyframes splashFadeOut {
+            from { opacity: 1; }
+            to { opacity: 0; pointer-events: none; }
+        }
+        .splash-hint {
+            position: absolute;
+            bottom: 40px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 12px;
+            color: rgba(255,255,255,0.5);
+            letter-spacing: 2px;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.5);
+        }
+        }
+        .splash-slogan-cn {
+            font-family: 'Noto Sans SC', sans-serif;
+            font-size: 14px;
+            color: rgba(255,255,255,0.5);
+            letter-spacing: 4px;
+        }
+        .splash-hint {
+            position: absolute;
+            bottom: 40px;
+            font-size: 11px;
+            color: rgba(255,255,255,0.3);
+            letter-spacing: 2px;
+        }
+
+        
+        /* 筛选标签高亮 */
+
+        
+        /* 筛选状态栏 */
+        .filter-status { display: none; align-items: center; gap: 12px; padding: 12px 16px; background: var(--bg-secondary); border-radius: 8px; margin: 0 20px 20px; flex-wrap: wrap; }
+        .filter-status.visible { display: flex; }
+        .filter-status .filter-label { font-size: 13px; color: var(--text-secondary); }
+        .filter-status .filter-count { color: var(--color-primary); font-weight: 600; }
+        .filter-status .active-tags { display: flex; gap: 6px; flex-wrap: wrap; flex: 1; }
+        .filter-status .active-tag { padding: 4px 10px; background: var(--color-primary); border-radius: 12px; font-size: 12px; display: flex; align-items: center; gap: 4px; }
+        .filter-status .active-tag .remove { cursor: pointer; opacity: 0.8; }
+        .filter-status .clear-all { padding: 6px 12px; background: transparent; border: 1px solid var(--border-color); border-radius: 6px; color: var(--text-secondary); font-size: 12px; cursor: pointer; transition: all 0.2s; }
+        .filter-status .clear-all:hover { border-color: var(--color-primary); color: var(--color-primary); }
+        
+        /* 无结果提示 */
+        .no-result { display: none; text-align: center; padding: 60px 20px; color: var(--text-muted); }
+        .no-result.visible { display: block; }
+        .no-result-icon { font-size: 48px; margin-bottom: 16px; }
+        .no-result-title { font-size: 18px; color: var(--text-secondary); margin-bottom: 8px; }
+        .no-result-desc { font-size: 14px; }
+        
+        /* 卡片隐藏 */
+        .card.hidden { display: none; }
+
+
+        
+        /* 全局高亮样式 - 最高优先级 */
+        .filter-tag.active,
+        .filter-tag.active:hover,
+        .accordion-item.filter-tag.active,
+        .accordion-item.filter-tag.active:hover,
+        .quick-tag.filter-tag.active,
+        .quick-tag.filter-tag.active:hover,
+        .mood-tag.filter-tag.active,
+        .mood-tag
+            background: var(--color-primary) !important;
+            color: #ffffff !important;
+            border-color: var(--color-primary) !important;
+        }
+
+    
+        .filter-tag { 
+            cursor: pointer; 
+            transition: all 0.2s; 
+            background: var(--bg-tertiary); 
+            border: 1px solid transparent; 
+            border-radius: 16px; 
+            padding: 4px 10px; 
+            color: var(--text-secondary);
+        }
+        .filter-tag:hover { 
+            background: var(--bg-hover); 
+            color: var(--text-primary); 
+        }
+        .filter-tag.active { 
+            background: var(--accent-orange); 
+            color: #fff; 
+            border-color: var(--accent-orange); 
+        }
+        .filter-status { 
+            display: none; 
+            align-items: center; 
+            gap: 12px; 
+            padding: 12px 16px; 
+            background: var(--bg-secondary); 
+            border-radius: 8px; 
+            margin: 0 20px 20px; 
+            flex-wrap: wrap; 
+        }
+        .filter-status.visible { display: flex; }
+        .filter-status .filter-label { font-size: 13px; color: var(--text-secondary); }
+        .filter-status .filter-count { color: var(--accent-orange); font-weight: 600; }
+        .filter-status .active-tags { display: flex; gap: 6px; flex-wrap: wrap; flex: 1; }
+        .filter-status .active-tag { 
+            padding: 4px 10px; 
+            background: var(--accent-orange); 
+            border-radius: 12px; 
+            font-size: 12px; 
+            display: flex; 
+            align-items: center; 
+            gap: 4px; 
+        }
+        .filter-status .active-tag .remove { cursor: pointer; opacity: 0.8; }
+        .filter-status .clear-all { 
+            padding: 6px 12px; 
+            background: transparent; 
+            border: 1px solid var(--border-subtle); 
+            border-radius: 6px; 
+            color: var(--text-secondary); 
+            font-size: 12px; 
+            cursor: pointer; 
+            transition: all 0.2s; 
+        }
+        .filter-status .clear-all:hover { border-color: var(--accent-orange); color: var(--accent-orange); }
+        .no-result { display: none; text-align: center; padding: 60px 20px; color: var(--text-muted); }
+        .no-result.visible { display: block; }
+        .no-result-icon { font-size: 48px; margin-bottom: 16px; }
+        .no-result-title { font-size: 18px; color: var(--text-secondary); margin-bottom: 8px; }
+        .no-result-desc { font-size: 14px; }
+        .card.hidden { display: none; }
+
+
+        /* 内容类型切换 - 新增 */
+        .content-type-toggle {
+            padding: 12px 24px;
+            border-bottom: 1px solid var(--border-subtle);
+        }
+        .toggle-buttons {
+            display: flex;
+            gap: 8px;
+            padding: 4px;
+            background: var(--bg-tertiary);
+            border-radius: 10px;
+        }
+        .toggle-btn {
+            flex: 1;
+            padding: 10px 16px;
+            font-size: 13px;
+            font-weight: 600;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            background: transparent;
+            color: var(--text-secondary);
+        }
+        .toggle-btn:hover { color: var(--text-primary); }
+        .toggle-btn.active {
+            background: linear-gradient(135deg, var(--accent-purple), #7c3aed);
+            color: #fff;
+            box-shadow: 0 4px 12px rgba(153, 69, 255, 0.3);
+        }
+        
+        /* 侧边栏内容区 - 可滚动 */
+        .sidebar-content {
+            flex: 1;
+            overflow-y: auto;
+            overflow-x: hidden;
+        }
+        .sidebar-content::-webkit-scrollbar { width: 4px; }
+        .sidebar-content::-webkit-scrollbar-track { background: var(--bg-secondary); }
+        .sidebar-content::-webkit-scrollbar-thumb { background: var(--border-accent); border-radius: 2px; }
+        
+        /* 结构标签 - 特殊样式 */
+        .structure-tag {
+            padding: 8px 14px;
+            font-size: 12px;
+            background: var(--bg-tertiary);
+            border: 1px solid var(--border-subtle);
+            border-radius: 8px;
+            color: var(--text-secondary);
+            cursor: pointer;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        .structure-tag:hover {
+            background: var(--bg-hover);
+            color: var(--text-primary);
+            border-color: var(--border-accent);
+        }
+        .structure-tag.active {
+            color: #fff;
+            background: linear-gradient(135deg, var(--accent-cyan), #0284c7);
+            border-color: var(--accent-cyan);
+            box-shadow: 0 4px 12px rgba(0, 168, 255, 0.3);
+        }
+        
+        /* 高级筛选 */
+        .advanced-toggle {
+            padding: 12px 24px;
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 12px;
+            font-weight: 700;
+            color: var(--text-secondary);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            border-bottom: 1px solid var(--border-subtle);
+        }
+        .advanced-toggle:hover { color: var(--text-primary); }
+        .advanced-arrow { font-size: 10px; transition: transform 0.3s; }
+        .advanced-toggle.expanded .advanced-arrow { transform: rotate(180deg); }
+        .advanced-content {
+            display: none;
+            padding: 16px 24px;
+            border-bottom: 1px solid var(--border-subtle);
+        }
+        .advanced-content.expanded { display: block; }
+        
+        /* BPM 滑块 */
+        .bpm-slider { margin-bottom: 16px; }
+        .bpm-header {
+            display: flex;
+            justify-content: space-between;
+            font-size: 11px;
+            color: var(--text-muted);
+            margin-bottom: 8px;
+        }
+        .bpm-value { color: var(--accent-orange); font-weight: 600; }
+        .bpm-slider input[type="range"] {
+            width: 100%;
+            height: 4px;
+            background: var(--bg-tertiary);
+            border-radius: 2px;
+            outline: none;
+            -webkit-appearance: none;
+        }
+        .bpm-slider input[type="range"]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            width: 14px;
+            height: 14px;
+            background: var(--accent-orange);
+            border-radius: 50%;
+            cursor: pointer;
+        }
+        
+        /* 时长选项 */
+        .duration-options { display: flex; gap: 8px; }
+        .duration-option {
+            flex: 1;
+            padding: 8px;
+            font-size: 11px;
+            background: var(--bg-tertiary);
+            border-radius: 6px;
+            color: var(--text-secondary);
+            cursor: pointer;
+            transition: all 0.2s;
+            text-align: center;
+            border: 1px solid transparent;
+        }
+        .duration-option:hover {
+            background: var(--bg-hover);
+            color: var(--text-primary);
+        }
+        .duration-option.active {
+            color: #fff;
+            background: var(--accent-orange);
+            border-color: var(--accent-orange);
+        }
+        
+        /* 底部激活筛选 */
+        .active-filters {
+            padding: 16px 24px;
+            background: rgba(0,0,0,0.2);
+            border-top: 1px solid var(--border-subtle);
+        }
+        .active-filters-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 12px;
+        }
+        .active-filters-title {
+            font-size: 12px;
+            font-weight: 700;
+            color: var(--text-secondary);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        .sidebar-clear-all {
+            font-size: 11px;
+            color: var(--accent-orange);
+            cursor: pointer;
+            background: none;
+            border: none;
+            padding: 0;
+        }
+        .sidebar-clear-all:hover { text-decoration: underline; }
+        .sidebar-active-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 6px;
+            min-height: 28px;
+        }
+        .sidebar-active-tag {
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            padding: 4px 10px;
+            background: rgba(255, 85, 0, 0.2);
+            border: 1px solid rgba(255, 85, 0, 0.3);
+            border-radius: 12px;
+            font-size: 11px;
+            color: #ff8855;
+        }
+        .sidebar-active-tag .remove {
+            cursor: pointer;
+            opacity: 0.8;
+        }
+        .sidebar-active-tag .remove:hover { opacity: 1; }
+        .sidebar-no-filters {
+            font-size: 11px;
+            color: var(--text-muted);
+            font-style: italic;
+        }
+        .sidebar-result-count {
+            margin-top: 12px;
+            padding-top: 12px;
+            border-top: 1px solid var(--border-subtle);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 11px;
+            color: var(--text-muted);
+        }
+        .sidebar-result-count .count {
+            color: var(--text-primary);
+            font-weight: 600;
+        }
+        .save-filter {
+            color: var(--accent-orange);
+            cursor: pointer;
+            background: none;
+            border: none;
+            padding: 0;
+            font-size: 11px;
+        }
+        
+        /* 新增 section-header 样式 */
+        .section-header-new {
+            padding: 16px 24px 12px;
+            font-size: 12px;
+            font-weight: 700;
+            color: var(--text-secondary);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .section-header-new .badge {
+            font-size: 10px;
+            padding: 2px 8px;
+            background: rgba(0, 168, 255, 0.2);
+            color: var(--accent-cyan);
+            border-radius: 10px;
+            text-transform: none;
+            letter-spacing: 0;
+        }
+    </style>
+
+        <style>
+        .filter-tag { background-color: var(--bg-tertiary) !important; padding: 4px 10px; border-radius: 16px; }
+        .filter-tag.active { background-color: #ff5500 !important; color: #ffffff !important; }
+        
+        .filter-tag { 
+            cursor: pointer; 
+            transition: all 0.2s; 
+            background: var(--bg-tertiary); 
+            border: 1px solid transparent; 
+            border-radius: 16px; 
+            padding: 4px 10px; 
+            color: var(--text-secondary);
+        }
+        .filter-tag:hover { 
+            background: var(--bg-hover); 
+            color: var(--text-primary); 
+        }
+        .filter-tag.active { 
+            background: var(--accent-orange); 
+            color: #fff; 
+            border-color: var(--accent-orange); 
+        }
+        .filter-status { 
+            display: none; 
+            align-items: center; 
+            gap: 12px; 
+            padding: 12px 16px; 
+            background: var(--bg-secondary); 
+            border-radius: 8px; 
+            margin: 0 20px 20px; 
+            flex-wrap: wrap; 
+        }
+        .filter-status.visible { display: flex; }
+        .filter-status .filter-label { font-size: 13px; color: var(--text-secondary); }
+        .filter-status .filter-count { color: var(--accent-orange); font-weight: 600; }
+        .filter-status .active-tags { display: flex; gap: 6px; flex-wrap: wrap; flex: 1; }
+        .filter-status .active-tag { 
+            padding: 4px 10px; 
+            background: var(--accent-orange); 
+            border-radius: 12px; 
+            font-size: 12px; 
+            display: flex; 
+            align-items: center; 
+            gap: 4px; 
+        }
+        .filter-status .active-tag .remove { cursor: pointer; opacity: 0.8; }
+        .filter-status .clear-all { 
+            padding: 6px 12px; 
+            background: transparent; 
+            border: 1px solid var(--border-subtle); 
+            border-radius: 6px; 
+            color: var(--text-secondary); 
+            font-size: 12px; 
+            cursor: pointer; 
+            transition: all 0.2s; 
+        }
+        .filter-status .clear-all:hover { border-color: var(--accent-orange); color: var(--accent-orange); }
+        .no-result { display: none; text-align: center; padding: 60px 20px; color: var(--text-muted); }
+        .no-result.visible { display: block; }
+        .no-result-icon { font-size: 48px; margin-bottom: 16px; }
+        .no-result-title { font-size: 18px; color: var(--text-secondary); margin-bottom: 8px; }
+        .no-result-desc { font-size: 14px; }
+        .card.hidden { display: none; }
+
+
+        /* 内容类型切换 - 新增 */
+        .content-type-toggle {
+            padding: 12px 24px;
+            border-bottom: 1px solid var(--border-subtle);
+        }
+        .toggle-buttons {
+            display: flex;
+            gap: 8px;
+            padding: 4px;
+            background: var(--bg-tertiary);
+            border-radius: 10px;
+        }
+        .toggle-btn {
+            flex: 1;
+            padding: 10px 16px;
+            font-size: 13px;
+            font-weight: 600;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            background: transparent;
+            color: var(--text-secondary);
+        }
+        .toggle-btn:hover { color: var(--text-primary); }
+        .toggle-btn.active {
+            background: linear-gradient(135deg, var(--accent-purple), #7c3aed);
+            color: #fff;
+            box-shadow: 0 4px 12px rgba(153, 69, 255, 0.3);
+        }
+        
+        /* 侧边栏内容区 - 可滚动 */
+        .sidebar-content {
+            flex: 1;
+            overflow-y: auto;
+            overflow-x: hidden;
+        }
+        .sidebar-content::-webkit-scrollbar { width: 4px; }
+        .sidebar-content::-webkit-scrollbar-track { background: var(--bg-secondary); }
+        .sidebar-content::-webkit-scrollbar-thumb { background: var(--border-accent); border-radius: 2px; }
+        
+        /* 结构标签 - 特殊样式 */
+        .structure-tag {
+            padding: 8px 14px;
+            font-size: 12px;
+            background: var(--bg-tertiary);
+            border: 1px solid var(--border-subtle);
+            border-radius: 8px;
+            color: var(--text-secondary);
+            cursor: pointer;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        .structure-tag:hover {
+            background: var(--bg-hover);
+            color: var(--text-primary);
+            border-color: var(--border-accent);
+        }
+        .structure-tag.active {
+            color: #fff;
+            background: linear-gradient(135deg, var(--accent-cyan), #0284c7);
+            border-color: var(--accent-cyan);
+            box-shadow: 0 4px 12px rgba(0, 168, 255, 0.3);
+        }
+        
+        /* 高级筛选 */
+        .advanced-toggle {
+            padding: 12px 24px;
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 12px;
+            font-weight: 700;
+            color: var(--text-secondary);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            border-bottom: 1px solid var(--border-subtle);
+        }
+        .advanced-toggle:hover { color: var(--text-primary); }
+        .advanced-arrow { font-size: 10px; transition: transform 0.3s; }
+        .advanced-toggle.expanded .advanced-arrow { transform: rotate(180deg); }
+        .advanced-content {
+            display: none;
+            padding: 16px 24px;
+            border-bottom: 1px solid var(--border-subtle);
+        }
+        .advanced-content.expanded { display: block; }
+        
+        /* BPM 滑块 */
+        .bpm-slider { margin-bottom: 16px; }
+        .bpm-header {
+            display: flex;
+            justify-content: space-between;
+            font-size: 11px;
+            color: var(--text-muted);
+            margin-bottom: 8px;
+        }
+        .bpm-value { color: var(--accent-orange); font-weight: 600; }
+        .bpm-slider input[type="range"] {
+            width: 100%;
+            height: 4px;
+            background: var(--bg-tertiary);
+            border-radius: 2px;
+            outline: none;
+            -webkit-appearance: none;
+        }
+        .bpm-slider input[type="range"]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            width: 14px;
+            height: 14px;
+            background: var(--accent-orange);
+            border-radius: 50%;
+            cursor: pointer;
+        }
+        
+        /* 时长选项 */
+        .duration-options { display: flex; gap: 8px; }
+        .duration-option {
+            flex: 1;
+            padding: 8px;
+            font-size: 11px;
+            background: var(--bg-tertiary);
+            border-radius: 6px;
+            color: var(--text-secondary);
+            cursor: pointer;
+            transition: all 0.2s;
+            text-align: center;
+            border: 1px solid transparent;
+        }
+        .duration-option:hover {
+            background: var(--bg-hover);
+            color: var(--text-primary);
+        }
+        .duration-option.active {
+            color: #fff;
+            background: var(--accent-orange);
+            border-color: var(--accent-orange);
+        }
+        
+        /* 底部激活筛选 */
+        .active-filters {
+            padding: 16px 24px;
+            background: rgba(0,0,0,0.2);
+            border-top: 1px solid var(--border-subtle);
+        }
+        .active-filters-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 12px;
+        }
+        .active-filters-title {
+            font-size: 12px;
+            font-weight: 700;
+            color: var(--text-secondary);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        .sidebar-clear-all {
+            font-size: 11px;
+            color: var(--accent-orange);
+            cursor: pointer;
+            background: none;
+            border: none;
+            padding: 0;
+        }
+        .sidebar-clear-all:hover { text-decoration: underline; }
+        .sidebar-active-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 6px;
+            min-height: 28px;
+        }
+        .sidebar-active-tag {
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            padding: 4px 10px;
+            background: rgba(255, 85, 0, 0.2);
+            border: 1px solid rgba(255, 85, 0, 0.3);
+            border-radius: 12px;
+            font-size: 11px;
+            color: #ff8855;
+        }
+        .sidebar-active-tag .remove {
+            cursor: pointer;
+            opacity: 0.8;
+        }
+        .sidebar-active-tag .remove:hover { opacity: 1; }
+        .sidebar-no-filters {
+            font-size: 11px;
+            color: var(--text-muted);
+            font-style: italic;
+        }
+        .sidebar-result-count {
+            margin-top: 12px;
+            padding-top: 12px;
+            border-top: 1px solid var(--border-subtle);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 11px;
+            color: var(--text-muted);
+        }
+        .sidebar-result-count .count {
+            color: var(--text-primary);
+            font-weight: 600;
+        }
+        .save-filter {
+            color: var(--accent-orange);
+            cursor: pointer;
+            background: none;
+            border: none;
+            padding: 0;
+            font-size: 11px;
+        }
+        
+        /* 新增 section-header 样式 */
+        .section-header-new {
+            padding: 16px 24px 12px;
+            font-size: 12px;
+            font-weight: 700;
+            color: var(--text-secondary);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .section-header-new .badge {
+            font-size: 10px;
+            padding: 2px 8px;
+            background: rgba(0, 168, 255, 0.2);
+            color: var(--accent-cyan);
+            border-radius: 10px;
+            text-transform: none;
+            letter-spacing: 0;
+        }
+    </style>
+</head>
+<body>
+    <!-- 启动画面 -->
+    <div class="splash-screen" onclick="closeSplash()">
+        <p class="splash-hint">点击任意处进入 · Click to Enter</p>
+    </div>
+    
+    <div class="app">
+        <!-- 侧边栏 -->
+        <aside class="sidebar" style="display: flex; flex-direction: column;">
+            <div class="logo">
+                <div class="logo-icon"></div>
+                ASTRASONIC
+            </div>
+            
+            <div class="content-type-toggle">
+                <div class="toggle-buttons">
+                    <button class="toggle-btn active" data-type="music" onclick="switchContentType('music')">
+                        <span style="margin-right:4px;">♪</span>音乐
+                    </button>
+                    <button class="toggle-btn" data-type="sfx" onclick="switchContentType('sfx')">
+                        <span style="margin-right:4px;">🔊</span>音效
+                    </button>
+                </div>
+            </div>
+            
+            <div class="sidebar-content">
+                <div class="sidebar-section">
+                    <div class="section-header-new">快速筛选 Quick Search</div>
+                    <div class="quick-tags" id="quickTags"></div>
+                </div>
+                
+                <div class="sidebar-section" id="primarySection">
+                    <div class="section-header-new" id="primaryHeader">用途 & 场景</div>
+                    <div class="filter-group">
+                        <label class="filter-label" id="primaryLabel1">用途</label>
+                        <div class="filter-options" id="primaryOptions1"></div>
+                    </div>
+                    <div class="filter-group">
+                        <label class="filter-label" id="primaryLabel2">场景</label>
+                        <div class="filter-options" id="primaryOptions2"></div>
+                    </div>
+                </div>
+                
+                <div class="sidebar-section">
+                    <div class="section-header-new">情绪 & 风格 Mood & Style</div>
+                    <div class="filter-group">
+                        <label class="filter-label">情绪 Mood</label>
+                        <div class="filter-options" id="moodOptions"></div>
+                    </div>
+                    <div class="filter-group">
+                        <label class="filter-label">风格 Style</label>
+                        <div class="filter-options" id="styleOptions"></div>
+                    </div>
+                </div>
+                
+                <div class="sidebar-section">
+                    <div class="section-header-new">
+                        结构标签 Structure
+                        <span class="badge">专业</span>
+                    </div>
+                    <div class="filter-group">
+                        <div class="filter-options" id="structureOptions"></div>
+                    </div>
+                </div>
+                
+                <div class="advanced-toggle" onclick="toggleAdvanced()">
+                    <span>高级筛选 Advanced</span>
+                    <span class="advanced-arrow">▼</span>
+                </div>
+                <div class="advanced-content" id="advancedContent">
+                    <div class="bpm-slider">
+                        <div class="bpm-header">
+                            <span>BPM</span>
+                            <span class="bpm-value" id="bpmValue">60-180</span>
+                        </div>
+                        <input type="range" min="60" max="180" value="180" oninput="updateBPM(this.value)">
+                    </div>
+                    <div>
+                        <label class="filter-label">时长 Duration</label>
+                        <div class="duration-options">
+                            <div class="duration-option" onclick="toggleDuration(this)">&lt; 30s</div>
+                            <div class="duration-option" onclick="toggleDuration(this)">30s-2m</div>
+                            <div class="duration-option" onclick="toggleDuration(this)">&gt; 2m</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="active-filters">
+                <div class="active-filters-header">
+                    <span class="active-filters-title">当前筛选 Active</span>
+                    <button class="sidebar-clear-all" onclick="clearAllFilters()">清空全部</button>
+                </div>
+                <div class="sidebar-active-tags" id="sidebarActiveTags">
+                    <span class="sidebar-no-filters">暂无筛选条件</span>
+                </div>
+                <div class="sidebar-result-count">
+                    <span>找到 <span class="count" id="sidebarResultCount">20</span> 个结果</span>
+                    <button class="save-filter">保存筛选</button>
+                </div>
+            </div>
+        </aside>
+        
+        <!-- 主内容 -->
+        <main class="main">
+            <!-- 顶部搜索 -->
+            <header class="topbar">
+                <div class="search-box">
+                    <span class="icon">🔍</span>
+                    <input type="text" placeholder="搜索音乐、场景、风格、标签... Search..." id="topSearchInput" autofocus>
+                </div>
+                <div class="auth">
+                    <button class="btn btn-secondary">注册 Sign Up</button>
+                    <button class="btn btn-primary">登录 Login</button>
+                </div>
+            </header>
+            
+            <!-- 筛选状态栏 -->
+            
+    <div class="filter-status" style="display: block !important;" id="filterStatus">
+                <span class="filter-label">找到 <span class="filter-count" id="filterCount">0</span> 个结果</span>
+                <div class="active-tags" id="activeTags"></div>
+                <button class="clear-all" onclick="clearAllFilters()">清除全部</button>
+            </div>
+            
+            <!-- 无结果提示 -->
+            <div class="no-result" id="noResult">
+                <div class="no-result-icon">🔍</div>
+                <div class="no-result-title">没有找到匹配的音乐</div>
+                <div class="no-result-desc">尝试清除筛选条件或更改搜索关键词</div>
+            </div>
+
+            
+            <!-- 内容 -->
+            <div class="main-inner">
+                <!-- 英雄横幅 -->
+                <div class="hero-banner">
+                    <div class="hero-content">
+                        <h1 class="hero-title">
+                            <span class="hero-brand">ASTRASONIC</span>
+                        </h1>
+                        <p class="hero-subtitle">Sound Across the Universe</p>
+                        <p class="hero-tagline">连接创作者与内容世界的音频空间站</p>
+                        <p class="hero-desc">游戏音频 · 场景音乐 · 商业授权 · AI音频资产</p>
+                        <p class="hero-desc-en">Game Audio · Scene-Based Music · Licensing · AI Audio Assets</p>
+                    </div>
+                    <div class="hero-visual">
+                        <img src="logo-transparent.png" alt="ASTRASONIC Logo" class="hero-logo">
+                    </div>
+                </div>
+                
+                <!-- 最新发布 -->
+                <div class="section">
+                    <div class="section-header-row">
+                        <h2 class="section-title">最新发布 New Releases</h2>
+                    </div>
+                    <div class="card-grid">
+                        <div class="card" data-scene="game" data-style="epic" data-mood="heroic">
+                            <div class="card-cover">
+                                <img src="https://images.unsplash.com/photo-1511379938547-c1f69419868d?w=400&h=400&fit=crop" alt="Dynasty Warriors">
+                                <div class="overlay"><div class="play-btn">▶</div></div>
+                            </div>
+                            <div class="card-info">
+                                <div class="card-title">赤壁之战 Battle of Red Cliffs</div>
+                                <div class="card-id">AS-2026-001</div>
+                            </div>
+                        </div>
+                        <div class="card" data-scene="commercial" data-style="oriental" data-mood="romantic">
+                            <div class="card-cover">
+                                <img src="https://images.unsplash.com/photo-1493676304819-0d7a8d026dcf?w=400&h=400&fit=crop" alt="Eastern Legends">
+                                <div class="overlay"><div class="play-btn">▶</div></div>
+                            </div>
+                            <div class="card-info">
+                                <div class="card-title">东方传说 Eastern Legends</div>
+                                <div class="card-id">AS-2026-002</div>
+                            </div>
+                        </div>
+                        <div class="card" data-scene="short" data-style="electronic" data-mood="tension">
+                            <div class="card-cover">
+                                <img src="https://images.unsplash.com/photo-1470225620780-dba8ba36b745?w=400&h=400&fit=crop" alt="Cyber Chase">
+                                <div class="overlay"><div class="play-btn">▶</div></div>
+                            </div>
+                            <div class="card-info">
+                                <div class="card-title">赛博追击 Cyber Chase</div>
+                                <div class="card-id">AS-2026-003</div>
+                            </div>
+                        </div>
+                        <div class="card" data-scene="game" data-style="chinese" data-mood="heroic">
+                            <div class="card-cover">
+                                <img src="https://images.unsplash.com/photo-1514320291840-2e0a9bf2a9ae?w=400&h=400&fit=crop" alt="Mystic Realm">
+                                <div class="overlay"><div class="play-btn">▶</div></div>
+                            </div>
+                            <div class="card-info">
+                                <div class="card-title">神秘领域 Mystic Realm</div>
+                                <div class="card-id">AS-2026-004</div>
+                            </div>
+                        </div>
+                        <div class="card" data-scene="shop" data-style="electronic" data-mood="romantic">
+                            <div class="card-cover">
+                                <img src="https://images.unsplash.com/photo-1511671782779-c97d3d27a1d4?w=400&h=400&fit=crop" alt="Neon Rush">
+                                <div class="overlay"><div class="play-btn">▶</div></div>
+                            </div>
+                            <div class="card-info">
+                                <div class="card-title">霓虹冲刺 Neon Rush</div>
+                                <div class="card-id">AS-2026-005</div>
+                            </div>
+                        </div>
+                        <div class="card" data-scene="game" data-style="epic" data-mood="tension">
+                            <div class="card-cover">
+                                <img src="https://images.unsplash.com/photo-1550745165-9bc0b252726f?w=400&h=400&fit=crop" alt="Pixel Dreams">
+                                <div class="overlay"><div class="play-btn">▶</div></div>
+                            </div>
+                            <div class="card-info">
+                                <div class="card-title">像素梦境 Pixel Dreams</div>
+                                <div class="card-id">AS-2026-006</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- 场景分类展示 - 策划案核心 -->
+                <div class="section">
+                    <div class="section-header-row">
+                        <h2 class="section-title">场景分类 Scene Categories</h2>
+                    </div>
+                    <div class="card-grid">
+                        <div class="card" data-scene="game" data-style="epic">
+                            <div class="card-cover">
+                                <img src="https://images.unsplash.com/photo-1507838153414-b4b713384a76?w=400&h=400&fit=crop" alt="Epic Orchestra">
+                                <div class="overlay"><div class="play-btn">▶</div></div>
+                            </div>
+                            <div class="card-info">
+                                <div class="card-title">史诗管弦 Epic Orchestra</div>
+                                <div class="card-id">48 Tracks</div>
+                            </div>
+                        </div>
+                        <div class="card" data-scene="short" data-style="electronic">
+                            <div class="card-cover">
+                                <img src="https://images.unsplash.com/photo-1485579149621-3123dd979885?w=400&h=400&fit=crop" alt="Dark Ambient">
+                                <div class="overlay"><div class="play-btn">▶</div></div>
+                            </div>
+                            <div class="card-info">
+                                <div class="card-title">暗黑氛围 Dark Ambient</div>
+                                <div class="card-id">36 Tracks</div>
+                            </div>
+                        </div>
+                        <div class="card" data-scene="commercial" data-style="pop">
+                            <div class="card-cover">
+                                <img src="https://images.unsplash.com/photo-1550745165-9bc0b252726f?w=400&h=400&fit=crop" alt="8-Bit Retro">
+                                <div class="overlay"><div class="play-btn">▶</div></div>
+                            </div>
+                            <div class="card-info">
+                                <div class="card-title">8-bit 复古 Retro</div>
+                                <div class="card-id">24 Tracks</div>
+                            </div>
+                        </div>
+                        <div class="card" data-scene="shop" data-style="chinese">
+                            <div class="card-cover">
+                                <img src="https://images.unsplash.com/photo-1519892300165-cb5542fb47c7?w=400&h=400&fit=crop" alt="东方风格 Oriental">
+                                <div class="overlay"><div class="play-btn">▶</div></div>
+                            </div>
+                            <div class="card-info">
+                                <div class="card-title">东方风格 Oriental</div>
+                                <div class="card-id">32 Tracks</div>
+                            </div>
+                        </div>
+                        <div class="card" data-scene="sleep" data-style="healing">
+                            <div class="card-cover">
+                                <img src="https://images.unsplash.com/photo-1493676304819-0d7a8d026dcf?w=400&h=400&fit=crop" alt="Electronic">
+                                <div class="overlay"><div class="play-btn">▶</div></div>
+                            </div>
+                            <div class="card-info">
+                                <div class="card-title">电子合成 Electronic</div>
+                                <div class="card-id">52 Tracks</div>
+                            </div>
+                        </div>
+                        <div class="card" data-scene="kids" data-style="classical">
+                            <div class="card-cover">
+                                <img src="https://images.unsplash.com/photo-1571330735066-03aaa9429d89?w=400&h=400&fit=crop" alt="Commercial">
+                                <div class="overlay"><div class="play-btn">▶</div></div>
+                            </div>
+                            <div class="card-info">
+                                <div class="card-title">商业广告 Commercial</div>
+                                <div class="card-id">28 Tracks</div>
+                            </div>
+                        </div>
+                        <div class="card">
+                            <div class="card-cover">
+                                <img src="https://images.unsplash.com/photo-1516110833967-0b5716ca1387?w=400&h=400&fit=crop" alt="Retail">
+                                <div class="overlay"><div class="play-btn">▶</div></div>
+                            </div>
+                            <div class="card-info">
+                                <div class="card-title">商铺场景 Retail</div>
+                                <div class="card-id">18 Tracks</div>
+                            </div>
+                        </div>
+                        <div class="card">
+                            <div class="card-cover">
+                                <img src="https://images.unsplash.com/photo-1506157786151-b8491531f063?w=400&h=400&fit=crop" alt="Sleep">
+                                <div class="overlay"><div class="play-btn">▶</div></div>
+                            </div>
+                            <div class="card-info">
+                                <div class="card-title">睡眠冥想 Sleep</div>
+                                <div class="card-id">22 Tracks</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- 音效库 -->
+                <div class="section">
+                    <div class="section-header-row">
+                        <h2 class="section-title">必备音效库 Essential SFX</h2>
+                    </div>
+                    <div class="card-grid">
+                        <div class="card">
+                            <div class="card-cover">
+                                <img src="https://images.unsplash.com/photo-1598488035139-bdbb2231ce04?w=400&h=400&fit=crop" alt="Rise Builder">
+                                <div class="overlay"><div class="play-btn">▶</div></div>
+                            </div>
+                            <div class="card-info">
+                                <div class="card-title">Rise Builder</div>
+                                <div class="card-id">SFX-001</div>
+                            </div>
+                        </div>
+                        <div class="card">
+                            <div class="card-cover">
+                                <img src="https://images.unsplash.com/photo-1571330735066-03aaa9429d89?w=400&h=400&fit=crop" alt="Impact Hits">
+                                <div class="overlay"><div class="play-btn">▶</div></div>
+                            </div>
+                            <div class="card-info">
+                                <div class="card-title">Impact Hits</div>
+                                <div class="card-id">SFX-002</div>
+                            </div>
+                        </div>
+                        <div class="card">
+                            <div class="card-cover">
+                                <img src="https://images.unsplash.com/photo-1516110833967-0b5716ca1387?w=400&h=400&fit=crop" alt="Drones">
+                                <div class="overlay"><div class="play-btn">▶</div></div>
+                            </div>
+                            <div class="card-info">
+                                <div class="card-title">Drones Collection</div>
+                                <div class="card-id">SFX-003</div>
+                            </div>
+                        </div>
+                        <div class="card">
+                            <div class="card-cover">
+                                <img src="https://images.unsplash.com/photo-1506157786151-b8491531f063?w=400&h=400&fit=crop" alt="Stings">
+                                <div class="overlay"><div class="play-btn">▶</div></div>
+                            </div>
+                            <div class="card-info">
+                                <div class="card-title">Stings Pack</div>
+                                <div class="card-id">SFX-004</div>
+                            </div>
+                        </div>
+                        <div class="card">
+                            <div class="card-cover">
+                                <img src="https://images.unsplash.com/photo-1446776877081-d282a0f896e2?w=400&h=400&fit=crop" alt="Whooshes">
+                                <div class="overlay"><div class="play-btn">▶</div></div>
+                            </div>
+                            <div class="card-info">
+                                <div class="card-title">Whoosh Effects</div>
+                                <div class="card-id">SFX-005</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+    
+    <!-- 底部播放器 -->
+    <div class="player">
+        <div class="player-cover">
+            <img src="https://images.unsplash.com/photo-1511379938547-c1f69419868d?w=100&h=100&fit=crop" alt="">
+        </div>
+        <div class="player-info">
+            <div class="player-title">选择一首音乐 Select a Track</div>
+            <div class="player-artist">ASTRASONIC</div>
+        </div>
+        <div class="player-wave" id="playerWave"></div>
+        <div class="player-controls">
+            <button class="ctrl-btn">⏮</button>
+            <button class="ctrl-btn play" id="playBtn">▶</button>
+            <button class="ctrl-btn">⏭</button>
+        </div>
+        <div class="player-time">0:00 / 0:00</div>
+        <div class="player-extra">
+            <button class="btn btn-primary" style="padding: 6px 14px; font-size: 11px;">获取授权 Get License</button>
+        </div>
+    </div>
+    
+    <script>
+        // 手风琴切换
+        function toggleSection(header) {
+            header.parentElement.classList.toggle('expanded');
+            header.classList.toggle('collapsed');
+        }
+        
+        // 生成波形
+        function generateWave(container) {
+            container.innerHTML = '';
+            for (let i = 0; i < 80; i++) {
+                const bar = document.createElement('div');
+                bar.className = 'wave-bar';
+                bar.style.height = Math.random() * 80 + 10 + '%';
+                container.appendChild(bar);
+            }
+        }
+        
+        const playerWave = document.getElementById('playerWave');
+        generateWave(playerWave);
+        
+        // 播放控制
+        let isPlaying = false;
+        const playBtn = document.getElementById('playBtn');
+        const bars = playerWave.querySelectorAll('.wave-bar');
+        
+        playBtn.addEventListener('click', () => {
+            isPlaying = !isPlaying;
+            playBtn.textContent = isPlaying ? '⏸' : '▶';
+            bars.forEach((bar, i) => {
+                if (isPlaying) {
+                    bar.style.background = '#fff';
+                    animateWave(bars, i);
+                } else {
+                    bar.style.background = '#333';
+                }
+            });
+        });
+        
+        function animateWave(bars, index) {
+            if (!isPlaying) return;
+            setTimeout(() => {
+                if (bars[index]) {
+                    bars[index].style.height = Math.random() * 80 + 10 + '%';
+                }
+                animateWave(bars, (index + 1) % bars.length);
+            }, 50);
+        }
+        
+        // 启动画面 - 点击关闭
+        function closeSplash() {
+            document.body.style.overflow = ''; // 恢复滚动
+            const splash = document.querySelector('.splash-screen');
+            if (splash) {
+                splash.classList.add('fade-out');
+                setTimeout(() => {
+                    splash.style.display = 'none';
+                }, 600);
+            }
+        }
+        // 页面加载时隐藏滚动条
+        document.body.style.overflow = 'hidden';
+    </script>
+
+    
+    <script>
+    // 筛选功能
+    (function() {
+        var activeFilters = {};
+        
+        function init() {
+            
+            // 绑定标签点击
+            document.querySelectorAll('.filter-tag').forEach(function(tag) {
+                
+                tag.addEventListener('click', toggleFilter);
+            });
+            
+            // 绑定搜索
+            var searchInput = document.getElementById('topSearchInput');
+            if (searchInput) {
+                searchInput.addEventListener('input', applyFilters);
+            }
+            
+            updateFilterCount();
+        }
+        
+        function toggleFilter(e) {
+            var tag = e.target;
+
+            var filterType = tag.dataset.filter;
+            var filterValue = tag.dataset.value;
+            
+            if (!filterType || !filterValue) return;
+            
+            if (!activeFilters[filterType]) {
+                activeFilters[filterType] = new Set();
+            }
+            
+            if (activeFilters[filterType].has(filterValue)) {
+                activeFilters[filterType].delete(filterValue);
+                tag.classList.remove('active');
+            } else {
+                activeFilters[filterType].add(filterValue);
+                tag.classList.add('active');
+            }
+            
+            applyFilters();
+        }
+        
+        function applyFilters() {
+            var cards = document.querySelectorAll('.card');
+            var searchInput = document.getElementById('topSearchInput');
+            var searchTerm = searchInput ? searchInput.value.toLowerCase() : '';
+            var visibleCount = 0;
+            
+            cards.forEach(function(card) {
+                var matches = true;
+                
+                // 标签筛选
+                for (var type in activeFilters) {
+                    if (activeFilters[type].size === 0) continue;
+                    
+                    var cardValue = card.dataset[type];
+                    if (!cardValue || !activeFilters[type].has(cardValue)) {
+                        matches = false;
+                        break;
+                    }
+                }
+                
+                // 搜索筛选
+                if (searchTerm && card.textContent.toLowerCase().indexOf(searchTerm) === -1) {
+                    matches = false;
+                }
+                
+                if (matches) {
+                    card.classList.remove('hidden');
+                    visibleCount++;
+                } else {
+                    card.classList.add('hidden');
+                }
+            });
+            
+            updateFilterUI(visibleCount);
+        }
+        
+        function updateFilterCount() {
+            var cards = document.querySelectorAll('.card');
+            updateFilterUI(cards.length);
+        }
+        
+        function updateFilterUI(visibleCount) {
+            var filterStatus = document.getElementById('filterStatus');
+            var filterCount = document.getElementById('filterCount');
+            var activeTags = document.getElementById('activeTags');
+            var noResult = document.getElementById('noResult');
+            var searchInput = document.getElementById('topSearchInput');
+            
+            if (filterCount) filterCount.textContent = visibleCount;
+            
+            // 更新已选标签
+            if (activeTags) {
+                activeTags.innerHTML = '';
+                for (var type in activeFilters) {
+                    activeFilters[type].forEach(function(value) {
+                        var tagEl = document.createElement('div');
+                        tagEl.className = 'active-tag';
+                        tagEl.innerHTML = value + ' <span class="remove" onclick="removeFilter(\'' + type + '\',\'' + value + '\')">×</span>';
+                        activeTags.appendChild(tagEl);
+                    });
+                }
+            }
+            
+            // 显示/隐藏状态栏
+            var hasFilters = false;
+            for (var type in activeFilters) {
+                if (activeFilters[type].size > 0) hasFilters = true;
+            }
+            if (searchInput && searchInput.value) hasFilters = true;
+            
+            if (filterStatus) {
+                filterStatus.classList.toggle('visible', hasFilters);
+            }
+            
+            // 显示/隐藏无结果
+            if (noResult) {
+                noResult.classList.toggle('visible', visibleCount === 0 && hasFilters);
+            }
+        }
+        
+        window.removeFilter = function(type, value) {
+            if (activeFilters[type]) {
+                activeFilters[type].delete(value);
+                var tag = document.querySelector('.filter-tag[data-filter="' + type + '"][data-value="' + value + '"]');
+                if (tag) tag.classList.remove('active');
+            }
+            applyFilters();
+        };
+        
+        window.clearAllFilters = function() {
+            activeFilters = {};
+            document.querySelectorAll('.filter-tag.active').forEach(function(tag) {
+                tag.classList.remove('active');
+            });
+            var searchInput = document.getElementById('topSearchInput');
+            if (searchInput) searchInput.value = '';
+            applyFilters();
+        };
+        
+        // 初始化
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', init);
+        } else {
+            init();
+        }
+    })();
+    </script>
+
+
+    <script src="js/filter.js"></script>
+    <script>
+        const FILTER_CONFIG = {
+            music: {
+                quickTags: ['战斗', '东方', '短视频', '紧张', '史诗'],
+                primary: {
+                    title: '用途 & 场景',
+                    labels: ['用途', '场景'],
+                    usage: ['Game', 'Video', 'Commercial', 'Film', 'Corporate', 'UI'],
+                    scene: ['战斗', '主城', 'Boss', '转场', '开场', '结尾', '探索']
+                },
+                mood: ['热血', '紧张', '轻松', '快乐', '悲伤', '神秘', '恐怖', '治愈'],
+                style: ['东方', '管弦', '电子', '科幻', '复古', '民族', 'Lo-fi', '爵士'],
+                structure: ['Loop', 'Stinger', 'Build-up', 'Drop', '分轨(Stem)', '可交互']
+            },
+            sfx: {
+                quickTags: ['UI点击', '科幻', '技能', '魔法', '警告'],
+                primary: {
+                    title: '来源 & 功能',
+                    labels: ['来源', '功能'],
+                    source: ['人声', '自然', '动物', '机械', '电子', '交通', '战斗', 'UI', '环境'],
+                    function: ['点击反馈', '战斗反馈', '技能释放', '环境循环', '过渡音', '警告提示']
+                },
+                mood: ['轻快', '紧张', '恐怖', '神秘', '愉悦', '沉重'],
+                style: ['科幻', '卡通', '写实', '魔法', '未来科技', '黑暗风', '东方玄幻'],
+                structure: ['循环', '单次', '随机变体']
+            }
+        };
+        
+        let currentType = 'music';
+        let activeFilters = {
+            music: { usage: '', scene: [], mood: [], style: [], structure: [] },
+            sfx: { source: '', function: [], mood: [], style: [], structure: [] }
+        };
+        
+        function renderSidebar() {
+            const config = FILTER_CONFIG[currentType];
+            
+            document.getElementById('quickTags').innerHTML = config.quickTags.map(tag => {
+                const isActive = isQuickTagActive(tag);
+                return `<span class="quick-tag ${isActive ? 'active' : ''}" onclick="toggleQuickTag('${tag}')">${tag}</span>`;
+            }).join('');
+            
+            document.getElementById('primaryHeader').textContent = config.primary.title;
+            document.getElementById('primaryLabel1').textContent = config.primary.labels[0];
+            document.getElementById('primaryLabel2').textContent = config.primary.labels[1];
+            
+            const options1 = currentType === 'music' ? config.primary.usage : config.primary.source;
+            const key1 = currentType === 'music' ? 'usage' : 'source';
+            document.getElementById('primaryOptions1').innerHTML = options1.map(opt => {
+                const isActive = activeFilters[currentType][key1] === opt;
+                return `<span class="filter-option filter-tag ${isActive ? 'active' : ''}" onclick="toggleFilter('${key1}', '${opt}')">${opt}</span>`;
+            }).join('');
+            
+            const options2 = currentType === 'music' ? config.primary.scene : config.primary.function;
+            const key2 = currentType === 'music' ? 'scene' : 'function';
+            document.getElementById('primaryOptions2').innerHTML = options2.map(opt => {
+                const isActive = activeFilters[currentType][key2].includes(opt);
+                return `<span class="filter-option filter-tag ${isActive ? 'active' : ''}" onclick="toggleFilter('${key2}', '${opt}')">${opt}</span>`;
+            }).join('');
+            
+            document.getElementById('moodOptions').innerHTML = config.mood.map(m => {
+                const isActive = activeFilters[currentType].mood.includes(m);
+                return `<span class="filter-option filter-tag ${isActive ? 'active' : ''}" onclick="toggleFilter('mood', '${m}')">${m}</span>`;
+            }).join('');
+            
+            document.getElementById('styleOptions').innerHTML = config.style.map(s => {
+                const isActive = activeFilters[currentType].style.includes(s);
+                return `<span class="filter-option filter-tag ${isActive ? 'active' : ''}" onclick="toggleFilter('style', '${s}')">${s}</span>`;
+            }).join('');
+            
+            document.getElementById('structureOptions').innerHTML = config.structure.map(s => {
+                const isActive = activeFilters[currentType].structure.includes(s);
+                return `<span class="structure-tag ${isActive ? 'active' : ''}" onclick="toggleFilter('structure', '${s}')">⚙ ${s}</span>`;
+            }).join('');
+        }
+        
+        function switchContentType(type) {
+            currentType = type;
+            document.querySelectorAll('.toggle-btn').forEach(btn => {
+                btn.classList.toggle('active', btn.dataset.type === type);
+            });
+            renderSidebar();
+            applyFilters();
+        }
+        
+        function toggleFilter(category, value) {
+            const filters = activeFilters[currentType];
+            if (category === 'usage' || category === 'source') {
+                filters[category] = filters[category] === value ? '' : value;
+            } else {
+                const index = filters[category].indexOf(value);
+                if (index > -1) filters[category].splice(index, 1);
+                else filters[category].push(value);
+            }
+            renderSidebar();
+            updateActiveFilters();
+            applyFilters();
+        }
+        
+        function toggleQuickTag(tag) {
+            const config = FILTER_CONFIG[currentType];
+            if (config.mood.includes(tag)) toggleFilter('mood', tag);
+            else if (config.style.includes(tag)) toggleFilter('style', tag);
+            else {
+                const key = currentType === 'music' ? 'scene' : 'function';
+                toggleFilter(key, tag);
+            }
+        }
+        
+        function isQuickTagActive(tag) {
+            const config = FILTER_CONFIG[currentType];
+            const filters = activeFilters[currentType];
+            if (config.mood.includes(tag)) return filters.mood.includes(tag);
+            if (config.style.includes(tag)) return filters.style.includes(tag);
+            const key = currentType === 'music' ? 'scene' : 'function';
+            return filters[key].includes(tag);
+        }
+        
+        function toggleAdvanced() {
+            document.querySelector('.advanced-toggle').classList.toggle('expanded');
+            document.getElementById('advancedContent').classList.toggle('expanded');
+        }
+        
+        function updateBPM(value) {
+            document.getElementById('bpmValue').textContent = `60-${value}`;
+        }
+        
+        function toggleDuration(el) {
+            el.classList.toggle('active');
+        }
+        
+        function updateActiveFilters() {
+            const filters = activeFilters[currentType];
+            const activeList = [];
+            Object.entries(filters).forEach(([key, values]) => {
+                if (Array.isArray(values) && values.length > 0) values.forEach(v => activeList.push({ key, value: v }));
+                else if (values && typeof values === 'string') activeList.push({ key, value: values });
+            });
+            
+            const sidebarTags = document.getElementById('sidebarActiveTags');
+            if (activeList.length === 0) {
+                sidebarTags.innerHTML = '<span class="sidebar-no-filters">暂无筛选条件</span>';
+            } else {
+                sidebarTags.innerHTML = activeList.map(({ key, value }) => `
+                    <span class="sidebar-active-tag">
+                        ${value}
+                        <span class="remove" onclick="removeFilter('${key}', '${value}')">×</span>
+                    </span>
+                `).join('');
+            }
+            
+            const mainTags = document.getElementById('activeTags');
+            if (mainTags) {
+                mainTags.innerHTML = activeList.map(({ key, value }) => `
+                    <span class="active-tag">
+                        ${value}
+                        <span class="remove" onclick="removeFilter('${key}', '${value}')">×</span>
+                    </span>
+                `).join('');
+            }
+        }
+        
+        function removeFilter(category, value) {
+            const filters = activeFilters[currentType];
+            if (Array.isArray(filters[category])) filters[category] = filters[category].filter(v => v !== value);
+            else filters[category] = '';
+            renderSidebar();
+            updateActiveFilters();
+            applyFilters();
+        }
+        
+        function clearAllFilters() {
+            activeFilters[currentType] = currentType === 'music'
+                ? { usage: '', scene: [], mood: [], style: [], structure: [] }
+                : { source: '', function: [], mood: [], style: [], structure: [] };
+            document.getElementById('topSearchInput').value = '';
+            renderSidebar();
+            updateActiveFilters();
+            applyFilters();
+        }
+        
+        function applyFilters() {
+            const cards = document.querySelectorAll('.card');
+            const searchTerm = document.getElementById('topSearchInput').value.toLowerCase();
+            let visibleCount = 0;
+            cards.forEach(card => {
+                let matches = true;
+                if (searchTerm && !card.textContent.toLowerCase().includes(searchTerm)) matches = false;
+                if (matches) { card.classList.remove('hidden'); visibleCount++; }
+                else card.classList.add('hidden');
+            });
+            document.getElementById('sidebarResultCount').textContent = visibleCount;
+            document.getElementById('filterCount').textContent = visibleCount;
+            const hasFilters = Object.values(activeFilters[currentType]).some(v => (Array.isArray(v) && v.length > 0) || (typeof v === 'string' && v)) || searchTerm;
+            document.getElementById('filterStatus').classList.toggle('visible', hasFilters);
+            document.getElementById('noResult').classList.toggle('visible', visibleCount === 0 && hasFilters);
+        }
+        
+        renderSidebar();
+        updateActiveFilters();
+    </script>
+</body>
+</html>
