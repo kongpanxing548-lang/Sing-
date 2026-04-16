@@ -1,0 +1,33 @@
+# Hermes Agent Workspace .gitignore
+
+# 敏感配置（含凭据）
+.env
+*.env
+config.json
+credentials/
+
+# 日志文件
+logs/*.log
+logs/*.txt
+*.log
+
+# 临时文件
+*.tmp
+*.bak
+*~
+
+# macOS
+.DS_Store
+.AppleDouble
+.LSOverride
+
+# 缓存
+__pycache__/
+*.pyc
+.cache/
+
+# 本地技能（未审核）
+skills/local-*
+
+# 计划草稿
+plans/draft-*
