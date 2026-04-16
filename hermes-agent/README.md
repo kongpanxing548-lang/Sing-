@@ -3,7 +3,7 @@
 ## 📁 目录结构
 
 ```
-hermes-agent-workspace/
+hermes-agent/
 ├── README.md          # 本文件
 ├── docs/              # 文档和知识库
 ├── skills/            # 自定义技能
