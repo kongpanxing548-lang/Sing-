@@ -1,0 +1,6 @@
+interface:
+  display_name: "Coordinate Subagents"
+  short_description: "Split, delegate, verify, and integrate parallel Codex work."
+  default_prompt: "Use $coordinate-subagents to split this task across subagents and integrate the results."
+policy:
+  allow_implicit_invocation: true

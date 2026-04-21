@@ -1,0 +1,6 @@
+interface:
+  display_name: "Remote Control Codex"
+  short_description: "Automate Windows apps and browsers with safer local controls."
+  default_prompt: "Use $remote-control-codex to automate this Windows browser or desktop task."
+policy:
+  allow_implicit_invocation: true

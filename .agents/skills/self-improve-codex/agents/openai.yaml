@@ -1,0 +1,6 @@
+interface:
+  display_name: "Self-Improve Codex"
+  short_description: "Record lessons and refine repeatable Codex workflows."
+  default_prompt: "Use $self-improve-codex to capture the durable lessons from this task."
+policy:
+  allow_implicit_invocation: true
