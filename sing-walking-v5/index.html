@@ -1,0 +1,163 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta
+      name="description"
+      content="行走 · Sing Music Space，一个记录声音、自我与城市行走的个人音乐宇宙。"
+    />
+    <title>行走 · Sing Music Space</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <header class="site-header" aria-label="主导航">
+      <a class="brand" href="#home" aria-label="Sing Music Space 首页">
+        <span class="brand-mark"></span>
+        <span>Sing Music Space</span>
+      </a>
+      <nav class="nav-links" id="navLinks"></nav>
+    </header>
+
+    <main>
+      <section class="hero" id="home" aria-label="行走">
+        <img class="hero-image" src="assets/sing-walking-hero.png" alt="" />
+        <div class="hero-shade"></div>
+        <div class="hero-copy reveal">
+          <p class="kicker">WALKING · A Journey of Sound & Self</p>
+          <h1>行走</h1>
+          <p class="hero-line">生命，是一场行走<br />但也是一次反思</p>
+          <div class="hero-actions">
+            <a class="primary-link" href="#journey">进入行走</a>
+            <button class="ghost-button" type="button" data-play-song="walking">
+              <span class="button-icon" aria-hidden="true">▶</span>
+              播放《行走》
+            </button>
+          </div>
+        </div>
+        <div class="hero-status" aria-label="当前主题">
+          <span>人生没有边界</span>
+          <span>行走就是答案</span>
+        </div>
+      </section>
+
+      <section class="section intro-band" aria-label="核心定位">
+        <div class="section-grid">
+          <p class="section-label">Core</p>
+          <div>
+            <h2>不是作品库，是一个人在城市中行走的记录空间。</h2>
+            <p>
+              音乐不是被上传到这里，而是在这里拥有上下文：它来自某个深夜、某段对抗、某次自我追问，以及下一次重新出发。
+            </p>
+          </div>
+        </div>
+      </section>
+
+      <section class="section" id="music" aria-label="音乐作品">
+        <div class="section-heading">
+          <p class="section-label">Music</p>
+          <h2>精选作品</h2>
+        </div>
+        <div class="song-rail" id="songRail"></div>
+      </section>
+
+      <section class="journey" id="journey" aria-label="行走叙事">
+        <div class="journey-sticky">
+          <p class="section-label">Journey</p>
+          <h2>《行走》不是一首歌，是一个入口。</h2>
+          <div class="journey-status" aria-live="polite">
+            <span id="journeyStep">01 · 城市夜</span>
+            <strong id="journeySong">行走</strong>
+            <p id="journeyHint">滚动叙事会同步播放器曲目。</p>
+          </div>
+          <div class="journey-dots" id="journeyDots" aria-label="Journey 章节进度"></div>
+        </div>
+        <div class="journey-beats" id="journeyBeats"></div>
+      </section>
+
+      <section class="section" id="journal" aria-label="创作日志">
+        <div class="section-heading">
+          <p class="section-label">Journal</p>
+          <h2>创作日志</h2>
+        </div>
+        <div class="journal-grid" id="journalGrid"></div>
+      </section>
+
+      <section class="section about" id="about" aria-label="关于 Sing">
+        <div class="section-heading">
+          <p class="section-label">About</p>
+          <h2>用故事，不用履历。</h2>
+        </div>
+        <div class="timeline" id="aboutTimeline"></div>
+      </section>
+
+      <section class="section roadmap" id="roadmap" aria-label="开发阶段">
+        <div class="section-heading">
+          <p class="section-label">Build</p>
+          <h2>从情绪入口到内容宇宙</h2>
+        </div>
+        <div class="phase-grid" id="phaseGrid"></div>
+      </section>
+    </main>
+
+    <aside class="player" aria-label="音乐播放器">
+      <div>
+        <p class="player-eyebrow">Now Walking</p>
+        <strong id="playerTitle">行走</strong>
+      </div>
+      <button class="player-toggle" id="playerToggle" type="button" aria-label="播放或暂停">
+        <span aria-hidden="true">▶</span>
+      </button>
+      <div class="player-center">
+        <div class="waveform" aria-hidden="true">
+          <span></span><span></span><span></span><span></span><span></span><span></span><span></span>
+        </div>
+        <div class="progress-track" id="progressTrack" aria-label="播放进度" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0">
+          <span id="progressBar"></span>
+        </div>
+      </div>
+      <div class="player-side">
+        <span class="player-note" id="playerNote">试听片段</span>
+        <button class="next-button" id="nextButton" type="button" aria-label="下一首">↗</button>
+      </div>
+    </aside>
+
+    <dialog class="song-dialog" id="songDialog">
+      <div class="dialog-shell">
+        <button class="dialog-close" id="dialogClose" type="button" aria-label="关闭">×</button>
+        <div class="dialog-media">
+          <img src="assets/sing-walking-hero.png" alt="" />
+        </div>
+        <article class="dialog-copy">
+          <p class="section-label" id="dialogKicker">Song Page</p>
+          <h2 id="dialogTitle">行走</h2>
+          <p id="dialogMood"></p>
+          <div class="dialog-actions">
+            <button class="primary-link dialog-play" id="dialogPlay" type="button">播放此曲</button>
+            <span id="dialogDuration"></span>
+          </div>
+          <section>
+            <h3>创作故事</h3>
+            <p id="dialogStory"></p>
+          </section>
+          <section>
+            <h3>歌词片段</h3>
+            <div class="lyrics" id="dialogLyrics"></div>
+          </section>
+          <section>
+            <h3>制作信息</h3>
+            <dl class="production-list" id="dialogProduction"></dl>
+          </section>
+        </article>
+      </div>
+    </dialog>
+
+    <footer class="site-footer" id="contact">
+      <p>不要错过本该属于你的生命</p>
+      <a href="mailto:sing@example.com">Contact / Collaboration</a>
+    </footer>
+
+    <script src="data/site-content.js"></script>
+    <script src="script.js"></script>
+  </body>
+</html>

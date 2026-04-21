@@ -1,0 +1,16 @@
+{
+  "name": "2026-04-21-sing-walking",
+  "version": "1.0.0",
+  "description": "Sing Walking personal music universe site and Feishu collaboration helpers.",
+  "main": "index.js",
+  "scripts": {
+    "feishu:login": "node scripts/feishu-session.mjs login",
+    "feishu:read": "node scripts/feishu-session.mjs read"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "@playwright/test": "^1.59.1"
+  }
+}
