@@ -43,8 +43,7 @@ export function GlobalPlayer() {
           barGap: 1,
           height: 40,
           normalize: true,
-          responsive: true,
-        })
+        } as any)
 
         setWavesurfer(wavesurferRef.current)
 
