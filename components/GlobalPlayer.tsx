@@ -107,10 +107,10 @@ export function GlobalPlayer() {
 
   return (
     <div className="fixed bottom-0 left-0 right-0 bg-[#0B0B0B]/95 backdrop-blur-md border-t border-[#E6B800]/20 z-50">
-      <div className="max-w-7xl mx-auto px-4 py-3">
-        <div className="flex items-center gap-4">
+      <div className="max-w-7xl mx-auto px-3 sm:px-4 pt-3" style={{ paddingBottom: 'calc(0.75rem + env(safe-area-inset-bottom))' }}>
+        <div className="flex items-center gap-3 sm:gap-4">
           {/* 封面 */}
-          <div className="relative w-14 h-14 rounded overflow-hidden flex-shrink-0">
+          <div className="relative w-12 h-12 sm:w-14 sm:h-14 rounded overflow-hidden flex-shrink-0">
             <img 
               src={currentTrack.cover} 
               alt={currentTrack.title}
@@ -135,7 +135,7 @@ export function GlobalPlayer() {
           </div>
 
           {/* 歌曲信息 */}
-          <div className="flex-shrink-0 w-32 md:w-48">
+          <div className="min-w-0 flex-1 sm:flex-none sm:w-32 md:w-48">
             <div className="text-sm font-medium text-white truncate">
               {currentTrack.title}
             </div>
@@ -148,7 +148,7 @@ export function GlobalPlayer() {
           <button
             onClick={togglePlay}
             disabled={!isReady}
-            className="w-10 h-10 rounded-full bg-[#E6B800] text-[#0B0B0B] flex items-center justify-center hover:bg-[#E6B800]/90 transition disabled:opacity-50 disabled:cursor-not-allowed"
+            className="w-10 h-10 rounded-full bg-[#E6B800] text-[#0B0B0B] flex items-center justify-center hover:bg-[#E6B800]/90 transition disabled:opacity-50 disabled:cursor-not-allowed flex-shrink-0"
           >
             {isPlaying ? (
               <Pause className="w-5 h-5" fill="currentColor" />
@@ -158,7 +158,7 @@ export function GlobalPlayer() {
           </button>
 
           {/* 波形可视化 */}
-          <div className="flex-1 min-w-0">
+          <div className="hidden sm:block flex-1 min-w-0">
             <div ref={containerRef} className="w-full" />
             {error && (
               <div className="text-xs text-red-400 text-center">{error}</div>
@@ -166,7 +166,7 @@ export function GlobalPlayer() {
           </div>
 
           {/* 音量图标 */}
-          <Volume2 className="w-5 h-5 text-white/40 flex-shrink-0" />
+          <Volume2 className="hidden md:block w-5 h-5 text-white/40 flex-shrink-0" />
         </div>
       </div>
     </div>

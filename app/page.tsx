@@ -2,34 +2,7 @@ import Link from 'next/link'
 import { Music, Disc, User, ArrowRight } from 'lucide-react'
 import { PlayButton } from '@/components/PlayButton'
 import { WaveBackground } from '@/components/WaveBackground'
-
-// 示例音乐数据 - 实际应从 Notion 或 API 获取
-const featuredTracks = [
-  {
-    id: '1',
-    title: '夜行者',
-    artist: 'Sing',
-    cover: 'https://images.unsplash.com/photo-1493225457124-a3eb161ffa5f?w=400&h=400&fit=crop',
-    audioUrl: 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3',
-    duration: 372,
-  },
-  {
-    id: '2',
-    title: '城市微光',
-    artist: 'Sing',
-    cover: 'https://images.unsplash.com/photo-1511379938547-c1f69419868d?w=400&h=400&fit=crop',
-    audioUrl: 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-2.mp3',
-    duration: 285,
-  },
-  {
-    id: '3',
-    title: '独白',
-    artist: 'Sing',
-    cover: 'https://images.unsplash.com/photo-1516280440614-6697288d5d38?w=400&h=400&fit=crop',
-    audioUrl: 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-3.mp3',
-    duration: 198,
-  },
-]
+import { featuredTracks, tracks } from '@/content/tracks'
 
 export default function Home() {
   return (
@@ -40,8 +13,8 @@ export default function Home() {
         <div className="absolute inset-0 bg-gradient-to-br from-[#0B0B0B] via-[#1a1a2e] to-[#16213e]" />
         
         {/* 金色光晕效果 */}
-        <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-[#E6B800]/20 rounded-full blur-[120px] animate-pulse" />
-        <div className="absolute bottom-1/4 right-1/4 w-80 h-80 bg-[#E6B800]/10 rounded-full blur-[100px]" />
+        <div className="absolute top-1/4 left-1/4 w-64 h-64 md:w-96 md:h-96 bg-[#E6B800]/20 rounded-full blur-[100px] md:blur-[120px] animate-pulse" />
+        <div className="absolute bottom-1/4 right-1/4 w-56 h-56 md:w-80 md:h-80 bg-[#E6B800]/10 rounded-full blur-[80px] md:blur-[100px]" />
         
         {/* 波形背景装饰 */}
         <WaveBackground />
@@ -56,7 +29,7 @@ export default function Home() {
           }}
         />
         
-        <div className="relative z-10 px-6 md:px-12 lg:px-24 max-w-7xl mx-auto w-full">
+        <div className="relative z-10 px-4 sm:px-6 md:px-12 lg:px-24 max-w-7xl mx-auto w-full">
           {/* 主标题区域 */}
           <div className="mb-8">
             <div className="flex items-center gap-3 mb-4">
@@ -66,9 +39,9 @@ export default function Home() {
               </span>
             </div>
             
-            <h1 className="text-6xl md:text-8xl lg:text-9xl font-light tracking-tight text-white mb-6">
+            <h1 className="text-5xl sm:text-6xl md:text-8xl lg:text-9xl font-light tracking-normal text-white mb-6">
               行走
-              <span className="text-[#E6B800] font-extralight"> WALKING</span>
+              <span className="block sm:inline text-[#E6B800] font-extralight"> WALKING</span>
             </h1>
             
             <p className="text-xl md:text-2xl text-white/70 font-light tracking-wide max-w-2xl leading-relaxed">
@@ -81,10 +54,10 @@ export default function Home() {
             <p className="text-white/50 text-lg leading-relaxed mb-6">
               生命，是一场行走。每一步都留下音符的印记，每一段旋律都是灵魂的独白。
             </p>
-            <div className="flex items-center gap-6 text-sm text-white/40">
+            <div className="flex flex-col min-[390px]:flex-row min-[390px]:items-center gap-3 min-[390px]:gap-6 text-sm text-white/40">
               <span className="flex items-center gap-2">
                 <Disc className="w-4 h-4" />
-                12 首原创作品
+                {tracks.length} 首原创作品
               </span>
               <span className="flex items-center gap-2">
                 <User className="w-4 h-4" />
@@ -120,9 +93,9 @@ export default function Home() {
       </section>
       
       {/* 精选作品区域 */}
-      <section className="py-24 md:py-32 px-6 md:px-12 lg:px-24 bg-[#0B0B0B]">
+      <section className="py-20 md:py-32 px-4 sm:px-6 md:px-12 lg:px-24 bg-[#0B0B0B]">
         <div className="max-w-7xl mx-auto">
-          <div className="flex items-end justify-between mb-12">
+          <div className="flex items-end justify-between gap-6 mb-12">
             <div>
               <span className="text-[#E6B800] text-sm tracking-[0.3em] uppercase font-medium mb-2 block">
                 Featured
@@ -159,11 +132,50 @@ export default function Home() {
                 </div>
                 <div className="p-4">
                   <h3 className="text-white font-medium mb-1">{track.title}</h3>
-                  <p className="text-white/50 text-sm">{track.artist}</p>
+                  <p className="text-white/50 text-sm">{track.moodTag}</p>
+                  <Link
+                    href={`/music/${track.slug}`}
+                    className="mt-4 inline-flex items-center gap-2 text-sm text-[#E6B800] hover:text-white transition-colors"
+                  >
+                    查看故事
+                    <ArrowRight className="w-4 h-4" />
+                  </Link>
                 </div>
               </div>
             ))}
           </div>
+        </div>
+      </section>
+
+      <section className="pt-20 pb-40 md:py-24 px-4 sm:px-6 md:px-12 lg:px-24 bg-[#10100f]">
+        <div className="max-w-7xl mx-auto grid gap-10 lg:grid-cols-[0.9fr_1.1fr] items-end">
+          <div>
+            <span className="text-[#E6B800] text-sm tracking-[0.3em] uppercase font-medium mb-3 block">
+              Journey
+            </span>
+            <h2 className="text-3xl md:text-5xl font-light text-white mb-5">
+              把一首歌写成一段路
+            </h2>
+            <p className="text-white/55 leading-relaxed max-w-xl">
+              Journey 不是普通作品列表，而是把 Sing 的人生阶段、城市夜路和自我追问串成一条可滚动的声音叙事。
+            </p>
+          </div>
+          <Link
+            href="/journey"
+            className="group justify-self-start lg:justify-self-end inline-flex items-center gap-3 px-6 sm:px-8 py-4 border border-[#E6B800]/50 text-[#E6B800] hover:bg-[#E6B800] hover:text-[#0B0B0B] transition-all duration-300"
+          >
+            进入行走叙事
+            <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+          </Link>
+        </div>
+        <div className="max-w-7xl mx-auto mt-12 grid grid-cols-1 min-[430px]:grid-cols-2 md:grid-cols-5 gap-px bg-white/10">
+          {tracks.map((track, index) => (
+            <div key={track.id} className="bg-[#10100f] p-4 min-h-32">
+              <div className="text-[#E6B800] text-xs mb-8">{String(index + 1).padStart(2, '0')}</div>
+              <h3 className="text-white text-sm font-medium mb-2">{track.title}</h3>
+              <p className="text-white/40 text-xs leading-relaxed">{track.excerpt}</p>
+            </div>
+          ))}
         </div>
       </section>
     </main>

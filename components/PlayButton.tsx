@@ -24,7 +24,7 @@ export function PlayButton({ track, size = 'md' }: PlayButtonProps) {
     if (isCurrentTrack) {
       togglePlay()
     } else {
-      setTrack(track)
+      setTrack(track, true)
     }
   }
   

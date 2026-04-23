@@ -1,70 +1,40 @@
 import Link from 'next/link'
-import { ArrowLeft, Music } from 'lucide-react'
+import type { Metadata } from 'next'
+import { ArrowLeft, ArrowRight, Music } from 'lucide-react'
 import { PlayButton } from '@/components/PlayButton'
+import { siteConfig } from '@/content/site'
+import { tracks } from '@/content/tracks'
 
-// 完整音乐库数据
-const allTracks = [
-  {
-    id: '1',
-    title: '夜行者',
-    artist: 'Sing',
-    cover: 'https://images.unsplash.com/photo-1493225457124-a3eb161ffa5f?w=400&h=400&fit=crop',
-    audioUrl: 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3',
-    duration: 372,
-    genre: '电子',
-    year: '2024',
+export const metadata: Metadata = {
+  title: '音乐库',
+  description: '浏览 Sing Walking 的原创音乐作品，进入每首歌的故事、歌词片段与制作信息。',
+  alternates: {
+    canonical: '/music',
   },
-  {
-    id: '2',
-    title: '城市微光',
-    artist: 'Sing',
-    cover: 'https://images.unsplash.com/photo-1511379938547-c1f69419868d?w=400&h=400&fit=crop',
-    audioUrl: 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-2.mp3',
-    duration: 285,
-    genre: '氛围',
-    year: '2024',
+  openGraph: {
+    type: 'website',
+    url: '/music',
+    siteName: siteConfig.name,
+    title: `音乐库 | ${siteConfig.name}`,
+    description: '浏览 Sing Walking 的原创音乐作品，进入每首歌的故事、歌词片段与制作信息。',
+    images: tracks[0]?.cover
+      ? [
+          {
+            url: tracks[0].cover,
+            width: 1200,
+            height: 1200,
+            alt: 'Sing Walking music library',
+          },
+        ]
+      : undefined,
   },
-  {
-    id: '3',
-    title: '独白',
-    artist: 'Sing',
-    cover: 'https://images.unsplash.com/photo-1516280440614-6697288d5d38?w=400&h=400&fit=crop',
-    audioUrl: 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-3.mp3',
-    duration: 198,
-    genre: '独立',
-    year: '2023',
+  twitter: {
+    card: 'summary_large_image',
+    title: `音乐库 | ${siteConfig.name}`,
+    description: '浏览 Sing Walking 的原创音乐作品，进入每首歌的故事、歌词片段与制作信息。',
+    images: tracks[0]?.cover ? [tracks[0].cover] : undefined,
   },
-  {
-    id: '4',
-    title: '归途',
-    artist: 'Sing',
-    cover: 'https://images.unsplash.com/photo-1459749411175-04bf5292ceea?w=400&h=400&fit=crop',
-    audioUrl: 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-4.mp3',
-    duration: 324,
-    genre: '电子',
-    year: '2023',
-  },
-  {
-    id: '5',
-    title: '晨光',
-    artist: 'Sing',
-    cover: 'https://images.unsplash.com/photo-1507838153414-b4b713384a76?w=400&h=400&fit=crop',
-    audioUrl: 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-5.mp3',
-    duration: 256,
-    genre: '氛围',
-    year: '2024',
-  },
-  {
-    id: '6',
-    title: '边界',
-    artist: 'Sing',
-    cover: 'https://images.unsplash.com/photo-1470225620780-dba8ba36b745?w=400&h=400&fit=crop',
-    audioUrl: 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-6.mp3',
-    duration: 289,
-    genre: '实验',
-    year: '2023',
-  },
-]
+}
 
 function formatDuration(seconds: number) {
   const mins = Math.floor(seconds / 60)
@@ -74,10 +44,10 @@ function formatDuration(seconds: number) {
 
 export default function MusicPage() {
   return (
-    <main className="min-h-screen bg-[#0B0B0B]">
+    <main className="min-h-screen bg-[#0B0B0B] pb-36 md:pb-0">
       {/* Header */}
       <header className="fixed top-0 left-0 right-0 z-40 bg-[#0B0B0B]/80 backdrop-blur-md border-b border-white/5">
-        <div className="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 py-4 flex items-center justify-between">
           <Link 
             href="/" 
             className="text-white/60 hover:text-white transition-colors flex items-center gap-2"
@@ -93,7 +63,7 @@ export default function MusicPage() {
       </header>
 
       {/* Content */}
-      <div className="pt-24 pb-32 px-6 md:px-12 lg:px-24">
+      <div className="pt-24 pb-32 px-4 sm:px-6 md:px-12 lg:px-24">
         <div className="max-w-7xl mx-auto">
           {/* Page Title */}
           <div className="mb-12">
@@ -104,22 +74,22 @@ export default function MusicPage() {
               全部作品
             </h1>
             <p className="text-white/50 max-w-xl">
-              共 {allTracks.length} 首原创作品，涵盖电子、氛围、独立等多种风格。
+              共 {tracks.length} 首原创作品，涵盖独立流行、氛围、游戏音频质感和现场感叙事。
             </p>
           </div>
 
           {/* Track List */}
           <div className="space-y-2">
-            {allTracks.map((track, index) => (
+            {tracks.map((track, index) => (
               <div 
                 key={track.id}
-                className="group flex items-center gap-4 p-4 rounded-lg hover:bg-white/5 transition-all duration-300"
+                className="group flex items-center gap-3 sm:gap-4 p-3 sm:p-4 rounded-lg hover:bg-white/5 transition-all duration-300"
               >
-                <span className="w-8 text-center text-white/30 text-sm">
+                <span className="hidden min-[390px]:block w-8 text-center text-white/30 text-sm">
                   {index + 1}
                 </span>
                 
-                <div className="relative w-16 h-16 rounded overflow-hidden flex-shrink-0">
+                <div className="relative w-14 h-14 sm:w-16 sm:h-16 rounded overflow-hidden flex-shrink-0">
                   <img 
                     src={track.cover} 
                     alt={track.title}
@@ -131,19 +101,31 @@ export default function MusicPage() {
                 </div>
 
                 <div className="flex-1 min-w-0">
-                  <h3 className="text-white font-medium truncate">{track.title}</h3>
-                  <p className="text-white/50 text-sm truncate">{track.artist}</p>
+                  <Link href={`/music/${track.slug}`} className="inline-flex max-w-full items-center gap-2">
+                    <h3 className="text-white font-medium truncate group-hover:text-[#E6B800] transition-colors">
+                      {track.title}
+                    </h3>
+                    <ArrowRight className="w-4 h-4 text-white/20 group-hover:text-[#E6B800] transition-colors flex-shrink-0" />
+                  </Link>
+                  <p className="text-white/50 text-sm truncate">{track.excerpt}</p>
                 </div>
 
                 <div className="hidden md:flex items-center gap-6 text-sm text-white/40">
-                  <span className="w-20">{track.genre}</span>
-                  <span className="w-16">{track.year}</span>
+                  <span className="w-36 truncate">{track.genre.join(' / ')}</span>
+                  <span className="w-16">{track.releaseDate.slice(0, 4)}</span>
                   <span className="w-16 text-right">{formatDuration(track.duration)}</span>
                 </div>
 
                 <div className="md:hidden text-sm text-white/40">
                   {formatDuration(track.duration)}
                 </div>
+
+                <Link
+                  href={`/music/${track.slug}`}
+                  className="hidden lg:inline-flex text-sm text-white/35 hover:text-[#E6B800] transition-colors"
+                >
+                  故事
+                </Link>
               </div>
             ))}
           </div>

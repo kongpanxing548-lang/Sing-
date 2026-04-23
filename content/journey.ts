@@ -5,9 +5,10 @@ export interface JourneyChapter {
   title: string
   quote?: string
   body: string[]
+  trackId?: string
   backgroundImage?: string
   backgroundVideo?: string
-  palette?: 'night' | 'fog' | 'gold' | 'dawn'
+  palette?: 'city' | 'resist' | 'midnight' | 'self' | 'forward'
   align?: 'left' | 'center' | 'right'
   cta?: {
     label: string
@@ -26,7 +27,8 @@ export const journeyChapters: JourneyChapter[] = [
       '在这个城市的深夜里，音乐不是背景，而是唯一的光。',
       '每一次脚步落地，都是一次与自我的对话。',
     ],
-    palette: 'night',
+    trackId: 'walking',
+    palette: 'city',
     align: 'center',
     cta: {
       label: '播放《行走》',
@@ -42,7 +44,8 @@ export const journeyChapters: JourneyChapter[] = [
       '我们需要在有限的生命里，重新审视当下。',
       '那些被我们忽略的日常，或许正是生命最真实的模样。',
     ],
-    palette: 'fog',
+    trackId: 'walking',
+    palette: 'city',
     align: 'center',
   },
   {
@@ -54,7 +57,8 @@ export const journeyChapters: JourneyChapter[] = [
       '当梦想仍在顽固抵抗着这座城市，而麻木的工作仍在日常的撕咬着。',
       '我们在夹缝中寻找呼吸的空间，在喧嚣中守护内心的宁静。',
     ],
-    palette: 'night',
+    trackId: 'reflecting-street',
+    palette: 'resist',
     align: 'left',
   },
   {
@@ -67,7 +71,8 @@ export const journeyChapters: JourneyChapter[] = [
       '路灯把影子拉得很长，仿佛要把所有的疲惫都投射到地面上。',
       '但正是在这些时刻，音乐成为了最好的陪伴。',
     ],
-    palette: 'fog',
+    trackId: 'midnight-light',
+    palette: 'midnight',
     align: 'center',
   },
   {
@@ -80,7 +85,8 @@ export const journeyChapters: JourneyChapter[] = [
       '究竟内心追求的是什么？',
       '理想的生活状态又是怎样的？',
     ],
-    palette: 'night',
+    trackId: 'self-dialogue',
+    palette: 'self',
     align: 'center',
   },
   {
@@ -92,7 +98,8 @@ export const journeyChapters: JourneyChapter[] = [
       '行走吧，不要错过本该属于你的生命。',
       '每一步都是新的开始，每一段旋律都是灵魂的独白。',
     ],
-    palette: 'dawn',
+    trackId: 'wind-forward',
+    palette: 'forward',
     align: 'center',
     cta: {
       label: '去听《行走》',

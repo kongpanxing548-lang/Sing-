@@ -17,7 +17,7 @@ interface PlayerState {
   wavesurfer: any
   duration: number
   currentTime: number
-  setTrack: (track: Track) => void
+  setTrack: (track: Track, play?: boolean) => void
   setWavesurfer: (ws: any) => void
   togglePlay: () => void
   setDuration: (duration: number) => void
@@ -30,7 +30,7 @@ export const usePlayerStore = create<PlayerState>((set, get) => ({
   wavesurfer: null,
   duration: 0,
   currentTime: 0,
-  setTrack: (track) => set({ currentTrack: track, isPlaying: false }),
+  setTrack: (track, play = false) => set({ currentTrack: track, isPlaying: play, currentTime: 0 }),
   setWavesurfer: (ws) => set({ wavesurfer: ws }),
   togglePlay: () => {
     const { wavesurfer, isPlaying } = get()

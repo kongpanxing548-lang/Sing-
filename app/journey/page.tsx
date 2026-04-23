@@ -1,12 +1,47 @@
 import Link from 'next/link'
-import { ArrowLeft, MapPin } from 'lucide-react'
+import type { Metadata } from 'next'
+import { ArrowLeft } from 'lucide-react'
+import { JourneyExperience } from '@/components/JourneyExperience'
+import { siteConfig } from '@/content/site'
+import { tracks } from '@/content/tracks'
+
+export const metadata: Metadata = {
+  title: 'Journey',
+  description: '围绕《行走》展开的滚动声音叙事，把城市夜路、创作阶段和自我追问同步到音乐播放体验。',
+  alternates: {
+    canonical: '/journey',
+  },
+  openGraph: {
+    type: 'website',
+    url: '/journey',
+    siteName: siteConfig.name,
+    title: `Journey | ${siteConfig.name}`,
+    description: '围绕《行走》展开的滚动声音叙事，把城市夜路、创作阶段和自我追问同步到音乐播放体验。',
+    images: tracks[0]?.cover
+      ? [
+          {
+            url: tracks[0].cover,
+            width: 1200,
+            height: 1200,
+            alt: 'Sing Walking Journey',
+          },
+        ]
+      : undefined,
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: `Journey | ${siteConfig.name}`,
+    description: '围绕《行走》展开的滚动声音叙事，把城市夜路、创作阶段和自我追问同步到音乐播放体验。',
+    images: tracks[0]?.cover ? [tracks[0].cover] : undefined,
+  },
+}
 
 export default function JourneyPage() {
   return (
     <main className="min-h-screen bg-[#0B0B0B]">
       {/* Header */}
       <header className="fixed top-0 left-0 right-0 z-40 bg-[#0B0B0B]/80 backdrop-blur-md border-b border-white/5">
-        <div className="max-w-7xl mx-auto px-6 py-4 flex items-center gap-4">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 py-4 flex items-center gap-4">
           <Link 
             href="/" 
             className="text-white/60 hover:text-white transition-colors flex items-center gap-2"
@@ -17,21 +52,7 @@ export default function JourneyPage() {
         </div>
       </header>
 
-      {/* Content */}
-      <div className="pt-32 pb-32 px-6 md:px-12 lg:px-24">
-        <div className="max-w-4xl mx-auto text-center">
-          <MapPin className="w-16 h-16 text-[#E6B800] mx-auto mb-6" />
-          <h1 className="text-4xl md:text-5xl font-light text-white mb-4">
-            旅程页面
-          </h1>
-          <p className="text-xl text-white/60 mb-8">
-            正在构建中...
-          </p>
-          <p className="text-white/40 max-w-xl mx-auto">
-            Journey 页面将展示音乐创作的历程、幕后故事和创作日志。敬请期待。
-          </p>
-        </div>
-      </div>
+      <JourneyExperience />
     </main>
   )
 }

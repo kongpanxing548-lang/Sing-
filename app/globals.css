@@ -6,3 +6,12 @@
   --background: #0B0B0B;
   --accent: #E6B800;
 }
+
+html {
+  scroll-padding-top: 5rem;
+  background: var(--background);
+}
+
+body {
+  overflow-x: hidden;
+}
