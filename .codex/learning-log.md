@@ -20,3 +20,7 @@ Root metadata now uses `content/site.ts`; music and Journey pages define canonic
 ## 2026-04-26 00:19 +08:00 - Replaced temporary media with real assets
 
 Real song assets live in `/Users/sing/Desktop/行走 WALKING`. Convert source WAV files to web MP3s before shipping to the site, and copy provided cover art into `public/images/covers`. For tracks without dedicated cover images, use a real local fallback cover instead of external placeholder art. `content/tracks.ts` and `content/journey.ts` are now the source of truth for the real catalog.
+
+## 2026-04-26 01:48 +08:00 - Refreshed cover art from new desktop assets
+
+Added newly provided artwork for `时间里的故事`, `如果`, `回归`, `听见悲伤`, `You are beautiful`, and `黑暗中的挣扎` from `/Users/sing/Desktop/行走 WALKING`, resized them into `public/images/covers`, and updated `content/tracks.ts` to stop using the shared default cover for those tracks.
