@@ -165,19 +165,21 @@ export default function TrackPage({ params }: TrackPageProps) {
               </div>
             </article>
 
-            <article>
-              <div className="mb-6 flex items-center gap-3 text-[#E6B800]">
-                <Music2 className="w-5 h-5" />
-                <h2 className="text-2xl font-light text-white">歌词片段</h2>
-              </div>
-              <div className="border-l border-[#E6B800]/50 pl-5 sm:pl-6 py-2">
-                {lyrics.map((line) => (
-                  <p key={line} className="text-xl sm:text-2xl md:text-3xl leading-relaxed text-white/80">
-                    {line}
-                  </p>
-                ))}
-              </div>
-            </article>
+            {lyrics.length > 0 && (
+              <article>
+                <div className="mb-6 flex items-center gap-3 text-[#E6B800]">
+                  <Music2 className="w-5 h-5" />
+                  <h2 className="text-2xl font-light text-white">歌词片段</h2>
+                </div>
+                <div className="border-l border-[#E6B800]/50 pl-5 sm:pl-6 py-2">
+                  {lyrics.map((line) => (
+                    <p key={line} className="text-xl sm:text-2xl md:text-3xl leading-relaxed text-white/80">
+                      {line}
+                    </p>
+                  ))}
+                </div>
+              </article>
+            )}
           </div>
 
           <aside className="space-y-8">

@@ -9,8 +9,14 @@ export default function Home() {
     <main className="min-h-screen bg-[#0B0B0B] overflow-x-hidden">
       {/* Hero Section - 重新设计的视觉背景 */}
       <section className="relative min-h-screen flex flex-col justify-center overflow-hidden">
+        <img
+          src="/images/site/walking-hero.jpg"
+          alt="行走封面"
+          className="absolute inset-0 h-full w-full object-cover opacity-[0.18] scale-105"
+        />
+
         {/* 动态渐变背景 */}
-        <div className="absolute inset-0 bg-gradient-to-br from-[#0B0B0B] via-[#1a1a2e] to-[#16213e]" />
+        <div className="absolute inset-0 bg-gradient-to-br from-[#0B0B0B]/95 via-[#121225]/92 to-[#16213e]/88" />
         
         {/* 金色光晕效果 */}
         <div className="absolute top-1/4 left-1/4 w-64 h-64 md:w-96 md:h-96 bg-[#E6B800]/20 rounded-full blur-[100px] md:blur-[120px] animate-pulse" />

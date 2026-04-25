@@ -16,3 +16,7 @@ Added `/music/[slug]` pages with `generateStaticParams` because the app uses `ou
 ## 2026-04-23 01:20 +08:00 - Mobile and SEO pass
 
 Root metadata now uses `content/site.ts`; music and Journey pages define canonical, Open Graph, and Twitter card metadata. On mobile, hide the waveform and volume controls in the fixed player to prevent horizontal overflow; keep bottom padding on content pages so the player does not cover the final content. Use headless Chrome screenshots in `artifacts/phase3/` for quick mobile checks.
+
+## 2026-04-26 00:19 +08:00 - Replaced temporary media with real assets
+
+Real song assets live in `/Users/sing/Desktop/行走 WALKING`. Convert source WAV files to web MP3s before shipping to the site, and copy provided cover art into `public/images/covers`. For tracks without dedicated cover images, use a real local fallback cover instead of external placeholder art. `content/tracks.ts` and `content/journey.ts` are now the source of truth for the real catalog.
