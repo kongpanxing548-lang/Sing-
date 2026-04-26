@@ -3,6 +3,7 @@ import { Music, Disc, User, ArrowRight } from 'lucide-react'
 import { PlayButton } from '@/components/PlayButton'
 import { WaveBackground } from '@/components/WaveBackground'
 import { featuredTracks, tracks } from '@/content/tracks'
+import { publicPath } from '@/lib/publicPath'
 
 export default function Home() {
   return (
@@ -10,7 +11,7 @@ export default function Home() {
       {/* Hero Section - 重新设计的视觉背景 */}
       <section className="relative min-h-screen flex flex-col justify-center overflow-hidden">
         <img
-          src="/images/site/walking-hero.jpg"
+          src={publicPath('/images/site/walking-hero.jpg')}
           alt="行走封面"
           className="absolute inset-0 h-full w-full object-cover opacity-[0.18] scale-105"
         />
@@ -128,7 +129,7 @@ export default function Home() {
               >
                 <div className="aspect-square relative overflow-hidden">
                   <img 
-                    src={track.cover} 
+                    src={publicPath(track.cover)}
                     alt={track.title}
                     className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
                   />

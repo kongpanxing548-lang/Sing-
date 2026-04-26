@@ -5,6 +5,7 @@ import { ArrowLeft, Calendar, Clock3, Disc3, Music2, PenLine, Radio } from 'luci
 import { PlayButton } from '@/components/PlayButton'
 import { siteConfig } from '@/content/site'
 import { getTrackBySlug, tracks } from '@/content/tracks'
+import { publicPath } from '@/lib/publicPath'
 
 interface TrackPageProps {
   params: {
@@ -91,7 +92,7 @@ export default function TrackPage({ params }: TrackPageProps) {
 
       <section className="relative overflow-hidden pt-24 px-4 sm:px-6 md:px-12 lg:px-24">
         <div className="absolute inset-0 opacity-70">
-          <img src={track.cover} alt="" className="h-full w-full object-cover blur-3xl scale-110 opacity-20" />
+          <img src={publicPath(track.cover)} alt="" className="h-full w-full object-cover blur-3xl scale-110 opacity-20" />
           <div className="absolute inset-0 bg-gradient-to-b from-[#0B0B0B]/40 via-[#0B0B0B]/85 to-[#0B0B0B]" />
         </div>
 
@@ -137,7 +138,7 @@ export default function TrackPage({ params }: TrackPageProps) {
 
           <div className="relative justify-self-start lg:justify-self-end w-full max-w-md">
             <div className="aspect-square overflow-hidden border border-white/10 bg-white/5">
-              <img src={track.cover} alt={track.title} className="h-full w-full object-cover" />
+              <img src={publicPath(track.cover)} alt={track.title} className="h-full w-full object-cover" />
             </div>
             <p className="mt-5 text-sm leading-7 text-white/45">{track.note ?? track.excerpt}</p>
           </div>
@@ -211,7 +212,7 @@ export default function TrackPage({ params }: TrackPageProps) {
                     href={`/music/${item.slug}`}
                     className="group flex gap-4 border border-white/10 p-3 hover:bg-white/[0.04] transition"
                   >
-                    <img src={item.cover} alt={item.title} className="h-16 w-16 object-cover" />
+                    <img src={publicPath(item.cover)} alt={item.title} className="h-16 w-16 object-cover" />
                     <span className="min-w-0">
                       <strong className="block truncate text-white font-normal group-hover:text-[#E6B800] transition-colors">
                         {item.title}

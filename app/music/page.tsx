@@ -4,6 +4,7 @@ import { ArrowLeft, ArrowRight, Music } from 'lucide-react'
 import { PlayButton } from '@/components/PlayButton'
 import { siteConfig } from '@/content/site'
 import { tracks } from '@/content/tracks'
+import { publicPath } from '@/lib/publicPath'
 
 export const metadata: Metadata = {
   title: '音乐库',
@@ -91,7 +92,7 @@ export default function MusicPage() {
                 
                 <div className="relative w-14 h-14 sm:w-16 sm:h-16 rounded overflow-hidden flex-shrink-0">
                   <img 
-                    src={track.cover} 
+                    src={publicPath(track.cover)}
                     alt={track.title}
                     className="w-full h-full object-cover"
                   />

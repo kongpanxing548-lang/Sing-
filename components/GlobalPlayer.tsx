@@ -3,6 +3,7 @@
 import { useEffect, useRef, useState } from 'react'
 import { usePlayerStore } from '@/store/player'
 import { Play, Pause, Volume2 } from 'lucide-react'
+import { publicPath } from '@/lib/publicPath'
 
 export function GlobalPlayer() {
   const { 
@@ -70,7 +71,7 @@ export function GlobalPlayer() {
         })
 
         // 加载音频
-        await wavesurferRef.current.load(currentTrack.audioUrl)
+        await wavesurferRef.current.load(publicPath(currentTrack.audioUrl))
       } catch (err) {
         console.error('Failed to init wavesurfer:', err)
         setError('播放器初始化失败')
@@ -112,7 +113,7 @@ export function GlobalPlayer() {
           {/* 封面 */}
           <div className="relative w-12 h-12 sm:w-14 sm:h-14 rounded overflow-hidden flex-shrink-0">
             <img 
-              src={currentTrack.cover} 
+              src={publicPath(currentTrack.cover)}
               alt={currentTrack.title}
               className="w-full h-full object-cover"
             />
