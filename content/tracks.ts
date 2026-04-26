@@ -218,7 +218,7 @@ export const tracks: Track[] = [
     title: '妈妈别哭',
     artist: 'Sing',
     releaseDate: '2018',
-    cover: defaultCover,
+    cover: '/images/covers/mama-dont-cry.jpg',
     audioUrl: '/audio/mama-dont-cry.mp3',
     duration: 281,
     moodTag: '写给母亲的平凡、伟大与不愿再让她受伤',
