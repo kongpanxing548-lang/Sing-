@@ -275,7 +275,7 @@ export const tracks: Track[] = [
     title: '内心的光芒',
     artist: 'Sing',
     releaseDate: '2018',
-    cover: defaultCover,
+    cover: '/images/covers/inner-light.jpg',
     audioUrl: '/audio/inner-light.mp3',
     duration: 230,
     moodTag: '在悲伤、慌张和远行之后，仍在心里闪耀的光',
