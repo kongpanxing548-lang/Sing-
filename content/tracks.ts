@@ -168,7 +168,7 @@ export const tracks: Track[] = [
     title: '最美的时光',
     artist: 'Sing',
     releaseDate: '2017',
-    cover: defaultCover,
+    cover: '/images/covers/best-time.jpg',
     audioUrl: '/audio/best-time.mp3',
     duration: 238,
     moodTag: '旅行、日出、屋顶和多年后仍发光的回忆',
