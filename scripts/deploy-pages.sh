@@ -4,6 +4,7 @@ set -euo pipefail
 ROOT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 REMOTE_URL="$(git -C "$ROOT_DIR" config --get remote.origin.url)"
 TMP_INDEX="$(mktemp)"
+rm -f "$TMP_INDEX"
 
 cleanup() {
   rm -f "$TMP_INDEX"
