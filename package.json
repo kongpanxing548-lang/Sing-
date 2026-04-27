@@ -5,6 +5,8 @@
   "scripts": {
     "dev": "next dev",
     "build": "next build",
+    "build:pages": "GITHUB_PAGES=true NEXT_PUBLIC_BASE_PATH=/Sing- next build",
+    "deploy:pages": "bash scripts/deploy-pages.sh",
     "start": "next start",
     "lint": "next lint"
   },

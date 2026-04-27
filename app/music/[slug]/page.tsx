@@ -34,9 +34,11 @@ export function generateMetadata({ params }: TrackPageProps): Metadata {
     }
   }
 
+  const description = track.seoDescription ?? track.excerpt
+
   return {
     title: track.title,
-    description: track.excerpt,
+    description,
     alternates: {
       canonical: `/music/${track.slug}`,
     },
@@ -45,7 +47,7 @@ export function generateMetadata({ params }: TrackPageProps): Metadata {
       url: `/music/${track.slug}`,
       siteName: siteConfig.name,
       title: `${track.title} | ${siteConfig.name}`,
-      description: track.excerpt,
+      description,
       images: [
         {
           url: track.cover,
@@ -58,7 +60,7 @@ export function generateMetadata({ params }: TrackPageProps): Metadata {
     twitter: {
       card: 'summary_large_image',
       title: `${track.title} | ${siteConfig.name}`,
-      description: track.excerpt,
+      description,
       images: [track.cover],
     },
   }
