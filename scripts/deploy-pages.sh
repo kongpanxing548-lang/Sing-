@@ -17,6 +17,9 @@ GITHUB_PAGES=true NEXT_PUBLIC_BASE_PATH=/Sing- npm run build
 
 touch "$ROOT_DIR/dist/.nojekyll"
 
+git -C "$ROOT_DIR" -c http.version=HTTP/1.1 -c http.lowSpeedLimit=1 -c http.lowSpeedTime=300 \
+  fetch --filter=blob:none --depth=1 origin +main:refs/remotes/origin/main
+
 GIT_INDEX_FILE="$TMP_INDEX" git --git-dir="$ROOT_DIR/.git" --work-tree="$ROOT_DIR/dist" add -A -f .
 TREE_SHA="$(GIT_INDEX_FILE="$TMP_INDEX" git --git-dir="$ROOT_DIR/.git" write-tree)"
 PARENT_SHA="$(git -C "$ROOT_DIR" rev-parse origin/main)"
