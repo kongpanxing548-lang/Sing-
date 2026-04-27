@@ -22,7 +22,11 @@ cd "$ROOT_DIR"
 GITHUB_PAGES=true NEXT_PUBLIC_BASE_PATH=/Sing- npm run build
 
 rm -rf "$DEPLOY_DIR"
-git clone --filter=blob:none --single-branch --branch main --no-checkout "$REMOTE_URL" "$DEPLOY_DIR"
+git -c http.version=HTTP/1.1 -c http.lowSpeedLimit=1 -c http.lowSpeedTime=20 \
+  clone --filter=blob:none --single-branch --branch main --no-checkout "$REMOTE_URL" "$DEPLOY_DIR"
+git -C "$DEPLOY_DIR" config http.version HTTP/1.1
+git -C "$DEPLOY_DIR" config http.lowSpeedLimit 1
+git -C "$DEPLOY_DIR" config http.lowSpeedTime 20
 git -C "$DEPLOY_DIR" sparse-checkout init --no-cone
 git -C "$DEPLOY_DIR" sparse-checkout set "${SPARSE_PATHS[@]}"
 git -C "$DEPLOY_DIR" checkout main
