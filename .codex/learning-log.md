@@ -28,3 +28,7 @@ Added newly provided artwork for `时间里的故事`, `如果`, `回归`, `听�
 ## 2026-04-27 22:35 +08:00 - Best Time cover and catalog metadata pass
 
 Refined `public/images/covers/best-time.jpg` from `/Users/sing/Desktop/行走 WALKING/最美的时光/最美好的时光.jpeg` with a brighter Lhasa/Potala sunrise crop and travel-memory album typography. Added per-track `seoDescription` content, filled missing production credits for `空` and `最美的时光`, added a text snippet for `空`, and wired track detail metadata to prefer the SEO summary. Added `npm run build:pages` and `npm run deploy:pages` for manual GitHub Pages publishing while the token lacks `workflow` scope.
+
+## 2026-04-28 23:55 +08:00 - Added Vercel backup deployment path
+
+Created Vercel project `sing-walking-v5` as a preview/backup deployment. Because this app uses `output: 'export'` and static files in `dist`, deploy to Vercel through `.vercel/output` and `vercel deploy --prebuilt` instead of Vercel's default cloud Next.js builder. Use `npm run deploy:vercel` for preview deployments, or `npm run deploy:vercel -- --prod` for the stable production alias. `.vercel/` stays ignored and must not be committed.
