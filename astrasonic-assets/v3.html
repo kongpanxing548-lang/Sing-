@@ -1,0 +1,1507 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ASTRASONIC - 高品质场景化版权音乐资产库</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Noto+Sans+SC:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-primary: #0f0f10;
+            --bg-secondary: #1a1b1f;
+            --bg-tertiary: #202125;
+            --bg-hover: #25262b;
+            --border-subtle: #2a2b30;
+            --border-accent: #3a3b40;
+            --text-primary: #ffffff;
+            --text-secondary: #a0a0a5;
+            --text-muted: #606065;
+            --accent-orange: #ff5500;
+            --accent-cyan: #00a8ff;
+            --accent-purple: #9945ff;
+            --accent-yellow: #ffcc00;
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Inter', 'Noto Sans SC', -apple-system, sans-serif;
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            font-size: 14px;
+            line-height: 1.5;
+            -webkit-font-smoothing: antialiased;
+        }
+        a { text-decoration: none; color: inherit; }
+        
+        .app { display: flex; min-height: 100vh; }
+        
+        .sidebar {
+            width: 33%;
+            min-width: 320px;
+            max-width: 50%;
+            background: linear-gradient(180deg, #15161a 0%, #1a1b1f 100%);
+            border-right: 1px solid rgba(255,255,255,0.04);
+            box-shadow: 4px 0 24px rgba(0,0,0,0.4);
+            height: 100vh; position: fixed; top: 0; left: 0;
+            overflow-y: auto; overflow-x: hidden;
+            display: flex; flex-direction: column;
+        }
+        .sidebar::-webkit-scrollbar { width: 5px; }
+        .sidebar::-webkit-scrollbar-track { background: transparent; }
+        .sidebar::-webkit-scrollbar-thumb {
+            background: rgba(255,255,255,0.08);
+            border-radius: 3px;
+        }
+        .sidebar::-webkit-scrollbar-thumb:hover {
+            background: rgba(255,255,255,0.15);
+        }
+        
+        .logo {
+            padding: 28px 24px 20px;
+            font-size: 18px; font-weight: 800;
+            letter-spacing: 2px;
+            background: linear-gradient(90deg, #fff 0%, rgba(255,255,255,0.85) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            border-bottom: 1px solid rgba(255,255,255,0.04);
+            display: flex; align-items: center; gap: 10px;
+        }
+        .logo-icon {
+            width: 32px; height: 32px;
+            background: linear-gradient(135deg, var(--accent-orange) 0%, #ff7733 100%);
+            box-shadow: 0 4px 16px rgba(255, 85, 0, 0.35);
+            border-radius: 6px;
+        }
+        
+        .content-type-toggle {
+            padding: 16px 20px !important;
+            border-bottom: 1px solid rgba(255,255,255,0.04) !important;
+        }
+        .toggle-buttons {
+            display: flex;
+            gap: 6px;
+            padding: 4px;
+            background: rgba(0,0,0,0.25);
+            border-radius: 12px;
+            border: 1px solid rgba(255,255,255,0.04);
+        }
+        .toggle-btn {
+            flex: 1;
+            padding: 10px 14px;
+            font-size: 13px;
+            font-weight: 600;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+            background: transparent;
+            color: rgba(255,255,255,0.4);
+            position: relative;
+            overflow: hidden;
+        }
+        .toggle-btn:hover { color: rgba(255,255,255,0.7); }
+        .toggle-btn.active {
+            background: linear-gradient(135deg, rgba(153, 69, 255, 0.9) 0%, #7c3aed 100%);
+            color: #fff;
+            box-shadow: 0 4px 20px rgba(153, 69, 255, 0.35), inset 0 1px 0 rgba(255,255,255,0.15);
+        }
+        
+        .sidebar-search {
+            padding: 16px 20px !important;
+            border-bottom: 1px solid rgba(255,255,255,0.04) !important;
+        }
+        .sidebar-search .search-box {
+            position: relative;
+            width: 100%;
+        }
+        .sidebar-search .search-box .icon {
+            position: absolute;
+            left: 12px;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 14px;
+            color: var(--text-muted);
+            z-index: 1;
+        }
+        .sidebar-search .search-box input {
+            width: 100%;
+            background: rgba(255,255,255,0.03);
+            border: 1px solid rgba(255,255,255,0.06);
+            border-radius: 10px;
+            padding: 11px 14px 11px 38px;
+            color: var(--text-primary);
+            font-size: 13px;
+            transition: all 0.25s ease;
+            outline: none;
+        }
+        .sidebar-search .search-box input::placeholder {
+            color: rgba(255,255,255,0.25);
+        }
+        .sidebar-search .search-box input:hover {
+            background: rgba(255,255,255,0.05);
+            border-color: rgba(255,255,255,0.1);
+        }
+        .sidebar-search .search-box input:focus {
+            background: rgba(255,255,255,0.06);
+            border-color: rgba(255, 85, 0, 0.4);
+            box-shadow: 0 0 0 3px rgba(255, 85, 0, 0.08);
+        }
+        
+        .sidebar-content { flex: 1; overflow-y: auto; }
+        
+        .filter-section {
+            padding: 18px 20px !important;
+            border-bottom: 1px solid var(--border-subtle);
+        }
+        .filter-section-title {
+            font-size: 11px;
+            font-weight: 700;
+            color: rgba(255,255,255,0.35);
+            text-transform: uppercase;
+            letter-spacing: 1.2px;
+            margin-bottom: 14px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .filter-section-title .sub {
+            font-size: 11px;
+            color: rgba(255,255,255,0.2);
+            text-transform: none;
+            font-weight: 500;
+            letter-spacing: 0;
+            margin-left: 6px;
+        }
+        .filter-section-title .badge {
+            font-size: 9px;
+            padding: 3px 8px;
+            background: rgba(255,255,255,0.06);
+            color: rgba(255,255,255,0.45);
+            border-radius: 12px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            font-weight: 600;
+            border: 1px solid rgba(255,255,255,0.05);
+        }
+        
+        .radio-options {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 6px;
+        }
+        .radio-option {
+            padding: 7px 14px;
+            font-size: 12px;
+            background: rgba(255,255,255,0.03);
+            border: 1px solid rgba(255,255,255,0.05);
+            border-radius: 8px;
+            color: rgba(255,255,255,0.55);
+            cursor: pointer;
+            transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+            font-weight: 500;
+        }
+        .radio-option:hover {
+            background: rgba(255,255,255,0.06);
+            color: rgba(255,255,255,0.8);
+            border-color: rgba(255,255,255,0.1);
+            transform: translateY(-1px);
+        }
+        .radio-option.active {
+            background: linear-gradient(135deg, rgba(255, 85, 0, 0.9) 0%, #ff7733 100%);
+            color: #fff;
+            border-color: rgba(255, 85, 0, 0.5);
+            box-shadow: 0 4px 14px rgba(255, 85, 0, 0.3), inset 0 1px 0 rgba(255,255,255,0.2);
+            font-weight: 600;
+            transform: translateY(-1px);
+        }
+        
+        .checkbox-options {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 6px;
+        }
+        .checkbox-option {
+            padding: 6px 12px;
+            font-size: 12px;
+            background: rgba(255,255,255,0.03);
+            border: 1px solid rgba(255,255,255,0.05);
+            border-radius: 8px;
+            color: rgba(255,255,255,0.55);
+            cursor: pointer;
+            transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            font-weight: 500;
+        }
+        .checkbox-option:hover {
+            background: rgba(255,255,255,0.06);
+            color: rgba(255,255,255,0.8);
+            border-color: rgba(255,255,255,0.1);
+        }
+        .checkbox-option.active {
+            background: rgba(0, 168, 255, 0.12);
+            color: var(--accent-cyan);
+            border-color: rgba(0, 168, 255, 0.35);
+            font-weight: 600;
+        }
+        .checkbox-option.active::before {
+            content: "✓";
+            font-size: 9px;
+            opacity: 0.9;
+        }
+        
+        .structure-options {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 6px;
+        }
+        .structure-option {
+            padding: 7px 13px;
+            font-size: 12px;
+            background: rgba(255,255,255,0.03);
+            border: 1px solid rgba(255,255,255,0.05);
+            border-radius: 8px;
+            color: rgba(255,255,255,0.55);
+            cursor: pointer;
+            transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            font-weight: 500;
+        }
+        .structure-option:hover {
+            background: rgba(255,255,255,0.06);
+            color: rgba(255,255,255,0.8);
+            border-color: rgba(255,255,255,0.1);
+        }
+        .structure-option.active {
+            background: linear-gradient(135deg, rgba(0, 168, 255, 0.85) 0%, #0284c7 100%);
+            color: #fff;
+            border-color: rgba(0, 168, 255, 0.4);
+            box-shadow: 0 4px 14px rgba(0, 168, 255, 0.25), inset 0 1px 0 rgba(255,255,255,0.15);
+            font-weight: 600;
+        }
+        
+        .advanced-filter-card {
+            margin: 0 20px 16px;
+            background: linear-gradient(145deg, #1e1f24 0%, #1a1b1f 100%);
+            border-radius: 16px;
+            border: 1px solid rgba(255,255,255,0.06);
+            box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+            overflow: hidden;
+        }
+        .advanced-filter-header {
+            padding: 14px 16px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+        .advanced-filter-header:hover { background: rgba(255,255,255,0.02); }
+        .advanced-filter-title {
+            font-size: 14px;
+            font-weight: 600;
+            color: #fff;
+            letter-spacing: 0.3px;
+        }
+        .advanced-filter-arrow {
+            font-size: 12px;
+            color: rgba(255,255,255,0.4);
+            transition: transform 0.3s ease;
+        }
+        .advanced-filter-card.expanded .advanced-filter-arrow { transform: rotate(180deg); }
+        .advanced-filter-body {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.3s ease;
+        }
+        .advanced-filter-card.expanded .advanced-filter-body { max-height: 300px; }
+        .advanced-filter-content { padding: 0 16px 16px; }
+        .bpm-section { margin-bottom: 16px; }
+        .bpm-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 12px;
+        }
+        .bpm-label { font-size: 13px; font-weight: 500; color: rgba(255,255,255,0.6); }
+        .bpm-value { font-size: 15px; font-weight: 700; color: #ff7733; }
+        .bpm-slider-track {
+            position: relative;
+            height: 6px;
+            background: rgba(255,255,255,0.08);
+            border-radius: 3px;
+            cursor: pointer;
+        }
+        .bpm-slider-fill {
+            position: absolute;
+            left: 0;
+            top: 0;
+            height: 100%;
+            background: linear-gradient(90deg, #ff5500, #ff7733);
+            border-radius: 3px;
+            pointer-events: none;
+        }
+        .bpm-slider-thumb {
+            position: absolute;
+            top: 50%;
+            transform: translate(-50%, -50%);
+            width: 18px;
+            height: 18px;
+            background: linear-gradient(135deg, #ff5500, #ff7733);
+            border-radius: 50%;
+            box-shadow: 0 2px 8px rgba(255, 85, 0, 0.4);
+            cursor: grab;
+            transition: transform 0.15s, box-shadow 0.15s;
+        }
+        .bpm-slider-thumb:hover {
+            transform: translate(-50%, -50%) scale(1.1);
+            box-shadow: 0 3px 12px rgba(255, 85, 0, 0.5);
+        }
+        .bpm-slider-thumb:active {
+            cursor: grabbing;
+            transform: translate(-50%, -50%) scale(0.95);
+        }
+        .duration-section {
+            margin-top: 16px;
+            padding-top: 16px;
+            border-top: 1px solid rgba(255,255,255,0.04);
+        }
+        .duration-label {
+            font-size: 13px;
+            font-weight: 500;
+            color: rgba(255,255,255,0.6);
+            margin-bottom: 12px;
+            display: block;
+        }
+        .duration-options { display: flex; gap: 8px; flex-wrap: wrap; }
+        .duration-tag {
+            padding: 8px 14px;
+            font-size: 12px;
+            font-weight: 500;
+            color: rgba(255,255,255,0.55);
+            background: rgba(255,255,255,0.04);
+            border: 1px solid rgba(255,255,255,0.06);
+            border-radius: 20px;
+            cursor: pointer;
+            transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .duration-tag:hover {
+            background: rgba(255,255,255,0.08);
+            color: rgba(255,255,255,0.85);
+            border-color: rgba(255,255,255,0.1);
+        }
+        .duration-tag.active {
+            background: linear-gradient(135deg, #ff5500 0%, #ff7733 100%);
+            color: #fff;
+            border-color: rgba(255, 85, 0, 0.4);
+            box-shadow: 0 4px 12px rgba(255, 85, 0, 0.25);
+            font-weight: 600;
+        }
+        
+        .active-filters {
+            padding: 16px 20px !important;
+            background: rgba(0,0,0,0.25);
+            border-top: 1px solid rgba(255,255,255,0.05);
+            backdrop-filter: blur(10px);
+        }
+        .active-filters-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+        .active-filters-title {
+            font-size: 11px;
+            font-weight: 700;
+            color: rgba(255,255,255,0.4);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        .sidebar-clear-all {
+            font-size: 11px;
+            color: var(--accent-orange);
+            cursor: pointer;
+            background: none;
+            border: none;
+            padding: 0;
+            font-weight: 600;
+            opacity: 0.85;
+            transition: opacity 0.2s;
+        }
+        .sidebar-clear-all:hover { opacity: 1; text-decoration: underline; }
+        
+        .sidebar-active-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 5px;
+            min-height: 24px;
+        }
+        .sidebar-active-tag {
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            padding: 4px 10px;
+            background: rgba(255, 85, 0, 0.12);
+            border: 1px solid rgba(255, 85, 0, 0.2);
+            border-radius: 12px;
+            font-size: 11px;
+            color: #ff9966;
+            font-weight: 500;
+            transition: all 0.2s;
+        }
+        .sidebar-active-tag:hover {
+            background: rgba(255, 85, 0, 0.18);
+            border-color: rgba(255, 85, 0, 0.3);
+        }
+        .sidebar-active-tag .remove {
+            cursor: pointer;
+            opacity: 0.7;
+            font-size: 12px;
+            line-height: 1;
+            padding-left: 2px;
+        }
+        .sidebar-active-tag .remove:hover { opacity: 1; }
+        .sidebar-no-filters {
+            font-size: 11px;
+            color: rgba(255,255,255,0.25);
+            font-style: italic;
+        }
+        
+        .sidebar-result-count {
+            margin-top: 10px;
+            padding-top: 10px;
+            border-top: 1px solid rgba(255,255,255,0.05);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 11px;
+            color: rgba(255,255,255,0.35);
+        }
+        .sidebar-result-count .count {
+            color: #fff;
+            font-weight: 700;
+        }
+        .save-filter {
+            color: var(--accent-orange);
+            cursor: pointer;
+            background: none;
+            border: none;
+            padding: 0;
+            font-size: 11px;
+            font-weight: 600;
+            opacity: 0.85;
+            transition: opacity 0.2s;
+        }
+        .save-filter:hover { opacity: 1; }
+        
+        .main { 
+            flex: 1; 
+            margin-left: 33%; 
+            height: calc(100vh - 64px);
+            overflow-y: auto;
+        }
+        
+        .main::-webkit-scrollbar { width: 5px; }
+        .main::-webkit-scrollbar-track { background: transparent; }
+        .main::-webkit-scrollbar-thumb {
+            background: rgba(255,255,255,0.08);
+            border-radius: 3px;
+        }
+        .main::-webkit-scrollbar-thumb:hover {
+            background: rgba(255,255,255,0.15);
+        }
+        
+        .main-inner {
+            width: 100%;
+            max-width: 100%;
+            padding: 24px 40px;
+            box-sizing: border-box;
+        }
+        
+        .topbar {
+            height: 56px; background: var(--bg-primary);
+            border-bottom: 1px solid var(--border-subtle);
+            display: flex; align-items: center; justify-content: flex-end;
+            padding: 0 24px; position: sticky; top: 0; z-index: 100;
+        }
+        
+        .auth { display: flex; gap: 10px; }
+        .btn {
+            padding: 8px 18px; font-size: 12px; font-weight: 500;
+            border-radius: 5px; cursor: pointer; transition: 0.15s;
+            border: none;
+        }
+        .btn-secondary { background: var(--bg-tertiary); color: var(--text-secondary); }
+        .btn-secondary:hover { background: var(--bg-hover); color: var(--text-primary); }
+        .btn-primary { background: var(--text-primary); color: var(--bg-primary); }
+        .btn-primary:hover { background: #ddd; }
+        
+        .section { margin-bottom: 40px; }
+        .section-header-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-direction: row;
+            margin-bottom: 20px;
+        }
+        .section-title { font-size: 16px; font-weight: 600; letter-spacing: 0.5px; }
+        .section-more { font-size: 12px; color: var(--text-muted); cursor: pointer; }
+        .section-more:hover { color: var(--text-secondary); }
+        
+        .card-grid {
+            display: grid;
+            grid-template-columns: repeat(6, 1fr);
+            gap: 16px;
+            width: 100%;
+            box-sizing: border-box;
+        }
+        
+        .card {
+            cursor: pointer; transition: 0.2s;
+            display: flex;
+            flex-direction: column;
+            width: 100%;
+        }
+        .card-cover {
+            width: 100%;
+            aspect-ratio: 1 / 1;
+            border-radius: 6px;
+            overflow: hidden;
+            position: relative; background: var(--bg-tertiary);
+        }
+        .card-cover img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        .card-cover .overlay {
+            position: absolute; inset: 0;
+            background: rgba(0,0,0,0.6);
+            display: flex; align-items: center; justify-content: center;
+            opacity: 0; transition: 0.2s;
+        }
+        .card:hover .card-cover .overlay { opacity: 1; }
+        .card-cover .play-btn {
+            width: 44px; height: 44px; border-radius: 50%;
+            background: rgba(255,255,255,0.15); backdrop-filter: blur(10px);
+            display: flex; align-items: center; justify-content: center;
+            font-size: 16px; color: white;
+            transform: scale(0.9); transition: 0.2s;
+        }
+        .card:hover .card-cover .play-btn { transform: scale(1); }
+        
+        .card-info { padding: 12px 4px 0; }
+        .card-title {
+            font-size: 13px; font-weight: 600; color: var(--text-primary);
+            white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+        }
+        .card-id {
+            font-size: 11px; color: var(--text-muted); margin-top: 4px;
+            font-family: monospace;
+        }
+        
+        .hero-banner {
+            width: 100%;
+            height: 220px;
+            background: linear-gradient(135deg, #1a1a2e 0%, #0f0f15 50%, #1a1a2e 100%);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 40px 60px;
+            margin-bottom: 40px;
+            position: relative;
+            overflow: hidden;
+            box-sizing: border-box;
+        }
+        .hero-banner::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: radial-gradient(ellipse at 50% 50%, rgba(255,85,0,0.12) 0%, transparent 60%);
+        }
+        .hero-content {
+            position: relative;
+            z-index: 1;
+            text-align: left;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            max-width: 70%;
+        }
+        .hero-title {
+            font-size: 52px;
+            font-weight: 800;
+            letter-spacing: 0.15em;
+            margin-bottom: 8px;
+            line-height: 1.2;
+            text-transform: uppercase;
+        }
+        .hero-brand {
+            background: linear-gradient(135deg, #ff5500, #ff8800);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-align: left;
+        }
+        .hero-subtitle {
+            font-size: 14px;
+            color: rgba(255,255,255,0.6);
+            letter-spacing: 6px;
+            font-weight: 400;
+            text-align: left;
+            margin-bottom: 16px;
+            line-height: 1.3;
+        }
+        .hero-tagline {
+            font-size: 24px;
+            color: var(--text-primary);
+            margin-bottom: 8px;
+            font-weight: 500;
+            text-align: left;
+            line-height: 1.3;
+        }
+        .hero-desc {
+            font-size: 13px;
+            color: var(--text-muted);
+            text-align: left;
+            line-height: 1.4;
+        }
+        .hero-visual {
+            position: relative;
+            z-index: 1;
+        }
+        .hero-circle {
+            width: 180px;
+            height: 180px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, rgba(255,85,0,0.2), rgba(153,69,255,0.2));
+            border: 1px solid rgba(255,255,255,0.1);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 64px;
+        }
+        .hero-logo {
+            width: 180px;
+            height: auto;
+        }
+        
+        .player {
+            position: fixed; bottom: 0; left: 33%; right: 0;
+            height: 64px; background: var(--bg-secondary);
+            border-top: 1px solid var(--border-subtle);
+            display: flex; align-items: center; padding: 0 20px; gap: 20px;
+            z-index: 200;
+        }
+        .player-cover {
+            width: 44px; height: 44px; border-radius: 4px;
+            background: linear-gradient(135deg, #1a1a2e, #16213e);
+            overflow: hidden;
+        }
+        .player-cover img { width: 100%; height: 100%; object-fit: cover; }
+        .player-info { width: 180px; }
+        .player-title { font-size: 12px; font-weight: 500; }
+        .player-artist { font-size: 10px; color: var(--text-muted); margin-top: 2px; }
+        
+        .player-wave { flex: 1; height: 36px; display: flex; align-items: center; gap: 2px; }
+        .wave-bar {
+            flex: 1; background: var(--border-accent); border-radius: 1px;
+            min-height: 4px; transition: 0.1s;
+        }
+        
+        .player-controls { display: flex; align-items: center; gap: 14px; }
+        .ctrl-btn {
+            background: none; border: none; color: var(--text-secondary);
+            cursor: pointer; font-size: 14px; padding: 4px;
+            transition: 0.15s;
+        }
+        .ctrl-btn:hover { color: var(--text-primary); }
+        .ctrl-btn.play {
+            width: 36px; height: 36px; border-radius: 50%;
+            background: var(--text-primary); color: var(--bg-primary);
+            display: flex; align-items: center; justify-content: center;
+        }
+        .ctrl-btn.play:hover { background: #ddd; }
+        
+        .player-time { font-size: 10px; color: var(--text-muted); width: 70px; text-align: left; }
+        
+        .player-extra { display: flex; gap: 12px; }
+        
+        @media (max-width: 900px) {
+            .sidebar { width: 240px; min-width: 240px; max-width: 240px; }
+            .main { margin-left: 240px; }
+            .player { left: 240px; }
+            .main-inner { padding: 16px 20px; }
+            .hero-banner { height: 180px; padding: 30px 40px; }
+        }
+        
+        @media (max-width: 768px) {
+            .sidebar { width: 100%; min-width: 100%; max-width: 100%; }
+            .main { margin-left: 0; }
+            .player { left: 0; }
+        }
+        
+        /* Splash Screen */
+        .splash-screen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: url('splash-bg.png') no-repeat center center;
+            background-size: cover;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 9999;
+            cursor: pointer;
+            animation: splashFadeIn 1s ease-out;
+            overflow: hidden;
+        }
+        @keyframes splashFadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        .splash-screen.fade-out {
+            animation: splashFadeOut 0.6s ease-in forwards;
+        }
+        @keyframes splashFadeOut {
+            from { opacity: 1; }
+            to { opacity: 0; pointer-events: none; }
+        }
+        .splash-hint {
+            position: absolute;
+            bottom: 40px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 12px;
+            color: rgba(255,255,255,0.5);
+            letter-spacing: 2px;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.5);
+        }
+        
+        .no-result { display: none; text-align: center; padding: 60px 20px; color: var(--text-muted); }
+        .no-result.visible { display: block; }
+        .no-result-icon { font-size: 48px; margin-bottom: 16px; }
+        .no-result-title { font-size: 18px; color: var(--text-secondary); margin-bottom: 8px; }
+        .no-result-desc { font-size: 14px; }
+        
+        .card.hidden { display: none; }
+    </style>
+</head>
+<body>
+    <!-- Splash Screen -->
+    <div class="splash-screen" id="splashScreen" onclick="closeSplash()">
+        <p class="splash-hint">点击任意处进入 · Click to Enter</p>
+    </div>
+    
+    <div class="app">
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <div class="logo">
+                <div class="logo-icon"></div>
+                ASTRASONIC
+            </div>
+            
+            <div class="content-type-toggle">
+                <div class="toggle-buttons">
+                    <button class="toggle-btn active" data-type="music" onclick="switchContentType('music')">
+                        <span style="margin-right:4px;">♪</span>音乐
+                    </button>
+                    <button class="toggle-btn" data-type="sfx" onclick="switchContentType('sfx')">
+                        <span style="margin-right:4px;">🔊</span>音效
+                    </button>
+                </div>
+            </div>
+            
+            <div class="sidebar-search">
+                <div class="search-box">
+                    <span class="icon">🔍</span>
+                    <input type="text" placeholder="搜索音乐、场景、风格、标签..." id="topSearchInput">
+                </div>
+            </div>
+            
+            <div class="sidebar-content">
+                <!-- Music Filters -->
+                <div id="music-filters" class="filter-dimension-group">
+                    <div class="filter-section">
+                        <div class="filter-section-title">
+                            Usage <span class="sub">用途</span>
+                            <span class="badge">单选</span>
+                        </div>
+                        <div class="radio-options" id="music-usage"></div>
+                    </div>
+                    
+                    <div class="filter-section">
+                        <div class="filter-section-title">
+                            Scene <span class="sub">场景</span>
+                            <span class="badge" style="background:rgba(0,168,255,0.1);color:var(--accent-cyan);">多选</span>
+                        </div>
+                        <div class="checkbox-options" id="music-scene"></div>
+                    </div>
+                    
+                    <div class="filter-section">
+                        <div class="filter-section-title">
+                            Mood <span class="sub">情绪</span>
+                            <span class="badge" style="background:rgba(0,168,255,0.1);color:var(--accent-cyan);">多选</span>
+                        </div>
+                        <div class="checkbox-options" id="music-mood"></div>
+                    </div>
+                    
+                    <div class="filter-section">
+                        <div class="filter-section-title">
+                            Style <span class="sub">风格</span>
+                            <span class="badge" style="background:rgba(0,168,255,0.1);color:var(--accent-cyan);">多选</span>
+                        </div>
+                        <div class="checkbox-options" id="music-style"></div>
+                    </div>
+                    
+                    <div class="filter-section">
+                        <div class="filter-section-title">
+                            Structure <span class="sub">结构</span>
+                            <span class="badge">专业</span>
+                        </div>
+                        <div class="structure-options" id="music-structure"></div>
+                    </div>
+                </div>
+                
+                <!-- SFX Filters -->
+                <div id="sfx-filters" class="filter-dimension-group" style="display:none;">
+                    <div class="filter-section">
+                        <div class="filter-section-title">
+                            Source <span class="sub">来源</span>
+                            <span class="badge">单选</span>
+                        </div>
+                        <div class="radio-options" id="sfx-source"></div>
+                    </div>
+                    
+                    <div class="filter-section">
+                        <div class="filter-section-title">
+                            Function <span class="sub">功能</span>
+                            <span class="badge" style="background:rgba(0,168,255,0.1);color:var(--accent-cyan);">多选</span>
+                        </div>
+                        <div class="checkbox-options" id="sfx-function"></div>
+                    </div>
+                    
+                    <div class="filter-section">
+                        <div class="filter-section-title">
+                            Style <span class="sub">风格</span>
+                            <span class="badge" style="background:rgba(0,168,255,0.1);color:var(--accent-cyan);">多选</span>
+                        </div>
+                        <div class="checkbox-options" id="sfx-style"></div>
+                    </div>
+                    
+                    <div class="filter-section">
+                        <div class="filter-section-title">
+                            Structure <span class="sub">结构</span>
+                            <span class="badge">简化</span>
+                        </div>
+                        <div class="structure-options" id="sfx-structure"></div>
+                    </div>
+                </div>
+                
+                <div class="advanced-filter-card" id="advancedFilterCard">
+                    <div class="advanced-filter-header" onclick="toggleAdvancedFilter()">
+                        <span class="advanced-filter-title">高级筛选</span>
+                        <span class="advanced-filter-arrow">▼</span>
+                    </div>
+                    <div class="advanced-filter-body">
+                        <div class="advanced-filter-content">
+                            <div class="bpm-section">
+                                <div class="bpm-header">
+                                    <span class="bpm-label">BPM</span>
+                                    <span class="bpm-value" id="bpmDisplay">60-180</span>
+                                </div>
+                                <div class="bpm-slider-track" id="bpmTrack" onclick="onBpmTrackClick(event)">
+                                    <div class="bpm-slider-fill" id="bpmFill" style="width: 100%;"></div>
+                                    <div class="bpm-slider-thumb" id="bpmThumb" style="left: 100%;"></div>
+                                </div>
+                            </div>
+                            <div class="duration-section">
+                                <span class="duration-label">时长</span>
+                                <div class="duration-options">
+                                    <span class="duration-tag" onclick="toggleDurationTag(this)">&lt; 30s</span>
+                                    <span class="duration-tag" onclick="toggleDurationTag(this)">30s-2m</span>
+                                    <span class="duration-tag" onclick="toggleDurationTag(this)">&gt; 2m</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="active-filters">
+                <div class="active-filters-header">
+                    <span class="active-filters-title">当前筛选 Active</span>
+                    <button class="sidebar-clear-all" onclick="clearAllFilters()">清空全部</button>
+                </div>
+                <div class="sidebar-active-tags" id="sidebarActiveTags">
+                    <span class="sidebar-no-filters">暂无筛选条件</span>
+                </div>
+                <div class="sidebar-result-count">
+                    <span>找到 <span class="count" id="sidebarResultCount">20</span> 个结果</span>
+                    <button class="save-filter">保存筛选</button>
+                </div>
+            </div>
+        </aside>
+        
+        <!-- Main Content -->
+        <main class="main">
+            <header class="topbar">
+                <div class="auth">
+                    <button class="btn btn-secondary">注册 Sign Up</button>
+                    <button class="btn btn-primary">登录 Login</button>
+                </div>
+            </header>
+            
+            <div class="no-result" id="noResult">
+                <div class="no-result-icon">🔍</div>
+                <div class="no-result-title">没有找到匹配的音乐</div>
+                <div class="no-result-desc">尝试清除筛选条件或更改搜索关键词</div>
+            </div>
+            
+            <div class="main-inner">
+                <div class="hero-banner">
+                    <div class="hero-content">
+                        <h1 class="hero-title">
+                            <span class="hero-brand">ASTRASONIC</span>
+                        </h1>
+                        <p class="hero-subtitle">Sound Across the Universe</p>
+                        <p class="hero-tagline">连接创作者与内容世界的音频空间站</p>
+                        <p class="hero-desc">游戏音频 · 场景音乐 · 商业授权 · AI音频资产</p>
+                    </div>
+                    <div class="hero-visual">
+                        <img src="logo-transparent.png" alt="ASTRASONIC Logo" class="hero-logo">
+                    </div>
+                </div>
+                
+                <div class="section">
+                    <div class="section-header-row">
+                        <h2 class="section-title">最新发布 New Releases</h2>
+                    </div>
+                    <div class="card-grid" id="cardGrid"></div>
+                </div>
+                
+                <div class="section">
+                    <div class="section-header-row">
+                        <h2 class="section-title">场景分类 Scene Categories</h2>
+                    </div>
+                    <div class="card-grid" id="sceneGrid"></div>
+                </div>
+            </div>
+        </main>
+    </div>
+    
+    <!-- Player -->
+    <div class="player">
+        <div class="player-cover">
+            <img src="https://images.unsplash.com/photo-1511379938547-c1f69419868d?w=100&h=100&fit=crop" alt="">
+        </div>
+        <div class="player-info">
+            <div class="player-title">选择一首音乐 Select a Track</div>
+            <div class="player-artist">ASTRASONIC</div>
+        </div>
+        <div class="player-wave" id="playerWave"></div>
+        <div class="player-controls">
+            <button class="ctrl-btn">⏮</button>
+            <button class="ctrl-btn play" id="playBtn">▶</button>
+            <button class="ctrl-btn">⏭</button>
+        </div>
+        <div class="player-time">0:00 / 0:00</div>
+        <div class="player-extra">
+            <button class="btn btn-primary" style="padding: 6px 14px; font-size: 11px;">获取授权 Get License</button>
+        </div>
+    </div>
+    
+    <script>
+        // Data
+        const musicAssets = [
+            { id: 'AS-2026-001', title: '赤壁之战', titleEn: 'Battle of Red Cliffs', style: ['史诗', '管弦'], scene: ['战斗', 'Boss'], mood: ['热血', '紧张'], bpm: 140, duration: 180, durationTag: '30s-2m', structure: 'Loop', cover: 'https://images.unsplash.com/photo-1514320291840-2e0a9bf2a9ae?w=400&h=400&fit=crop', audio: '' },
+            { id: 'AS-2026-002', title: '东方传说', titleEn: 'Eastern Legends', style: ['东方', '民族'], scene: ['主城', '探索'], mood: ['神秘', '治愈'], bpm: 95, duration: 240, durationTag: '30s-2m', structure: 'Loop', cover: 'https://images.unsplash.com/photo-1528164344705-47542687000d?w=400&h=400&fit=crop', audio: '' },
+            { id: 'AS-2026-003', title: '赛博追击', titleEn: 'Cyber Chase', style: ['电子', '科幻'], scene: ['战斗', '转场'], mood: ['紧张', '热血'], bpm: 128, duration: 150, durationTag: '30s-2m', structure: 'Loop', cover: 'https://images.unsplash.com/photo-1555680202-c86f0e12f086?w=400&h=400&fit=crop', audio: '' },
+            { id: 'AS-2026-004', title: '神秘领域', titleEn: 'Mystic Realm', style: ['暗黑', '氛围'], scene: ['探索', 'Boss'], mood: ['神秘', '恐怖'], bpm: 85, duration: 300, durationTag: '> 2m', structure: 'Loop', cover: 'https://images.unsplash.com/photo-1518709268805-4e9042af9f23?w=400&h=400&fit=crop', audio: '' },
+            { id: 'AS-2026-005', title: '霓虹冲刺', titleEn: 'Neon Rush', style: ['电子', '复古'], scene: ['转场', '开场'], mood: ['快乐', '热血'], bpm: 150, duration: 90, durationTag: '30s-2m', structure: 'Stinger', cover: 'https://images.unsplash.com/photo-1563089145-599997674d42?w=400&h=400&fit=crop', audio: '' },
+            { id: 'AS-2026-006', title: '像素梦境', titleEn: 'Pixel Dreams', style: ['复古', 'Lo-fi'], scene: ['主城', '探索'], mood: ['轻松', '快乐'], bpm: 110, duration: 200, durationTag: '30s-2m', structure: 'Loop', cover: 'https://images.unsplash.com/photo-1550745165-9bc0b252726f?w=400&h=400&fit=crop', audio: '' },
+            { id: 'AS-2026-007', title: '史诗征程', titleEn: 'Epic Journey', style: ['史诗', '管弦'], scene: ['开场', '结尾'], mood: ['热血', '紧张'], bpm: 135, duration: 280, durationTag: '> 2m', structure: 'Build-up', cover: 'https://images.unsplash.com/photo-1534447677768-be436bb09401?w=400&h=400&fit=crop', audio: '' },
+            { id: 'AS-2026-008', title: '暗夜潜行', titleEn: 'Night Stalker', style: ['电子', '暗黑'], scene: ['探索', '转场'], mood: ['紧张', '神秘'], bpm: 105, duration: 160, durationTag: '30s-2m', structure: 'Loop', cover: 'https://images.unsplash.com/photo-1519501025264-65ba15a82390?w=400&h=400&fit=crop', audio: '' },
+            { id: 'AS-2026-009', title: '仙界奇遇', titleEn: 'Celestial Encounter', style: ['东方', '治愈'], scene: ['主城', '探索'], mood: ['治愈', '轻松'], bpm: 88, duration: 220, durationTag: '30s-2m', structure: 'Loop', cover: 'https://images.unsplash.com/photo-1518173946687-a4c036bc3c95?w=400&h=400&fit=crop', audio: '' },
+            { id: 'AS-2026-010', title: '机械狂潮', titleEn: 'Mecha Rampage', style: ['科幻', '电子'], scene: ['战斗', 'Boss'], mood: ['热血', '紧张'], bpm: 165, duration: 190, durationTag: '30s-2m', structure: 'Drop', cover: 'https://images.unsplash.com/photo-1535378437327-b71494663c74?w=400&h=400&fit=crop', audio: '' },
+            { id: 'AS-2026-011', title: '雨中漫步', titleEn: 'Rainy Stroll', style: ['Lo-fi', '爵士'], scene: ['探索'], mood: ['轻松', '治愈'], bpm: 75, duration: 260, durationTag: '> 2m', structure: 'Loop', cover: 'https://images.unsplash.com/photo-1515162816999-a0c47dc192f7?w=400&h=400&fit=crop', audio: '' },
+            { id: 'AS-2026-012', title: '最终决战', titleEn: 'Final Showdown', style: ['史诗', '管弦'], scene: ['Boss', '结尾'], mood: ['热血', '紧张'], bpm: 170, duration: 240, durationTag: '30s-2m', structure: 'Build-up', cover: 'https://images.unsplash.com/photo-1578662996442-48f60103fc96?w=400&h=400&fit=crop', audio: '' }
+        ];
+
+        const FILTER_CONFIG = {
+            music: {
+                usage: ['Game', 'Video', 'Commercial', 'Film', 'Corporate', 'UI'],
+                scene: ['战斗', '主城', 'Boss', '转场', '开场', '结尾', '探索'],
+                mood: ['热血', '紧张', '轻松', '快乐', '悲伤', '神秘', '恐怖', '治愈'],
+                style: ['东方', '管弦', '电子', '科幻', '复古', '民族', 'Lo-fi', '爵士'],
+                structure: ['Loop', 'Stinger', 'Build-up', 'Drop', '分轨(Stem)', '可交互']
+            },
+            sfx: {
+                source: ['人声', '自然', '动物', '机械', '电子', '交通', '战斗', 'UI', '环境'],
+                function: ['点击反馈', '战斗反馈', '技能释放', '环境循环', '过渡音', '警告提示'],
+                style: ['科幻', '卡通', '写实', '魔法', '未来科技', '黑暗风', '东方玄幻'],
+                structure: ['循环', '单次', '随机变体']
+            }
+        };
+        
+        // State
+        let currentType = 'music';
+        let activeFilters = {
+            music: { usage: '', scene: [], mood: [], style: [], structure: [] },
+            sfx: { source: '', function: [], style: [], structure: [] }
+        };
+        let currentSearchTerm = '';
+        let currentDurationFilter = null;
+        let bpmValue = 180;
+        const bpmMin = 60;
+        const bpmMax = 180;
+        let isDragging = false;
+        
+        // Splash Screen
+        function closeSplash() {
+            const splash = document.getElementById('splashScreen');
+            if (splash) {
+                splash.classList.add('fade-out');
+                setTimeout(() => {
+                    splash.style.display = 'none';
+                }, 600);
+            }
+        }
+        
+        // Render Sidebar
+        function renderSidebar() {
+            const config = FILTER_CONFIG[currentType];
+            
+            if (currentType === 'music') {
+                document.getElementById('music-filters').style.display = 'block';
+                document.getElementById('sfx-filters').style.display = 'none';
+                
+                document.getElementById('music-usage').innerHTML = config.usage.map(opt => {
+                    const isActive = activeFilters.music.usage === opt;
+                    return `<span class="radio-option ${isActive ? 'active' : ''}" onclick="toggleRadio('usage', '${opt}')">${opt}</span>`;
+                }).join('');
+                
+                document.getElementById('music-scene').innerHTML = config.scene.map(opt => {
+                    const isActive = activeFilters.music.scene.includes(opt);
+                    return `<span class="checkbox-option ${isActive ? 'active' : ''}" onclick="toggleCheckbox('scene', '${opt}')">${opt}</span>`;
+                }).join('');
+                
+                document.getElementById('music-mood').innerHTML = config.mood.map(opt => {
+                    const isActive = activeFilters.music.mood.includes(opt);
+                    return `<span class="checkbox-option ${isActive ? 'active' : ''}" onclick="toggleCheckbox('mood', '${opt}')">${opt}</span>`;
+                }).join('');
+                
+                document.getElementById('music-style').innerHTML = config.style.map(opt => {
+                    const isActive = activeFilters.music.style.includes(opt);
+                    return `<span class="checkbox-option ${isActive ? 'active' : ''}" onclick="toggleCheckbox('style', '${opt}')">${opt}</span>`;
+                }).join('');
+                
+                document.getElementById('music-structure').innerHTML = config.structure.map(opt => {
+                    const isActive = activeFilters.music.structure.includes(opt);
+                    return `<span class="structure-option ${isActive ? 'active' : ''}" onclick="toggleCheckbox('structure', '${opt}')">${opt}</span>`;
+                }).join('');
+            } else {
+                document.getElementById('music-filters').style.display = 'none';
+                document.getElementById('sfx-filters').style.display = 'block';
+                
+                document.getElementById('sfx-source').innerHTML = config.source.map(opt => {
+                    const isActive = activeFilters.sfx.source === opt;
+                    return `<span class="radio-option ${isActive ? 'active' : ''}" onclick="toggleRadio('source', '${opt}')">${opt}</span>`;
+                }).join('');
+                
+                document.getElementById('sfx-function').innerHTML = config.function.map(opt => {
+                    const isActive = activeFilters.sfx.function.includes(opt);
+                    return `<span class="checkbox-option ${isActive ? 'active' : ''}" onclick="toggleCheckbox('function', '${opt}')">${opt}</span>`;
+                }).join('');
+                
+                document.getElementById('sfx-style').innerHTML = config.style.map(opt => {
+                    const isActive = activeFilters.sfx.style.includes(opt);
+                    return `<span class="checkbox-option ${isActive ? 'active' : ''}" onclick="toggleCheckbox('style', '${opt}')">${opt}</span>`;
+                }).join('');
+                
+                document.getElementById('sfx-structure').innerHTML = config.structure.map(opt => {
+                    const isActive = activeFilters.sfx.structure.includes(opt);
+                    return `<span class="structure-option ${isActive ? 'active' : ''}" onclick="toggleCheckbox('structure', '${opt}')">${opt}</span>`;
+                }).join('');
+            }
+        }
+        
+        // Switch Content Type
+        function switchContentType(type) {
+            currentType = type;
+            document.querySelectorAll('.toggle-btn').forEach(btn => {
+                btn.classList.toggle('active', btn.dataset.type === type);
+            });
+            renderSidebar();
+            updateActiveFilters();
+            applyAllFilters();
+        }
+        
+        // Toggle Radio
+        function toggleRadio(category, value) {
+            const filters = activeFilters[currentType];
+            filters[category] = filters[category] === value ? '' : value;
+            renderSidebar();
+            updateActiveFilters();
+            applyAllFilters();
+        }
+        
+        // Toggle Checkbox
+        function toggleCheckbox(category, value) {
+            const filters = activeFilters[currentType];
+            const index = filters[category].indexOf(value);
+            if (index > -1) {
+                filters[category].splice(index, 1);
+            } else {
+                filters[category].push(value);
+            }
+            renderSidebar();
+            updateActiveFilters();
+            applyAllFilters();
+        }
+        
+        // Toggle Advanced Filter
+        function toggleAdvancedFilter() {
+            document.getElementById('advancedFilterCard').classList.toggle('expanded');
+        }
+        
+        // BPM Slider
+        function updateBpmUI() {
+            const percentage = ((bpmValue - bpmMin) / (bpmMax - bpmMin)) * 100;
+            document.getElementById('bpmFill').style.width = percentage + '%';
+            document.getElementById('bpmThumb').style.left = percentage + '%';
+            document.getElementById('bpmDisplay').textContent = `60-${bpmValue}`;
+        }
+        
+        function onBpmTrackClick(event) {
+            const track = document.getElementById('bpmTrack');
+            const rect = track.getBoundingClientRect();
+            const percentage = Math.max(0, Math.min(1, (event.clientX - rect.left) / rect.width));
+            bpmValue = Math.round(bpmMin + percentage * (bpmMax - bpmMin));
+            updateBpmUI();
+            applyAllFilters();
+        }
+        
+        // Duration Tag
+        function toggleDurationTag(el) {
+            const isActive = el.classList.contains('active');
+            document.querySelectorAll('.duration-tag').forEach(t => t.classList.remove('active'));
+            if (!isActive) {
+                el.classList.add('active');
+                currentDurationFilter = el.textContent.trim();
+            } else {
+                currentDurationFilter = null;
+            }
+            applyAllFilters();
+        }
+        
+        // Update Active Filters Display
+        function updateActiveFilters() {
+            const filters = activeFilters[currentType];
+            const activeList = [];
+            
+            Object.entries(filters).forEach(([key, values]) => {
+                if (Array.isArray(values) && values.length > 0) {
+                    values.forEach(v => activeList.push({ key, value: v }));
+                } else if (values && typeof values === 'string') {
+                    activeList.push({ key, value: values });
+                }
+            });
+            
+            const sidebarTags = document.getElementById('sidebarActiveTags');
+            if (activeList.length === 0) {
+                sidebarTags.innerHTML = '<span class="sidebar-no-filters">暂无筛选条件</span>';
+            } else {
+                sidebarTags.innerHTML = activeList.map(({ key, value }) => `
+                    <span class="sidebar-active-tag">
+                        ${value}
+                        <span class="remove" onclick="removeFilter('${key}', '${value}')">×</span>
+                    </span>
+                `).join('');
+            }
+        }
+        
+        // Remove Filter
+        function removeFilter(category, value) {
+            const filters = activeFilters[currentType];
+            if (Array.isArray(filters[category])) {
+                filters[category] = filters[category].filter(v => v !== value);
+            } else {
+                filters[category] = '';
+            }
+            renderSidebar();
+            updateActiveFilters();
+            applyAllFilters();
+        }
+        
+        // Clear All Filters
+        function clearAllFilters() {
+            if (currentType === 'music') {
+                activeFilters.music = { usage: '', scene: [], mood: [], style: [], structure: [] };
+            } else {
+                activeFilters.sfx = { source: '', function: [], style: [], structure: [] };
+            }
+            document.getElementById('topSearchInput').value = '';
+            currentSearchTerm = '';
+            currentDurationFilter = null;
+            document.querySelectorAll('.duration-tag').forEach(t => t.classList.remove('active'));
+            bpmValue = 180;
+            updateBpmUI();
+            renderSidebar();
+            updateActiveFilters();
+            applyAllFilters();
+        }
+        
+        // Debounce
+        function debounce(func, wait) {
+            let timeout;
+            return function executedFunction(...args) {
+                const later = () => {
+                    clearTimeout(timeout);
+                    func(...args);
+                };
+                clearTimeout(timeout);
+                timeout = setTimeout(later, wait);
+            };
+        }
+        
+        // Render Asset Grid
+        function renderAssetGrid() {
+            const grid = document.getElementById('cardGrid');
+            if (!grid) return;
+            
+            grid.innerHTML = musicAssets.map(asset => createMusicCardHTML(asset)).join('');
+        }
+        
+        function createMusicCardHTML(asset) {
+            return `
+                <div class="card" data-id="${asset.id}" data-title="${asset.title.toLowerCase()}" 
+                     data-style="${asset.style.join(',').toLowerCase()}" 
+                     data-scene="${asset.scene.join(',').toLowerCase()}" 
+                     data-mood="${asset.mood.join(',').toLowerCase()}"
+                     data-bpm="${asset.bpm}" data-duration="${asset.duration}" data-duration-tag="${asset.durationTag}">
+                    <div class="card-cover">
+                        <img src="${asset.cover}" alt="${asset.title}">
+                        <div class="overlay"><div class="play-btn">▶</div></div>
+                    </div>
+                    <div class="card-info">
+                        <div class="card-title" title="${asset.title}">${asset.title}</div>
+                        <div class="card-id">${asset.id} · ${asset.bpm} BPM · ${formatDuration(asset.duration)}</div>
+                    </div>
+                </div>
+            `;
+        }
+        
+        function formatDuration(seconds) {
+            const mins = Math.floor(seconds / 60);
+            const secs = seconds % 60;
+            return `${mins}:${secs.toString().padStart(2, '0')}`;
+        }
+        
+        // Scene Categories Data
+        const sceneCategories = [
+            { id: 'cat-epic', title: '史诗管弦', titleEn: 'Epic Orchestra', count: 48, cover: 'https://images.unsplash.com/photo-1514320291840-2e0a9bf2a9ae?w=400&h=400&fit=crop' },
+            { id: 'cat-dark', title: '暗黑氛围', titleEn: 'Dark Ambient', count: 36, cover: 'https://images.unsplash.com/photo-1519501025264-65ba15a82390?w=400&h=400&fit=crop' },
+            { id: 'cat-retro', title: '8-bit 复古', titleEn: 'Retro 8-bit', count: 24, cover: 'https://images.unsplash.com/photo-1550745165-9bc0b252726f?w=400&h=400&fit=crop' },
+            { id: 'cat-oriental', title: '东方风格', titleEn: 'Oriental', count: 32, cover: 'https://images.unsplash.com/photo-1528164344705-47542687000d?w=400&h=400&fit=crop' },
+            { id: 'cat-electronic', title: '电子合成', titleEn: 'Electronic', count: 52, cover: 'https://images.unsplash.com/photo-1555680202-c86f0e12f086?w=400&h=400&fit=crop' },
+            { id: 'cat-commercial', title: '商业广告', titleEn: 'Commercial', count: 28, cover: 'https://images.unsplash.com/photo-1563089145-599997674d42?w=400&h=400&fit=crop' },
+            { id: 'cat-retail', title: '商铺场景', titleEn: 'Retail', count: 18, cover: 'https://images.unsplash.com/photo-1515162816999-a0c47dc192f7?w=400&h=400&fit=crop' },
+            { id: 'cat-sleep', title: '睡眠冥想', titleEn: 'Sleep & Meditation', count: 22, cover: 'https://images.unsplash.com/photo-1518173946687-a4c036bc3c95?w=400&h=400&fit=crop' }
+        ];
+
+        // SFX Assets Data
+        const sfxAssets = [
+            { id: 'SFX-001', title: 'Rise Builder', cover: 'https://images.unsplash.com/photo-1511379938547-c1f69419868d?w=400&h=400&fit=crop' },
+            { id: 'SFX-002', title: 'Impact Hits', cover: 'https://images.unsplash.com/photo-1598488035139-bdbb2231ce04?w=400&h=400&fit=crop' },
+            { id: 'SFX-003', title: 'Drones Collection', cover: 'https://images.unsplash.com/photo-1518709268805-4e9042af9f23?w=400&h=400&fit=crop' },
+            { id: 'SFX-004', title: 'Stings Pack', cover: 'https://images.unsplash.com/photo-1534447677768-be436bb09401?w=400&h=400&fit=crop' },
+            { id: 'SFX-005', title: 'Whoosh Effects', cover: 'https://images.unsplash.com/photo-1535378437327-b71494663c74?w=400&h=400&fit=crop' }
+        ];
+
+        function createSceneCardHTML(category) {
+            return `
+                <div class="card" data-cat-id="${category.id}">
+                    <div class="card-cover">
+                        <img src="${category.cover}" alt="${category.title}">
+                        <div class="overlay"><div class="play-btn">▶</div></div>
+                    </div>
+                    <div class="card-info">
+                        <div class="card-title" title="${category.title}">${category.title}</div>
+                        <div class="card-id">${category.count} Tracks</div>
+                    </div>
+                </div>
+            `;
+        }
+
+        function createSfxCardHTML(sfx) {
+            return `
+                <div class="card" data-sfx-id="${sfx.id}">
+                    <div class="card-cover">
+                        <img src="${sfx.cover}" alt="${sfx.title}">
+                        <div class="overlay"><div class="play-btn">▶</div></div>
+                    </div>
+                    <div class="card-info">
+                        <div class="card-title" title="${sfx.title}">${sfx.title}</div>
+                        <div class="card-id">${sfx.id}</div>
+                    </div>
+                </div>
+            `;
+        }
+
+        function renderSceneGrid() {
+            const grid = document.getElementById('sceneGrid');
+            if (!grid) return;
+            grid.innerHTML = sceneCategories.map(cat => createSceneCardHTML(cat)).join('');
+        }
+
+        function renderSfxGrid() {
+            const grid = document.getElementById('sfxGrid');
+            if (!grid) return;
+            grid.innerHTML = sfxAssets.map(sfx => createSfxCardHTML(sfx)).join('');
+        }
+        
+        // Apply All Filters
+        function applyAllFilters() {
+            const cards = document.querySelectorAll('#cardGrid .card');
+            let visibleCount = 0;
+            
+            const filters = activeFilters[currentType];
+            
+            cards.forEach(card => {
+                let matches = true;
+                
+                // Search
+                if (currentSearchTerm) {
+                    const titleMatch = card.dataset.title.includes(currentSearchTerm);
+                    const styleMatch = card.dataset.style.includes(currentSearchTerm);
+                    const idMatch = card.dataset.id.toLowerCase().includes(currentSearchTerm);
+                    if (!titleMatch && !styleMatch && !idMatch) matches = false;
+                }
+                
+                // Filters
+                if (matches && currentType === 'music') {
+                    if (filters.usage) {
+                        const asset = musicAssets.find(a => a.id === card.dataset.id);
+                        if (asset) {
+                            const usageMap = {
+                                'Game': ['战斗', '主城', 'Boss', '探索'],
+                                'Video': ['转场', '开场', '结尾'],
+                                'Commercial': ['开场', '结尾'],
+                                'Film': ['开场', '结尾', 'Boss'],
+                                'Corporate': ['主城', '探索'],
+                                'UI': ['主城']
+                            };
+                            const mappedScenes = usageMap[filters.usage] || [];
+                            if (!mappedScenes.some(s => asset.scene.includes(s))) matches = false;
+                        }
+                    }
+                    
+                    if (matches && filters.scene.length > 0) {
+                        const cardScenes = card.dataset.scene.split(',');
+                        if (!filters.scene.some(s => cardScenes.includes(s.toLowerCase()))) matches = false;
+                    }
+                    
+                    if (matches && filters.mood.length > 0) {
+                        const cardMoods = card.dataset.mood.split(',');
+                        if (!filters.mood.some(m => cardMoods.includes(m.toLowerCase()))) matches = false;
+                    }
+                    
+                    if (matches && filters.style.length > 0) {
+                        const cardStyles = card.dataset.style.split(',');
+                        if (!filters.style.some(s => cardStyles.includes(s.toLowerCase()))) matches = false;
+                    }
+                    
+                    if (matches && filters.structure.length > 0) {
+                        const asset = musicAssets.find(a => a.id === card.dataset.id);
+                        if (asset && !filters.structure.includes(asset.structure)) matches = false;
+                    }
+                }
+                
+                // BPM
+                if (matches) {
+                    const cardBpm = parseInt(card.dataset.bpm);
+                    if (cardBpm > bpmValue) matches = false;
+                }
+                
+                // Duration
+                if (matches && currentDurationFilter) {
+                    const cardDurationTag = card.dataset.durationTag;
+                    if (cardDurationTag !== currentDurationFilter) matches = false;
+                }
+                
+                if (matches) {
+                    card.classList.remove('hidden');
+                    visibleCount++;
+                } else {
+                    card.classList.add('hidden');
+                }
+            });
+            
+            document.getElementById('sidebarResultCount').textContent = visibleCount;
+            
+            const noResultEl = document.getElementById('noResult');
+            const hasActiveFilters = currentSearchTerm || 
+                Object.values(filters).some(v => (Array.isArray(v) && v.length > 0) || (typeof v === 'string' && v)) ||
+                currentDurationFilter;
+            noResultEl.classList.toggle('visible', visibleCount === 0 && hasActiveFilters);
+        }
+        
+        // Initialize
+        document.addEventListener('DOMContentLoaded', function() {
+            renderSidebar();
+            renderAssetGrid();
+            renderSceneGrid();
+            renderSfxGrid();
+            updateActiveFilters();
+            updateBpmUI();
+            
+            // Search input
+            const searchInput = document.getElementById('topSearchInput');
+            if (searchInput) {
+                searchInput.addEventListener('input', debounce(function(e) {
+                    currentSearchTerm = e.target.value.toLowerCase().trim();
+                    applyAllFilters();
+                }, 300));
+            }
+            
+            // BPM drag
+            const bpmThumb = document.getElementById('bpmThumb');
+            const bpmTrack = document.getElementById('bpmTrack');
+            
+            if (bpmThumb) {
+                bpmThumb.addEventListener('mousedown', (e) => {
+                    isDragging = true;
+                    e.preventDefault();
+                });
+            }
+            
+            document.addEventListener('mousemove', (e) => {
+                if (!isDragging) return;
+                const rect = bpmTrack.getBoundingClientRect();
+                const percentage = Math.max(0, Math.min(1, (e.clientX - rect.left) / rect.width));
+                bpmValue = Math.round(bpmMin + percentage * (bpmMax - bpmMin));
+                updateBpmUI();
+            });
+            
+            document.addEventListener('mouseup', () => {
+                if (isDragging) {
+                    isDragging = false;
+                    applyAllFilters();
+                }
+            });
+        });
+    </script>
+</body>
+</html>
