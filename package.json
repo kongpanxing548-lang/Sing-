@@ -1,0 +1,17 @@
+{
+  "name": "astrasonic-catalog",
+  "version": "1.0.0",
+  "description": "ASTRASONIC audio licensing catalog prototype",
+  "main": "app.js",
+  "scripts": {
+    "start": "node server.js",
+    "start:static": "python3 -m http.server 4173",
+    "db:init": "node scripts/init-db.js",
+    "dev": "npm run db:init && npm start",
+    "test": "node --check app.js && node --check server.js && node --check scripts/init-db.js"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "UNLICENSED",
+  "type": "commonjs"
+}
