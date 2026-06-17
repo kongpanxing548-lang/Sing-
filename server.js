@@ -142,6 +142,31 @@ function hashPassword(password, salt = crypto.randomBytes(16).toString("hex")) {
   return { passwordHash, salt };
 }
 
+function tokenHash(token) {
+  return crypto.createHash("sha256").update(token).digest("hex");
+}
+
+function resetBaseUrl(request) {
+  const host = request.headers.host || `127.0.0.1:${port}`;
+  const proto = request.headers["x-forwarded-proto"] || "http";
+  return `${proto}://${host}`;
+}
+
+function ensurePasswordResetTable() {
+  execute(`
+    CREATE TABLE IF NOT EXISTS password_reset_tokens (
+      id TEXT PRIMARY KEY,
+      user_id TEXT NOT NULL REFERENCES users(id),
+      token_hash TEXT NOT NULL UNIQUE,
+      created_at TEXT NOT NULL,
+      expires_at TEXT NOT NULL,
+      used_at TEXT,
+      requested_ip TEXT,
+      user_agent TEXT
+    );
+  `);
+}
+
 function createSession(response, userId) {
   const id = crypto.randomUUID();
   const now = new Date();
@@ -442,21 +467,74 @@ async function serveApi(request, response, url) {
         sendJson(response, 400, { error: "请输入注册邮箱。" });
         return true;
       }
+      ensurePasswordResetTable();
       const user = first(`SELECT * FROM users WHERE email = ${sql(email)} LIMIT 1;`);
       const now = new Date().toISOString();
+      let resetUrl = "";
+      let delivery = "account_not_found";
+      if (user) {
+        const token = crypto.randomBytes(32).toString("hex");
+        const expires = new Date(Date.now() + 1000 * 60 * 30).toISOString();
+        resetUrl = `${resetBaseUrl(request)}/creator.html?reset_token=${encodeURIComponent(token)}`;
+        delivery = process.env.SMTP_HOST ? "email_pending" : "local_link";
+        execute(`
+          INSERT INTO password_reset_tokens
+          (id, user_id, token_hash, created_at, expires_at, used_at, requested_ip, user_agent)
+          VALUES (${sql(crypto.randomUUID())}, ${sql(user.id)}, ${sql(tokenHash(token))}, ${sql(now)}, ${sql(expires)}, NULL, ${sql(request.socket.remoteAddress || "")}, ${sql(request.headers["user-agent"] || "")});
+        `);
+      }
       const payload = JSON.stringify({
         email,
         source: "creator_login",
-        delivery: "manual_follow_up"
+        delivery
       });
       execute(`
         INSERT INTO audit_logs (id, actor_user_id, action, entity_type, entity_id, payload_json, created_at)
         VALUES (${sql(crypto.randomUUID())}, ${sql(user?.id || null)}, 'auth.password_reset.request', 'user', ${sql(user?.id || null)}, ${sql(payload)}, ${sql(now)});
       `);
-      sendJson(response, 200, {
+      const result = {
         ok: true,
-        message: "如果该邮箱已注册，平台会发送或人工处理密码找回指引。"
-      });
+        message: resetUrl
+          ? "已生成一次性密码重置链接。本地开发环境会直接显示链接；正式环境接入邮件服务后将发送到邮箱。"
+          : "如果该邮箱已注册，平台会发送或生成密码找回指引。"
+      };
+      if (resetUrl && process.env.NODE_ENV !== "production") result.resetUrl = resetUrl;
+      sendJson(response, 200, result);
+      return true;
+    }
+    if (request.method === "POST" && url.pathname === "/api/auth/password-reset/confirm") {
+      const body = await readBody(request);
+      const token = String(body.token || "").trim();
+      const password = String(body.password || "");
+      if (!token || password.length < 8) {
+        sendJson(response, 400, { error: "请输入有效重置链接和至少 8 位新密码。" });
+        return true;
+      }
+      ensurePasswordResetTable();
+      const reset = first(`
+        SELECT * FROM password_reset_tokens
+        WHERE token_hash = ${sql(tokenHash(token))}
+          AND used_at IS NULL
+          AND expires_at > ${sql(new Date().toISOString())}
+        LIMIT 1;
+      `);
+      if (!reset) {
+        sendJson(response, 400, { error: "重置链接无效或已过期，请重新申请。" });
+        return true;
+      }
+      const now = new Date().toISOString();
+      const passwordData = hashPassword(password);
+      execute(`
+        UPDATE users
+        SET password_hash = ${sql(passwordData.passwordHash)}, password_salt = ${sql(passwordData.salt)}, updated_at = ${sql(now)}
+        WHERE id = ${sql(reset.user_id)};
+        UPDATE password_reset_tokens SET used_at = ${sql(now)} WHERE id = ${sql(reset.id)};
+        DELETE FROM sessions WHERE user_id = ${sql(reset.user_id)};
+        INSERT INTO audit_logs (id, actor_user_id, action, entity_type, entity_id, payload_json, created_at)
+        VALUES (${sql(crypto.randomUUID())}, ${sql(reset.user_id)}, 'auth.password_reset.confirm', 'user', ${sql(reset.user_id)}, ${sql(JSON.stringify({ source: "creator_login" }))}, ${sql(now)});
+      `);
+      clearSession(response, "");
+      sendJson(response, 200, { ok: true, message: "密码已更新，请使用新密码登录。" });
       return true;
     }
     if (request.method === "POST" && url.pathname === "/api/auth/logout") {

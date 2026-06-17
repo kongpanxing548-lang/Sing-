@@ -1,4 +1,5 @@
 const $ = (id) => document.getElementById(id);
+const initialResetToken = new URLSearchParams(location.search).get("reset_token") || "";
 
 const state = {
   user: null,
@@ -7,10 +8,12 @@ const state = {
   agreements: [],
   albums: [],
   uploads: [],
-  mode: "register",
+  mode: initialResetToken ? "login" : "register",
   message: "",
-  resetOpen: false,
+  resetOpen: Boolean(initialResetToken),
   resetEmail: "",
+  resetLink: "",
+  resetToken: initialResetToken,
   busy: false
 };
 
@@ -126,11 +129,23 @@ function render() {
 
   const passwordResetCard = !state.user && state.mode === "login" && state.resetOpen ? `
     <article class="creator-card">
-      <h3>找回密码</h3>
-      <form class="creator-form" data-password-reset>
-        <input name="email" type="email" placeholder="输入注册邮箱" autocomplete="email" value="${h(state.resetEmail)}" required>
-        <button type="submit" ${state.busy ? "disabled" : ""}>发送找回密码指引</button>
-      </form>
+      <h3>${state.resetToken ? "设置新密码" : "找回密码"}</h3>
+      ${state.resetToken ? `
+        <form class="creator-form" data-password-reset-confirm>
+          <input name="password" type="password" placeholder="新密码，至少 8 位" autocomplete="new-password" required>
+          <button type="submit" ${state.busy ? "disabled" : ""}>更新密码</button>
+        </form>
+      ` : `
+        <form class="creator-form" data-password-reset>
+          <input name="email" type="email" placeholder="输入注册邮箱" autocomplete="email" value="${h(state.resetEmail)}" required>
+          <button type="submit" ${state.busy ? "disabled" : ""}>生成找回密码链接</button>
+        </form>
+        ${state.resetLink ? `
+          <div class="creator-state password-reset-link">
+            <span><strong>本地重置链接</strong><small><a href="${h(state.resetLink)}">${h(state.resetLink)}</a></small></span>
+          </div>
+        ` : ""}
+      `}
     </article>
   ` : "";
 
@@ -216,12 +231,16 @@ document.addEventListener("click", (event) => {
     state.mode = mode.dataset.mode;
     state.message = "";
     state.resetOpen = false;
+    state.resetLink = "";
+    state.resetToken = "";
     render();
   }
   if (forgotPassword) {
     const emailInput = document.querySelector("[data-auth='login'] input[name='email']");
     state.resetEmail = emailInput?.value || state.resetEmail;
     state.resetOpen = true;
+    state.resetLink = "";
+    state.resetToken = "";
     state.message = "请输入注册邮箱以找回密码。";
     render();
   }
@@ -244,10 +263,11 @@ document.addEventListener("click", (event) => {
 document.addEventListener("submit", (event) => {
   const authForm = event.target.closest("[data-auth]");
   const resetForm = event.target.closest("[data-password-reset]");
+  const resetConfirmForm = event.target.closest("[data-password-reset-confirm]");
   const applyForm = event.target.closest("[data-apply]");
   const albumForm = event.target.closest("[data-album-create]");
   const uploadForm = event.target.closest("[data-upload-create]");
-  if (!authForm && !resetForm && !applyForm && !albumForm && !uploadForm) return;
+  if (!authForm && !resetForm && !resetConfirmForm && !applyForm && !albumForm && !uploadForm) return;
   event.preventDefault();
   const formData = new FormData(event.target);
 
@@ -293,11 +313,41 @@ document.addEventListener("submit", (event) => {
       body: JSON.stringify({ email: formData.get("email") })
     })
       .then((result) => {
+        state.resetLink = result.resetUrl || "";
         state.message = result.message || "找回密码请求已提交。";
         render();
       })
       .catch((error) => {
         state.message = `找回密码失败：${error.message}`;
+        render();
+      })
+      .finally(() => {
+        state.busy = false;
+        render();
+      });
+  }
+
+  if (resetConfirmForm) {
+    state.busy = true;
+    state.message = "正在更新密码...";
+    render();
+    api("/api/auth/password-reset/confirm", {
+      method: "POST",
+      body: JSON.stringify({
+        token: state.resetToken,
+        password: formData.get("password")
+      })
+    })
+      .then((result) => {
+        state.resetToken = "";
+        state.resetOpen = false;
+        state.resetLink = "";
+        history.replaceState(null, "", location.pathname);
+        state.message = result.message || "密码已更新，请登录。";
+        render();
+      })
+      .catch((error) => {
+        state.message = `密码更新失败：${error.message}`;
         render();
       })
       .finally(() => {
