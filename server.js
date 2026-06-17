@@ -269,9 +269,17 @@ function signAgreements({ user, creatorId = null, agreementIds, scenario, reques
   const now = new Date().toISOString();
   active.filter((item) => selected.has(item.id)).forEach((agreement) => {
     execute(`
-      INSERT OR IGNORE INTO creator_agreement_signatures
+      INSERT INTO creator_agreement_signatures
       (id, user_id, creator_id, agreement_id, agreement_type, version, content_hash, scenario, ip_address, user_agent, signed_at)
-      VALUES (${sql(crypto.randomUUID())}, ${sql(user.id)}, ${sql(creatorId)}, ${sql(agreement.id)}, ${sql(agreement.type)}, ${sql(agreement.version)}, ${sql(agreement.contentHash)}, ${sql(scenario)}, ${sql(ip)}, ${sql(userAgent)}, ${sql(now)});
+      VALUES (${sql(crypto.randomUUID())}, ${sql(user.id)}, ${sql(creatorId)}, ${sql(agreement.id)}, ${sql(agreement.type)}, ${sql(agreement.version)}, ${sql(agreement.contentHash)}, ${sql(scenario)}, ${sql(ip)}, ${sql(userAgent)}, ${sql(now)})
+      ON CONFLICT(user_id, agreement_id, scenario) DO UPDATE SET
+        creator_id = excluded.creator_id,
+        agreement_type = excluded.agreement_type,
+        version = excluded.version,
+        content_hash = excluded.content_hash,
+        ip_address = excluded.ip_address,
+        user_agent = excluded.user_agent,
+        signed_at = excluded.signed_at;
     `);
   });
 }

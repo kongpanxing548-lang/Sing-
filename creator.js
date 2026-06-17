@@ -155,8 +155,14 @@ function render() {
       <form class="creator-form" data-apply>
         <input name="displayName" placeholder="创作者展示名" value="${h(state.creator?.displayName || state.user.displayName)}" required>
         <textarea name="bio" placeholder="创作方向，例如：睡眠音乐、游戏配乐、音效设计">${h(state.creator?.bio || "")}</textarea>
-        <div class="agreement-list">${agreementListByTypes(["ai_disclosure", "copyright_split", "creator", "privacy", "service", "upload_policy"])}</div>
-        <button type="submit" ${state.busy ? "disabled" : ""}>${state.creator ? "更新创作者资料与协议" : "勾选协议并申请创作者"}</button>
+        ${state.signedRequired ? `
+          <div class="agreement-signed-state creator-state" aria-live="polite">
+            <span><strong>协议签署</strong><small>已完成当前版本全部必要条款</small></span>
+          </div>
+        ` : `
+          <div class="agreement-list">${agreementListByTypes(["ai_disclosure", "copyright_split", "creator", "privacy", "service", "upload_policy"])}</div>
+        `}
+        <button type="submit" ${state.busy ? "disabled" : ""}>${state.creator ? (state.signedRequired ? "更新创作者资料" : "更新资料并签署最新协议") : (state.signedRequired ? "提交创作者申请" : "勾选协议并申请创作者")}</button>
       </form>
     </article>
   ` : `

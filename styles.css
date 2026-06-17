@@ -1990,14 +1990,58 @@ h2 {
   background: rgba(0,0,0,.18);
 }
 
+.agreement-list label > span {
+  min-width: 0;
+}
+
 .agreement-list strong {
   display: block;
   font-size: 14px;
+  overflow-wrap: anywhere;
 }
 
 .agreement-list small,
 .creator-state small {
   color: var(--muted);
+  overflow-wrap: anywhere;
+}
+
+.agreement-detail {
+  max-width: 100%;
+  margin-top: 8px;
+  overflow: hidden;
+}
+
+.agreement-detail summary {
+  cursor: pointer;
+  font-weight: 800;
+  line-height: 1.4;
+  overflow-wrap: anywhere;
+}
+
+.agreement-detail pre {
+  max-width: 100%;
+  max-height: 420px;
+  margin: 12px 0 0;
+  padding: 14px;
+  overflow: auto;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+  word-break: break-word;
+  border: 1px solid rgba(255,255,255,.08);
+  border-radius: 8px;
+  background: rgba(0,0,0,.22);
+  color: var(--text);
+  font: inherit;
+  line-height: 1.7;
+}
+
+.agreement-signed-state {
+  margin: 12px 0;
+  padding: 12px;
+  border: 1px solid rgba(222, 174, 112, .3);
+  border-radius: 8px;
+  background: rgba(222, 174, 112, .08);
 }
 
 .creator-state {
