@@ -435,6 +435,30 @@ async function serveApi(request, response, url) {
       sendJson(response, 200, { user: publicUser(user) });
       return true;
     }
+    if (request.method === "POST" && url.pathname === "/api/auth/password-reset") {
+      const body = await readBody(request);
+      const email = String(body.email || "").trim().toLowerCase();
+      if (!email.includes("@")) {
+        sendJson(response, 400, { error: "请输入注册邮箱。" });
+        return true;
+      }
+      const user = first(`SELECT * FROM users WHERE email = ${sql(email)} LIMIT 1;`);
+      const now = new Date().toISOString();
+      const payload = JSON.stringify({
+        email,
+        source: "creator_login",
+        delivery: "manual_follow_up"
+      });
+      execute(`
+        INSERT INTO audit_logs (id, actor_user_id, action, entity_type, entity_id, payload_json, created_at)
+        VALUES (${sql(crypto.randomUUID())}, ${sql(user?.id || null)}, 'auth.password_reset.request', 'user', ${sql(user?.id || null)}, ${sql(payload)}, ${sql(now)});
+      `);
+      sendJson(response, 200, {
+        ok: true,
+        message: "如果该邮箱已注册，平台会发送或人工处理密码找回指引。"
+      });
+      return true;
+    }
     if (request.method === "POST" && url.pathname === "/api/auth/logout") {
       clearSession(response, auth.sessionId);
       sendJson(response, 200, { ok: true });

@@ -9,6 +9,8 @@ const state = {
   uploads: [],
   mode: "register",
   message: "",
+  resetOpen: false,
+  resetEmail: "",
   busy: false
 };
 
@@ -116,10 +118,21 @@ function render() {
         ${state.mode === "register" ? `
           <div class="agreement-list compact">${agreementListByTypes(["ai_disclosure", "copyright_split", "creator", "privacy", "service", "upload_policy"])}</div>
         ` : ""}
+        ${state.mode === "login" ? `<button type="button" class="creator-action creator-secondary" data-forgot-password>忘记密码？</button>` : ""}
         <button class="creator-submit" type="submit" ${state.busy ? "disabled" : ""}>${state.busy ? "处理中..." : (state.mode === "register" ? "创建账号并登录" : "登录")}</button>
       </form>
     </article>
   `;
+
+  const passwordResetCard = !state.user && state.mode === "login" && state.resetOpen ? `
+    <article class="creator-card">
+      <h3>找回密码</h3>
+      <form class="creator-form" data-password-reset>
+        <input name="email" type="email" placeholder="输入注册邮箱" autocomplete="email" value="${h(state.resetEmail)}" required>
+        <button type="submit" ${state.busy ? "disabled" : ""}>发送找回密码指引</button>
+      </form>
+    </article>
+  ` : "";
 
   const creatorCard = state.user ? `
     <article class="creator-card">
@@ -188,6 +201,7 @@ function render() {
 
   $("creatorConsole").innerHTML = `
     ${authCard}
+    ${passwordResetCard}
     ${creatorCard}
     ${uploadConsole}
     <div class="creator-message">${h(state.message)}</div>
@@ -197,9 +211,18 @@ function render() {
 document.addEventListener("click", (event) => {
   const mode = event.target.closest("[data-mode]");
   const logout = event.target.closest("[data-logout]");
+  const forgotPassword = event.target.closest("[data-forgot-password]");
   if (mode) {
     state.mode = mode.dataset.mode;
     state.message = "";
+    state.resetOpen = false;
+    render();
+  }
+  if (forgotPassword) {
+    const emailInput = document.querySelector("[data-auth='login'] input[name='email']");
+    state.resetEmail = emailInput?.value || state.resetEmail;
+    state.resetOpen = true;
+    state.message = "请输入注册邮箱以找回密码。";
     render();
   }
   if (logout) {
@@ -220,15 +243,17 @@ document.addEventListener("click", (event) => {
 
 document.addEventListener("submit", (event) => {
   const authForm = event.target.closest("[data-auth]");
+  const resetForm = event.target.closest("[data-password-reset]");
   const applyForm = event.target.closest("[data-apply]");
   const albumForm = event.target.closest("[data-album-create]");
   const uploadForm = event.target.closest("[data-upload-create]");
-  if (!authForm && !applyForm && !albumForm && !uploadForm) return;
+  if (!authForm && !resetForm && !applyForm && !albumForm && !uploadForm) return;
   event.preventDefault();
   const formData = new FormData(event.target);
 
   if (authForm) {
     const mode = authForm.dataset.auth;
+    state.resetEmail = String(formData.get("email") || "");
     state.busy = true;
     state.message = mode === "register" ? "正在注册账号..." : "正在登录...";
     render();
@@ -248,7 +273,31 @@ document.addEventListener("submit", (event) => {
       render();
       })
       .catch((error) => {
+        if (mode === "login") state.resetOpen = true;
         state.message = `${mode === "register" ? "注册失败" : "登录失败"}：${error.message}`;
+        render();
+      })
+      .finally(() => {
+        state.busy = false;
+        render();
+      });
+  }
+
+  if (resetForm) {
+    state.busy = true;
+    state.resetEmail = String(formData.get("email") || "");
+    state.message = "正在提交找回密码请求...";
+    render();
+    api("/api/auth/password-reset", {
+      method: "POST",
+      body: JSON.stringify({ email: formData.get("email") })
+    })
+      .then((result) => {
+        state.message = result.message || "找回密码请求已提交。";
+        render();
+      })
+      .catch((error) => {
+        state.message = `找回密码失败：${error.message}`;
         render();
       })
       .finally(() => {
