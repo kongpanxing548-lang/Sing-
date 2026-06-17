@@ -59,13 +59,22 @@ async function load() {
   }
 }
 
-function agreementList() {
-  return state.agreements.map((agreement) => `
+function agreementSummary(content) {
+  return String(content || "").split(/\n+/).find((line) => line.trim() && !line.startsWith("一、")) || "";
+}
+
+function agreementListByTypes(types) {
+  const byType = new Map(state.agreements.map((agreement) => [agreement.type, agreement]));
+  return types.map((type) => byType.get(type)).filter(Boolean).map((agreement) => `
     <label>
       <input type="checkbox" name="agreementIds" value="${h(agreement.id)}">
       <span>
         <strong>${h(agreement.title)} · v${h(agreement.version)}</strong>
-        <small>${h(agreement.content)}</small>
+        <small>${h(agreementSummary(agreement.content))}</small>
+        <details class="agreement-detail">
+          <summary>查看条款正文</summary>
+          <pre>${h(agreement.content)}</pre>
+        </details>
       </span>
     </label>
   `).join("");
@@ -104,6 +113,9 @@ function render() {
         ${state.mode === "register" ? `<input name="displayName" placeholder="创作者/会员名称" autocomplete="name" required>` : ""}
         <input name="email" type="email" placeholder="邮箱" autocomplete="email" required>
         <input name="password" type="password" placeholder="密码，至少 8 位" autocomplete="${state.mode === "register" ? "new-password" : "current-password"}" required>
+        ${state.mode === "register" ? `
+          <div class="agreement-list compact">${agreementListByTypes(["ai_disclosure", "copyright_split", "creator", "privacy", "service", "upload_policy"])}</div>
+        ` : ""}
         <button class="creator-submit" type="submit" ${state.busy ? "disabled" : ""}>${state.busy ? "处理中..." : (state.mode === "register" ? "创建账号并登录" : "登录")}</button>
       </form>
     </article>
@@ -115,7 +127,7 @@ function render() {
       <form class="creator-form" data-apply>
         <input name="displayName" placeholder="创作者展示名" value="${h(state.creator?.displayName || state.user.displayName)}" required>
         <textarea name="bio" placeholder="创作方向，例如：睡眠音乐、游戏配乐、音效设计">${h(state.creator?.bio || "")}</textarea>
-        <div class="agreement-list">${agreementList()}</div>
+        <div class="agreement-list">${agreementListByTypes(["ai_disclosure", "copyright_split", "creator", "privacy", "service", "upload_policy"])}</div>
         <button type="submit" ${state.busy ? "disabled" : ""}>${state.creator ? "更新创作者资料与协议" : "勾选协议并申请创作者"}</button>
       </form>
     </article>
@@ -225,13 +237,14 @@ document.addEventListener("submit", (event) => {
       body: JSON.stringify({
         displayName: formData.get("displayName"),
         email: formData.get("email"),
-        password: formData.get("password")
+        password: formData.get("password"),
+        agreementIds: [...event.target.querySelectorAll("input[name='agreementIds']:checked")].map((input) => input.value)
       })
     })
       .then(load)
       .then(() => {
         if (!state.user) throw new Error("账号已创建，但浏览器没有保存登录状态，请刷新后登录。");
-        state.message = mode === "register" ? "注册成功，请勾选协议申请创作者。" : "登录成功。";
+        state.message = mode === "register" ? "注册成功，注册协议签署记录已保存。下一步可申请创作者。" : "登录成功。";
       render();
       })
       .catch((error) => {

@@ -193,14 +193,39 @@ function agreements() {
     }));
 }
 
+const requiredAgreementTypes = ["ai_disclosure", "copyright_split", "creator", "privacy", "service", "upload_policy"];
+
+function agreementsByTypes(types) {
+  const wanted = new Set(types);
+  return agreements().filter((item) => wanted.has(item.type));
+}
+
 function signatureRows(userId) {
   return query(`SELECT * FROM creator_agreement_signatures WHERE user_id = ${sql(userId)} ORDER BY signed_at DESC;`);
 }
 
 function hasSignedRequired(userId) {
-  const required = agreements().filter((item) => item.requiredForCreator);
-  const signed = new Set(signatureRows(userId).map((item) => item.agreement_id));
-  return required.every((item) => signed.has(item.id));
+  const required = agreementsByTypes(requiredAgreementTypes);
+  const signed = signatureRows(userId);
+  return required.every((agreement) => signed.some((signature) => (
+    signature.agreement_id === agreement.id && signature.content_hash === agreement.contentHash
+  )));
+}
+
+function missingAgreementSelections(types, agreementIds) {
+  const selected = new Set(agreementIds || []);
+  return agreementsByTypes(types).filter((item) => !selected.has(item.id));
+}
+
+function missingAgreementSelectionsForUser(types, userId, agreementIds) {
+  const selected = new Set(agreementIds || []);
+  const signed = signatureRows(userId);
+  return agreementsByTypes(types).filter((agreement) => {
+    const hasCurrentSignature = signed.some((signature) => (
+      signature.agreement_id === agreement.id && signature.content_hash === agreement.contentHash
+    ));
+    return !selected.has(agreement.id) && !hasCurrentSignature;
+  });
 }
 
 function requireCreator(auth) {
@@ -380,6 +405,11 @@ async function serveApi(request, response, url) {
         sendJson(response, 409, { error: "该邮箱已注册。" });
         return true;
       }
+      const missing = missingAgreementSelections(requiredAgreementTypes, body.agreementIds);
+      if (missing.length) {
+        sendJson(response, 400, { error: `注册前必须勾选全部平台条款：${missing.map((item) => item.title).join("、")}` });
+        return true;
+      }
       const id = crypto.randomUUID();
       const now = new Date().toISOString();
       const passwordData = hashPassword(password);
@@ -387,6 +417,7 @@ async function serveApi(request, response, url) {
         INSERT INTO users (id, email, display_name, password_hash, password_salt, role, created_at, updated_at)
         VALUES (${sql(id)}, ${sql(email)}, ${sql(displayName)}, ${sql(passwordData.passwordHash)}, ${sql(passwordData.salt)}, 'member', ${sql(now)}, ${sql(now)});
       `);
+      signAgreements({ user: { id }, creatorId: null, agreementIds: body.agreementIds, scenario: "user_register", request });
       createSession(response, id);
       sendJson(response, 201, { user: publicUser(first(`SELECT * FROM users WHERE id = ${sql(id)};`)) });
       return true;
@@ -442,11 +473,9 @@ async function serveApi(request, response, url) {
         return true;
       }
       const body = await readBody(request);
-      const required = agreements().filter((item) => item.requiredForCreator);
-      const selected = new Set(body.agreementIds || []);
-      const missing = required.filter((item) => !selected.has(item.id));
+      const missing = missingAgreementSelectionsForUser(requiredAgreementTypes, auth.user.id, body.agreementIds);
       if (missing.length) {
-        sendJson(response, 400, { error: `申请创作者前必须勾选全部协议：${missing.map((item) => item.title).join("、")}` });
+        sendJson(response, 400, { error: `申请创作者前必须完成全部平台条款签署：${missing.map((item) => item.title).join("、")}` });
         return true;
       }
       const now = new Date().toISOString();
