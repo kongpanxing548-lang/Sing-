@@ -99,6 +99,6 @@ final class HuskAudio {
 
     /// What the guest has produced and what we had to invent, for the perf line.
     nonisolated var summary: String {
-        "\(husk_audio_frames_in()) frames in, \(husk_audio_underruns()) silent"
+        L10n.format("%llu frames in, %llu silent", husk_audio_frames_in(), husk_audio_underruns())
     }
 }

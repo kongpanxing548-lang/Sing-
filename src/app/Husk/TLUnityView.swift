@@ -739,19 +739,19 @@ final class TLUnityModel: ObservableObject {
 
     var statusText: String {
         switch state {
-        case Int32(HUSK_UNITY_STARTING): return "Loading the engine…"
-        case Int32(HUSK_UNITY_RUNNING):  return "Running"
-        case Int32(HUSK_UNITY_FAILED):   return "Could not start — see the log"
-        case Int32(HUSK_UNITY_ENDED):    return "The game exited"
-        default:                         return "Starting"
+        case Int32(HUSK_UNITY_STARTING): return L10n.text("Loading the engine…")
+        case Int32(HUSK_UNITY_RUNNING):  return L10n.text("Running")
+        case Int32(HUSK_UNITY_FAILED):   return L10n.text("Could not start — see the log")
+        case Int32(HUSK_UNITY_ENDED):    return L10n.text("The game exited")
+        default:                         return L10n.text("Starting")
         }
     }
 
     var subStatusText: String {
         switch state {
-        case Int32(HUSK_UNITY_RUNNING): return "\(frames) frame(s) drawn · native runtime"
-        case Int32(HUSK_UNITY_STARTING): return "Loading libraries and starting the engine"
-        default: return "Native runtime"
+        case Int32(HUSK_UNITY_RUNNING): return L10n.format("%d frame(s) drawn · native runtime", Int(frames))
+        case Int32(HUSK_UNITY_STARTING): return L10n.text("Loading libraries and starting the engine")
+        default: return L10n.text("Native runtime")
         }
     }
 
@@ -835,7 +835,7 @@ struct TLCocosAttemptView: View {
                     VStack(spacing: 8) {
                         Text("Another game is already loaded")
                             .font(.system(size: 16, weight: .semibold)).foregroundStyle(.white)
-                        Text("\(other) was started in this session, and a game cannot be unloaded once it has started. Close DroidDeck completely and open it again to run \(app.label).")
+                        Text(L10n.format("%@ was started in this session, and a game cannot be unloaded once it has started. Close DroidDeck completely and open it again to run %@.", other, app.label))
                             .font(.system(size: 13)).foregroundStyle(.white.opacity(0.7))
                             .multilineTextAlignment(.center).frame(maxWidth: 460)
                     }
@@ -933,7 +933,7 @@ struct TLCocosAttemptView: View {
                     Image(systemName: "plus.magnifyingglass").foregroundStyle(.white.opacity(0.7))
                 }
                 HStack(spacing: 10) {
-                    Button(padLayout[id].hidden ? "Show" : "Hide") { padLayout[id].hidden.toggle(); padLayout.save(app.id) }
+                    Button(padLayout[id].hidden ? L10n.text("Show") : L10n.text("Hide")) { padLayout[id].hidden.toggle(); padLayout.save(app.id) }
                     Button("Reset") { padLayout[id] = PadLayout.Adjust(); padLayout.save(app.id) }
                 }
                 .buttonStyle(.bordered).tint(.white)
@@ -970,17 +970,17 @@ struct TLCocosAttemptView: View {
                 .font(.system(size: 12, weight: .medium)).foregroundStyle(.white.opacity(0.85)).lineLimit(1)
             Spacer()
             if !pads.names.isEmpty {
-                Label(pads.names.count == 1 ? pads.names[0] : "\(pads.names.count) controllers", systemImage: "gamecontroller.fill")
+                Label(pads.names.count == 1 ? pads.names[0] : L10n.format("%d controllers", pads.names.count), systemImage: "gamecontroller.fill")
                     .font(.system(size: 11, weight: .medium)).foregroundStyle(.white.opacity(0.7)).lineLimit(1)
             }
             if padOffered {
                 Button { settings.padShown.toggle(); settings.save(app.id); if !settings.padShown { editingPad = false } } label: {
-                    Label(settings.padShown ? "Hide pad" : "Pad", systemImage: "gamecontroller").font(.system(size: 12, weight: .semibold))
+                    Label(settings.padShown ? L10n.text("Hide pad") : L10n.text("Pad"), systemImage: "gamecontroller").font(.system(size: 12, weight: .semibold))
                 }
                 .tint(.white)
                 if settings.padShown {
                     Button { padSelected = nil; editingPad.toggle() } label: {
-                        Label(editingPad ? "Done" : "Edit pad", systemImage: "slider.horizontal.below.square.and.square.filled")
+                        Label(editingPad ? L10n.text("Done") : L10n.text("Edit pad"), systemImage: "slider.horizontal.below.square.and.square.filled")
                             .font(.system(size: 12, weight: .semibold))
                     }
                     .tint(editingPad ? .yellow : .white)
@@ -991,7 +991,7 @@ struct TLCocosAttemptView: View {
             }
             if devInfo {
                 Button { withAnimation(.snappy(duration: 0.25)) { showLog.toggle() } } label: {
-                    Text(showLog ? "Hide log" : "Log").font(.system(size: 12, weight: .semibold))
+                    Text(showLog ? L10n.text("Hide log") : L10n.text("Log")).font(.system(size: 12, weight: .semibold))
                 }
                 .tint(.white)
             }
@@ -1017,7 +1017,7 @@ struct TLCocosAttemptView: View {
             .padding(.horizontal, 10).padding(.vertical, 6)
             ScrollViewReader { proxy in
                 ScrollView {
-                    Text(model.logText.isEmpty ? "Starting…" : model.logText)
+                    Text(model.logText.isEmpty ? L10n.text("Starting…") : model.logText)
                         .font(.technical(10))
                         .foregroundStyle(Theme.text)
                         .frame(maxWidth: .infinity, alignment: .leading)

@@ -65,13 +65,12 @@ struct JITSetupFlow: View {
 
     private var choose: some View {
         page(symbol: "bolt.fill", title: "Turn on JIT",
-             subtitle: "Android needs memory it can write and then run, which on iOS only an attached "
-                     + "debugger can grant. Choose how your \(device) gets one.") {
+             subtitle: L10n.format("Android needs memory it can write and then run, which on iOS only an attached debugger can grant. Choose how your %@ gets one.", device)) {
             VStack(spacing: 10) {
                 let builtIn = HuskBuiltInJIT.unavailableReason
-                way("Pair on this \(device)", symbol: "iphone.radiowaves.left.and.right",
+                way(L10n.format("Pair on this %@", device), symbol: "iphone.radiowaves.left.and.right",
                     detail: builtIn ?? (!OnDevicePairing.isSupported ? "Needs iOS 27 or later."
-                        : jit.pairingSource == .onDevice ? "Paired on this \(device)."
+                        : jit.pairingSource == .onDevice ? L10n.format("Paired on this %@.", device)
                         : "No computer needed. Pairs from Settings in a minute."),
                     done: jit.pairingSource == .onDevice,
                     enabled: builtIn == nil && OnDevicePairing.isSupported) { path.append(.pairOnDevice) }
@@ -118,8 +117,8 @@ struct JITSetupFlow: View {
                     .frame(width: 34, height: 34)
                     .background(Theme.accentSoft, in: RoundedRectangle(cornerRadius: 10, style: .continuous))
                 VStack(alignment: .leading, spacing: 3) {
-                    Text(title).font(.system(size: 16, weight: .semibold)).foregroundStyle(Theme.text)
-                    Text(detail).font(.system(size: 13)).foregroundStyle(Theme.textDim)
+                    Text(L10n.text(title)).font(.system(size: 16, weight: .semibold)).foregroundStyle(Theme.text)
+                    Text(L10n.text(detail)).font(.system(size: 13)).foregroundStyle(Theme.textDim)
                         .fixedSize(horizontal: false, vertical: true)
                         .multilineTextAlignment(.leading)
                 }
@@ -145,14 +144,13 @@ struct JITSetupFlow: View {
     }
 
     private var pairOnDevice: some View {
-        page(symbol: "iphone.radiowaves.left.and.right", title: "Pair on this \(device)",
-             subtitle: "DroidDeck acts as a computer on your Wi-Fi, and your \(device) pairs with it "
-                     + "the way it would with a Mac.") {
+        page(symbol: "iphone.radiowaves.left.and.right", title: L10n.format("Pair on this %@", device),
+             subtitle: L10n.format("DroidDeck acts as a computer on your Wi-Fi, and your %@ pairs with it the way it would with a Mac.", device)) {
             VStack(alignment: .leading, spacing: 14) {
                 point(1, "Turn on Wi-Fi, tap **Start pairing** below and allow Local Network access.",
                       done: pairing.phase != .idle)
-                point(2, "Open **Settings › Privacy & Security › Developer Mode**, scroll down and tap "
-                       + "**Pair with \(OnDevicePairing.hostName)**.",
+                point(2, L10n.format("Open **Settings › Privacy & Security › Developer Mode**, scroll down and tap **Pair with %@**.",
+                                     OnDevicePairing.hostName),
                       done: pairing.isShowingPin || pairedOnDevice)
                 point(3, "Enter the code DroidDeck shows. It also appears in a banner and a notification, "
                        + "so you don't have to switch back.",
@@ -187,7 +185,8 @@ struct JITSetupFlow: View {
             VStack(alignment: .leading, spacing: 8) {
                 HStack(spacing: 10) {
                     ProgressView().tint(Theme.accent)
-                    Text("Waiting for your \(device)…").font(.system(size: 15, weight: .semibold))
+                    Text(verbatim: L10n.format("Waiting for your %@…", device))
+                        .font(.system(size: 15, weight: .semibold))
                         .foregroundStyle(Theme.text)
                 }
                 Button("Open Settings") {
@@ -195,8 +194,7 @@ struct JITSetupFlow: View {
                 }
                 .font(.system(size: 14, weight: .semibold))
                 if pairing.backgroundLimited {
-                    Text("This installation can only wait about 30 seconds in the background, "
-                       + "so go to Settings straight away.")
+                    Text(L10n.text("This installation can only wait about 30 seconds in the background, so go to Settings straight away."))
                         .font(.system(size: 13)).foregroundStyle(.orange)
                         .fixedSize(horizontal: false, vertical: true)
                 }
@@ -205,17 +203,18 @@ struct JITSetupFlow: View {
             .padding(16).huskCard()
         case .pin(let pin):
             VStack(spacing: 8) {
-                Text("Enter this code on your \(device)").font(.system(size: 14))
+                Text(verbatim: L10n.format("Enter this code on your %@", device)).font(.system(size: 14))
                     .foregroundStyle(Theme.textDim)
                 Text(pin).font(.system(size: 40, weight: .bold, design: .monospaced)).tracking(6)
                     .foregroundStyle(Theme.text)
                     .textSelection(.enabled)
-                    .accessibilityLabel("Pairing code \(pin.map(String.init).joined(separator: " "))")
+                    .accessibilityLabel(Text(verbatim: L10n.format("Pairing code %@",
+                                                                  pin.map(String.init).joined(separator: " "))))
             }
             .frame(maxWidth: .infinity)
             .padding(18).huskCard(high: true)
         case .paired(let name):
-            outcome("Paired with \(name)", ok: true)
+            outcome(L10n.format("Paired with %@", name), ok: true)
         case .failed(let message):
             outcome(message, ok: false)
         }
@@ -225,12 +224,12 @@ struct JITSetupFlow: View {
 
     private var importFile: some View {
         page(symbol: "doc.badge.plus", title: "Use a pairing file",
-             subtitle: "A pairing file made on a computer lets DroidDeck talk to this \(device) the same way.") {
+             subtitle: L10n.format("A pairing file made on a computer lets DroidDeck talk to this %@ the same way.", device)) {
             VStack(alignment: .leading, spacing: 14) {
-                point(1, "On a computer, make this \(device)'s pairing file with the "
-                       + "[StikDebug pairing-file guide](https://github.com/StikDebug/StikDebug-Guide/blob/main/pairing_file.md).",
+                point(1, L10n.format("On a computer, make this %@'s pairing file with the [StikDebug pairing-file guide](https://github.com/StikDebug/StikDebug-Guide/blob/main/pairing_file.md).",
+                                     device),
                       done: jit.pairingSource == .imported)
-                point(2, "Save it to Files, or AirDrop it to this \(device).",
+                point(2, L10n.format("Save it to Files, or AirDrop it to this %@.", device),
                       done: jit.pairingSource == .imported)
                 point(3, "Tap **Choose pairing file** and pick it.", done: jit.pairingSource == .imported)
             }
@@ -255,17 +254,18 @@ struct JITSetupFlow: View {
 
     private var connect: some View {
         page(symbol: "network.badge.shield.half.filled", title: "Connect LocalDevVPN",
-             subtitle: "DroidDeck's helper reaches this \(device)'s debugging service through a local VPN. "
-                     + "Nothing leaves your \(device).") {
+             subtitle: L10n.format("DroidDeck's helper reaches this %@'s debugging service through a local VPN. Nothing leaves your %@.",
+                                   device, device)) {
             VStack(alignment: .leading, spacing: 14) {
-                point(1, "Install [LocalDevVPN](\(LocalDevVPN.appStore.absoluteString)) from the App Store.",
+                point(1, L10n.format("Install [LocalDevVPN](%@) from the App Store.",
+                                     LocalDevVPN.appStore.absoluteString),
                       done: LocalDevVPN.isInstalled)
                 point(2, "Tap **Connect LocalDevVPN**. It switches the VPN on and comes straight back to DroidDeck.")
                 point(3, "Leave it connected whenever you turn JIT on.")
             }
             .padding(16).huskCard()
         } actions: {
-            Button(LocalDevVPN.actionTitle) { LocalDevVPN.open() }
+            Button(L10n.text(LocalDevVPN.actionTitle)) { LocalDevVPN.open() }
                 .buttonStyle(PrimaryButtonStyle())
             Button("It's connected") { path.append(.enable) }
                 .font(.system(size: 15, weight: .medium))
@@ -290,7 +290,7 @@ struct JITSetupFlow: View {
             if jit.busy {
                 HStack(spacing: 11) {
                     ProgressView().tint(Theme.accent)
-                    Text(jit.status ?? "Working…").font(.system(size: 14)).foregroundStyle(Theme.text)
+                    Text(L10n.text(jit.status ?? "Working…")).font(.system(size: 14)).foregroundStyle(Theme.text)
                     Spacer(minLength: 0)
                 }
                 .padding(16).huskCard(high: true)
@@ -300,13 +300,13 @@ struct JITSetupFlow: View {
                 VStack(alignment: .leading, spacing: 10) {
                     outcome(error, ok: false)
                     if jit.connectionProblem == .pairing {
-                        Button(OnDevicePairing.isSupported ? "Pair again" : "Import a new pairing file") {
+                        Button(L10n.text(OnDevicePairing.isSupported ? "Pair again" : "Import a new pairing file")) {
                             path = [OnDevicePairing.isSupported ? .pairOnDevice : .importFile]
                         }
                         .font(.system(size: 14, weight: .semibold))
                     }
                     if jit.connectionProblem != nil {
-                        Button(LocalDevVPN.actionTitle) { LocalDevVPN.open() }
+                        Button(L10n.text(LocalDevVPN.actionTitle)) { LocalDevVPN.open() }
                             .font(.system(size: 14, weight: .semibold))
                     }
                 }
@@ -344,8 +344,9 @@ struct JITSetupFlow: View {
             VStack(alignment: .leading, spacing: 14) {
                 point(1, "Install [StikDebug](https://github.com/StikDebug/StikDebug/releases/latest).",
                       done: JITBootstrap.isStikDebugInstalled)
-                point(2, "Import this \(device)'s pairing file into StikDebug.")
-                point(3, "Install and connect [LocalDevVPN](\(LocalDevVPN.appStore.absoluteString)).")
+                point(2, L10n.format("Import this %@'s pairing file into StikDebug.", device))
+                point(3, L10n.format("Install and connect [LocalDevVPN](%@).",
+                                     LocalDevVPN.appStore.absoluteString))
                 point(4, "Whenever Android starts, DroidDeck opens StikDebug, which attaches and comes back.")
             }
             .padding(16).huskCard()
@@ -375,7 +376,8 @@ struct JITSetupFlow: View {
             }
             .padding(16).huskCard()
             if !JITBootstrap.isTrollStoreInstalled {
-                Label("TrollStore was not found on this \(device). It installs on iOS 14.0 to 17.0.", systemImage: "info.circle")
+                Label(L10n.format("TrollStore was not found on this %@. It installs on iOS 14.0 to 17.0.", device),
+                      systemImage: "info.circle")
                     .font(.system(size: 13)).foregroundStyle(Theme.textDim)
                     .fixedSize(horizontal: false, vertical: true)
             }
@@ -406,7 +408,7 @@ struct JITSetupFlow: View {
                 Label("DroidDeck was marked as debugged when it opened, so JIT is on.", systemImage: "checkmark.circle.fill")
                     .font(.system(size: 13)).foregroundStyle(.green)
             } else if !JITBootstrap.isJailbroken {
-                Label("No jailbreak was found on this \(device).", systemImage: "info.circle")
+                Label(L10n.format("No jailbreak was found on this %@.", device), systemImage: "info.circle")
                     .font(.system(size: 13)).foregroundStyle(Theme.textDim)
             }
         } actions: {
@@ -434,8 +436,8 @@ struct JITSetupFlow: View {
                         .foregroundStyle(Theme.accent)
                         .frame(width: 56, height: 56)
                         .background(Theme.accentSoft, in: RoundedRectangle(cornerRadius: 16, style: .continuous))
-                    Text(title).font(.system(size: 28, weight: .semibold)).foregroundStyle(Theme.text)
-                    Text(subtitle).font(.system(size: 15)).foregroundStyle(Theme.textDim)
+                    Text(L10n.text(title)).font(.system(size: 28, weight: .semibold)).foregroundStyle(Theme.text)
+                    Text(L10n.text(subtitle)).font(.system(size: 15)).foregroundStyle(Theme.textDim)
                         .fixedSize(horizontal: false, vertical: true)
                     content()
                 }
@@ -466,7 +468,7 @@ struct JITSetupFlow: View {
                 }
             }
             .frame(width: 26, height: 26)
-            Text(.init(text))
+            Text(.init(L10n.text(text)))
                 .font(.system(size: 15))
                 .foregroundStyle(Theme.text)
                 .fixedSize(horizontal: false, vertical: true)
@@ -475,7 +477,7 @@ struct JITSetupFlow: View {
     }
 
     private func outcome(_ text: String, ok: Bool) -> some View {
-        Label(text, systemImage: ok ? "checkmark.circle.fill" : "exclamationmark.triangle.fill")
+        Label(L10n.text(text), systemImage: ok ? "checkmark.circle.fill" : "exclamationmark.triangle.fill")
             .font(.system(size: 14, weight: .medium))
             .foregroundStyle(ok ? .green : .red)
             .fixedSize(horizontal: false, vertical: true)

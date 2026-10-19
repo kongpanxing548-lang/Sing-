@@ -49,8 +49,8 @@ body:
     id: husk-version
     attributes:
       label: DroidDeck version
-      description: The top of Settings shows it, for example "Version 0.1.0 · 6bee247". Copy the whole line.
-      placeholder: Version 0.1.0 · 6bee247
+      description: The top of Settings shows it, for example "Version 0.1.1 · 6bee247". Copy the whole line.
+      placeholder: Version 0.1.1 · 6bee247
     validations:
       required: true
   - type: input

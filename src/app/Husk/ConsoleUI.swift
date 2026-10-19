@@ -30,16 +30,16 @@ enum Console {
 
 // MARK: - platform
 
-/// The platform chips exposed by the Android-only DroidDeck 0.1.0 build.
+/// The platform chips exposed by the Android-only DroidDeck 0.1.1 build.
 enum PlatformFilter: String, CaseIterable, Identifiable {
     case all, android, ps4
     static let allCases: [PlatformFilter] = [.all, .android]
     var id: String { rawValue }
     var title: String {
         switch self {
-        case .all: return "All"
-        case .android: return "Android"
-        case .ps4: return "PS4"
+        case .all: return L10n.text("All")
+        case .android: return L10n.text("Android")
+        case .ps4: return L10n.text("PS4")
         }
     }
 
@@ -57,10 +57,10 @@ struct ItemStatus: Equatable {
     let label: String
     let color: Color
 
-    static let plays = ItemStatus(label: "Plays", color: .green)
-    static let opens = ItemStatus(label: "Opens", color: .orange)
-    static let broken = ItemStatus(label: "Broken", color: .red)
-    static let protected = ItemStatus(label: "Protected", color: .gray)
+    static let plays = ItemStatus(label: L10n.text("Plays"), color: .green)
+    static let opens = ItemStatus(label: L10n.text("Opens"), color: .orange)
+    static let broken = ItemStatus(label: L10n.text("Broken"), color: .red)
+    static let protected = ItemStatus(label: L10n.text("Protected"), color: .gray)
 }
 
 extension LibraryItem {
@@ -69,10 +69,10 @@ extension LibraryItem {
     /// The platform line over the title on Home.
     var platformName: String {
         switch self {
-        case .ps4: return "PlayStation 4"
-        case .app: return "Android · Emulator"
-        case .android: return "Android"
-        case .game: return "Android"
+        case .ps4: return L10n.text("PlayStation 4")
+        case .app: return L10n.text("Android · Emulator")
+        case .android: return L10n.text("Android")
+        case .game: return L10n.text("Android")
         }
     }
 
@@ -99,8 +99,12 @@ extension LibraryItem {
         guard let date = lastUsed else { return nil }
         let rel = RelativeDateTimeFormatter()
         rel.unitsStyle = .full
-        let ago = date.timeIntervalSinceNow > -60 ? "just now" : rel.localizedString(for: date, relativeTo: Date())
-        return (isGame ? "Last played " : "Last opened ") + ago
+        let ago = date.timeIntervalSinceNow > -60
+            ? L10n.text("just now")
+            : rel.localizedString(for: date, relativeTo: Date())
+        return isGame
+            ? L10n.format("Last played %@", ago)
+            : L10n.format("Last opened %@", ago)
     }
 
     /// When it was added to Husk, from its folder: what "Recently added" sorts by. Read once per item and kept, since Home
@@ -143,7 +147,7 @@ struct ConsoleChip: View {
 
     var body: some View {
         Button(action: action) {
-            Text(title)
+            Text(verbatim: title)
                 .font(.system(size: compact ? 13 : 14, weight: .semibold))
                 .foregroundStyle(selected ? Console.onText : Console.text.opacity(0.85))
                 .padding(.horizontal, compact ? 11 : 14)

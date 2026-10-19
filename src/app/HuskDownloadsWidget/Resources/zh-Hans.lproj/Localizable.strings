@@ -1,0 +1,7 @@
+/* Download Live Activity / Dynamic Island */
+"Done" = "完成";
+"Stopped. Open DroidDeck to retry." = "已停止。打开 DroidDeck 重试。";
+"%@ downloaded" = "已下载 %@";
+"%@ of %@" = "%@ / %@";
+"%@/s" = "%@/秒";
+"%lld/%lld files" = "%lld/%lld 个文件";

@@ -12,8 +12,8 @@ extension TLReport {
     /// What runs it, in words.
     var runnerName: String {
         if runsOnNativeRuntime { return nativeEngineName }
-        if let web = webKind { return "\(web.name) (web app)" }
-        return canRun ? "Java (DroidDeck's interpreter)" : "None"
+        if let web = webKind { return L10n.format("%@ (web app)", web.name) }
+        return canRun ? L10n.text("Java (DroidDeck's interpreter)") : L10n.text("None")
     }
 }
 
@@ -54,9 +54,9 @@ struct TLTechnicalView: View {
     var body: some View {
         List {
             Section("Runtime") {
-                row("Runs With", report?.runnerName ?? "Not scanned")
+                row("Runs With", report?.runnerName ?? L10n.text("Not scanned"))
                 row("Package", app.packageName ?? "—", mono: true)
-                row("Architectures", report.map { $0.abis.isEmpty ? "None (Java only)" : $0.abis.joined(separator: ", ") } ?? "—")
+                row("Architectures", report.map { $0.abis.isEmpty ? L10n.text("None (Java only)") : $0.abis.joined(separator: ", ") } ?? "—")
                 if let summary = report?.displaySummary {
                     Text(summary).font(.footnote).foregroundStyle(.secondary)
                 }
@@ -67,8 +67,8 @@ struct TLTechnicalView: View {
                     row((apk as NSString).lastPathComponent, size(of: apk), mono: true)
                 }
                 if let r = report {
-                    row("Java Code", r.dexCount == 0 ? "None" : "\(r.dexCount) DEX file\(r.dexCount == 1 ? "" : "s"), \(bytes(r.dexBytes))")
-                    row("Android Libraries Used", "\(r.systemLibraries.count)")
+                    row("Java Code", r.dexCount == 0 ? L10n.text("None") : L10n.format("%d DEX files, %@", r.dexCount, bytes(r.dexBytes)))
+                    row("Android Libraries Used", String(r.systemLibraries.count))
                 }
                 row("Saved Data", dataSize)
             }
@@ -87,7 +87,7 @@ struct TLTechnicalView: View {
                         .padding(.vertical, 2)
                     }
                 } header: {
-                    Text("Native Libraries (\(arm64.count))")
+                    Text(L10n.format("Native Libraries (%d)", arm64.count))
                 } footer: {
                     Text("How each 64-bit library maps onto the iPhone: its relocations, the instructions DroidDeck rewrites, and anything the loader works around.")
                 }
@@ -105,7 +105,7 @@ struct TLTechnicalView: View {
                     .frame(maxHeight: 320)
                     Button { sharing = true } label: { Label("Share Log", systemImage: "square.and.arrow.up") }
                 } else {
-                    Text(log == nil ? "Reading…" : "No log yet. It is written the first time the game runs.")
+                    Text(log == nil ? L10n.text("Reading…") : L10n.text("No log yet. It is written the first time the game runs."))
                         .font(.footnote).foregroundStyle(.secondary)
                 }
             } header: {
@@ -132,31 +132,31 @@ struct TLTechnicalView: View {
                 return (text, total)
             }.value
             log = text
-            dataSize = total == 0 ? "Nothing yet" : bytes(total)
+            dataSize = total == 0 ? L10n.text("Nothing yet") : bytes(total)
         }
         .sheet(isPresented: $sharing) { ShareSheet(items: [logURL]) }
     }
 
     private func row(_ label: String, _ value: String, mono: Bool = false) -> some View {
         LabeledContent {
-            Text(value)
+            Text(L10n.text(value))
                 .font(mono ? .system(.footnote, design: .monospaced) : .body)
                 .multilineTextAlignment(.trailing)
                 .textSelection(.enabled)
         } label: {
-            Text(label).lineLimit(2)
+            Text(L10n.text(label)).lineLimit(2)
         }
     }
 
     private func libraryDetail(_ lib: TLLibrary) -> String {
         var parts: [String] = []
-        if let r = lib.relocations { parts.append("\(r) relocations") }
-        if let t = lib.tpidrReads, t > 0 { parts.append("\(t) thread-register reads") }
-        if let s = lib.svc, s > 0 { parts.append("\(s) system calls") }
-        if let c = lib.conflictPages, c > 0 { parts.append("\(c) shared code/data pages") }
-        if lib.tls == true { parts.append("thread-local storage") }
-        if !lib.notes.isEmpty { parts.append(contentsOf: lib.notes) }
-        return parts.isEmpty ? (lib.status == "ok" ? "Loads as it is" : lib.status) : parts.joined(separator: " · ")
+        if let r = lib.relocations { parts.append(L10n.format("%d relocations", r)) }
+        if let t = lib.tpidrReads, t > 0 { parts.append(L10n.format("%d thread-register reads", t)) }
+        if let s = lib.svc, s > 0 { parts.append(L10n.format("%d system calls", s)) }
+        if let c = lib.conflictPages, c > 0 { parts.append(L10n.format("%d shared code/data pages", c)) }
+        if lib.tls == true { parts.append(L10n.text("thread-local storage")) }
+        if !lib.notes.isEmpty { parts.append(contentsOf: lib.notes.map(L10n.text)) }
+        return parts.isEmpty ? (lib.status == "ok" ? L10n.text("Loads as it is") : L10n.text(lib.status)) : parts.joined(separator: " · ")
     }
 
     private func size(of path: String) -> String {

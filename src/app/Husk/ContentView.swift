@@ -138,8 +138,7 @@ struct ContentView: View {
             Button("Start") { startFromLibrary() }
             Button("Cancel", role: .cancel) {}
         } message: {
-            Text("Full Android emulation is experimental. It is slow, takes minutes to start, and can freeze or crash DroidDeck. "
-               + "Games and apps run much better in the Translation Layer.")
+            Text(L10n.text("Full Android emulation is experimental. It is slow, takes minutes to start, and can freeze or crash DroidDeck. Games and apps run much better in the Translation Layer."))
         }
         // A game that ended Husk last time: say so, with its report.
         .sheet(item: Binding(get: { showOnboarding ? nil : crash.pending }, set: { crash.pending = $0 }),
@@ -151,7 +150,7 @@ struct ContentView: View {
             WhatsNewSheet { WhatsNew.markSeen(); showWhatsNew = false }
         }
         // A newer Husk is on GitHub.
-        .alert("DroidDeck \(updates.available?.version ?? "") Is Available", isPresented: Binding(
+        .alert(L10n.format("DroidDeck %@ Is Available", updates.available?.version ?? ""), isPresented: Binding(
                 get: { updates.available != nil && !showOnboarding && !showWhatsNew && crash.pending == nil },
                 set: { if !$0 { updates.dismiss() } })) {
             Button("View Release") {
@@ -160,7 +159,7 @@ struct ContentView: View {
             }
             Button("Not Now", role: .cancel) { updates.dismiss() }
         } message: {
-            Text("You have \(AppUpdates.current). The new version's IPA is on its release page.")
+            Text(L10n.format("You have %@. The new version's IPA is on its release page.", AppUpdates.current))
         }
         .task { await updates.check() }
         .task { await CompatibilityStore.shared.refresh() }
@@ -174,7 +173,7 @@ struct ContentView: View {
             Button("Not Now", role: .cancel) { showcase.asked() }
         } message: {
             let n = showcase.updates.count
-            Text("Metadata for \(n) of your app\(n == 1 ? "" : "s") has been updated. Would you like to download the updates?")
+            Text(L10n.format("Metadata for %d of your apps has been updated. Would you like to download the updates?", n))
         }
         // An APK shared to Husk: where does it go?
         .sheet(isPresented: Binding(get: { !incoming.waiting.isEmpty },
@@ -343,8 +342,8 @@ struct ContentView: View {
                 HuskLog.log("jit", "refusing to start QEMU: no trap servicer is "
                                  + "answering and MAP_JIT does not execute here")
                 // Said on screen too: a Start button that silently does nothing reads as a hang (#122).
-                host.say("Android can't start without JIT",
-                         JITBootstrap.lastFailure ?? "DroidDeck could not get executable memory. Turn JIT on again (Settings > JIT) and retry.",
+                host.say(L10n.text("Android can't start without JIT"),
+                         JITBootstrap.lastFailure ?? L10n.text("DroidDeck could not get executable memory. Turn JIT on again (Settings > JIT) and retry."),
                          good: false)
                 booting = false
                 return
@@ -425,7 +424,10 @@ struct GuestScreenView: View {
                     ProgressView(value: Double(runner.bootProgress), total: 100)
                         .progressViewStyle(.linear)
                         .frame(width: 200)
-                    Text(runner.setupMessage ?? "Starting Android…")
+                    // Guest messages can come from Android's runtime.  Only
+                    // localize a matching stable key; unknown runtime output
+                    // remains verbatim for diagnostics.
+                    Text(L10n.text(runner.setupMessage ?? "Starting Android…"))
                         .font(.caption2).foregroundStyle(.secondary)
                         .multilineTextAlignment(.center)
                 }
@@ -664,8 +666,7 @@ struct ControlsSheet: View {
                     row("computermouse", "Mouse", on: false, available: false)
                 }
 
-                Text("Touch always works. A gamepad and a pointer are not wired "
-                   + "through to Android yet.")
+                Text(L10n.text("Touch always works. A gamepad and a pointer are not wired through to Android yet."))
                     .font(.system(size: 12))
                     .foregroundStyle(Theme.textDim)
                     .multilineTextAlignment(.center)

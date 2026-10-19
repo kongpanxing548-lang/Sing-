@@ -12,9 +12,9 @@ struct TLAppSettings: Codable, Equatable {
         var id: String { rawValue }
         var title: String {
             switch self {
-            case .auto: return "Automatic"
-            case .landscape: return "Landscape"
-            case .portrait: return "Portrait"
+            case .auto: return L10n.text("Automatic")
+            case .landscape: return L10n.text("Landscape")
+            case .portrait: return L10n.text("Portrait")
             }
         }
     }
@@ -25,18 +25,18 @@ struct TLAppSettings: Codable, Equatable {
         var id: String { rawValue }
         var title: String {
             switch self {
-            case .low: return "Low"
-            case .medium: return "Medium"
-            case .high: return "High"
-            case .native: return "Native"
+            case .low: return L10n.text("Low")
+            case .medium: return L10n.text("Medium")
+            case .high: return L10n.text("High")
+            case .native: return L10n.text("Native")
             }
         }
         var detail: String {
             switch self {
-            case .low: return "1 pixel per point. Fastest."
-            case .medium: return "1.5 pixels per point."
-            case .high: return "2 pixels per point. The default."
-            case .native: return "Every pixel the screen has. Sharpest, and heaviest."
+            case .low: return L10n.text("1 pixel per point. Fastest.")
+            case .medium: return L10n.text("1.5 pixels per point.")
+            case .high: return L10n.text("2 pixels per point. The default.")
+            case .native: return L10n.text("Every pixel the screen has. Sharpest, and heaviest.")
             }
         }
         @MainActor var scale: CGFloat {
@@ -56,9 +56,9 @@ struct TLAppSettings: Codable, Equatable {
         var id: String { rawValue }
         var title: String {
             switch self {
-            case .auto: return "Automatic"
-            case .always: return "Always"
-            case .never: return "Never"
+            case .auto: return L10n.text("Automatic")
+            case .always: return L10n.text("Always")
+            case .never: return L10n.text("Never")
             }
         }
     }
@@ -70,9 +70,9 @@ struct TLAppSettings: Codable, Equatable {
         var id: String { rawValue }
         var title: String {
             switch self {
-            case .auto: return "Default"
-            case .window: return "Window"
-            case .fullScreen: return "Full Screen"
+            case .auto: return L10n.text("Default")
+            case .window: return L10n.text("Window")
+            case .fullScreen: return L10n.text("Full Screen")
             }
         }
     }
@@ -198,7 +198,9 @@ struct TLAppSettingsView: View {
             Section {
                 Picker("Open In", selection: $settings.window) {
                     ForEach(TLAppSettings.WindowMode.allCases) { m in
-                        Text(m == .auto ? "Default (\(AppWindows.defaultWindowed ? "Window" : "Full Screen"))" : m.title).tag(m)
+                        Text(m == .auto
+                             ? L10n.format("Default (%@)", AppWindows.defaultWindowed ? L10n.text("Window") : L10n.text("Full Screen"))
+                             : m.title).tag(m)
                     }
                 }
             } header: {
@@ -213,8 +215,7 @@ struct TLAppSettingsView: View {
             } header: {
                 Text("Screenshots")
             } footer: {
-                Text("The game starts with nothing over it: no bar, no controller, no readout. Tap with three fingers at once to bring "
-                   + "the bar back, and again to hide it. The Hide button in the bar does the same while playing.")
+                Text(L10n.text("The game starts with nothing over it: no bar, no controller, no readout. Tap with three fingers at once to bring the bar back, and again to hide it. The Hide button in the bar does the same while playing."))
             }
 
             if app.packageName == GeodeSupport.gamePackage {
@@ -224,9 +225,7 @@ struct TLAppSettingsView: View {
                 } header: {
                     Text("Mods")
                 } footer: {
-                    Text("Geode is the mod loader for Geometry Dash. With it on, DroidDeck downloads Geode for this version of the "
-                       + "game, and mods are found and installed in the game itself, from Geode's button on the main menu. "
-                       + "Applies the next time the game starts.")
+                    Text(L10n.text("Geode is the mod loader for Geometry Dash. With it on, DroidDeck downloads Geode for this version of the game, and mods are found and installed in the game itself, from Geode's button on the main menu. Applies the next time the game starts."))
                 }
             }
 
@@ -244,8 +243,7 @@ struct TLAppSettingsView: View {
             } header: {
                 Text("Controller")
             } footer: {
-                Text("Automatic offers the controller for games that cannot be played without one (Unreal Engine games), when no real "
-                   + "controller is connected. Always offers it for any game that understands one. A paired controller is always used.")
+                Text(L10n.text("Automatic offers the controller for games that cannot be played without one (Unreal Engine games), when no real controller is connected. Always offers it for any game that understands one. A paired controller is always used."))
             }
 
             Section {
@@ -268,8 +266,9 @@ struct TLAppSettingsView: View {
             } header: {
                 Text("Data")
             } footer: {
-                Text(inUse ? "The game is loaded in this session. Close DroidDeck completely and open it again to reset its data."
-                           : "Deletes what the game saved and downloaded here: saves, settings and caches. The game itself stays.")
+                Text(inUse
+                     ? L10n.text("The game is loaded in this session. Close DroidDeck completely and open it again to reset its data.")
+                     : L10n.text("Deletes what the game saved and downloaded here: saves, settings and caches. The game itself stays."))
             }
         }
         .huskForm()
@@ -302,7 +301,7 @@ struct TLAppSettingsView: View {
         case .working(let what):
             HStack(spacing: 10) { ProgressView(); Text(what).foregroundStyle(.secondary) }
         case .ready(let version):
-            LabeledContent("Geode", value: "v\(version), ready")
+            LabeledContent("Geode", value: L10n.format("v%@, ready", version))
         case .failed(let why):
             VStack(alignment: .leading, spacing: 6) {
                 Text(why).font(.footnote).foregroundStyle(.orange)

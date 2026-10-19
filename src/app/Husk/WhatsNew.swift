@@ -13,14 +13,14 @@ enum WhatsNew {
     }
 
     /// The version whose notes these are. A build of the same version shows nothing again.
-    static let version = "0.1.0"
+    static let version = "0.1.1"
     static let items: [Item] = [
-        Item(symbol: "square.stack.3d.up.fill", title: "DroidDeck foundation",
-             detail: "A distinct GPL derivative based on Husk 3.0, with Android translation and full-system emulation kept intact."),
-        Item(symbol: "app.badge.fill", title: "Independent identity",
-             detail: "A separate bundle identifier, version line, URL scheme and original app icon let DroidDeck coexist with upstream Husk."),
-        Item(symbol: "shippingbox.fill", title: "IPA-ready delivery",
-             detail: "The repository includes a macOS cloud workflow that builds ad-hoc IPA and TrollStore packages for sideloading."),
+        Item(symbol: "character.bubble.fill", title: "Simplified Chinese interface",
+             detail: "Home, Library, Store, Settings and the setup flows are now available in Simplified Chinese."),
+        Item(symbol: "globe.asia.australia.fill", title: "Follows your iPhone language",
+             detail: "DroidDeck shows Simplified Chinese on a Chinese iPhone and keeps English as the fallback language."),
+        Item(symbol: "text.bubble.fill", title: "Localized status and errors",
+             detail: "JIT guidance, downloads, imports, Google Play messages and common error prompts now appear in Chinese too."),
     ]
 
     private static let seenKey = "droiddeck.whatsNew.seen"
@@ -44,8 +44,8 @@ struct WhatsNewSheet: View {
             ScrollView {
                 VStack(alignment: .leading, spacing: 26) {
                     VStack(alignment: .leading, spacing: 6) {
-                        Text("What's New in DroidDeck \(WhatsNew.version)").font(.largeTitle.weight(.bold))
-                        Text("An independent package, original branding and a clean macOS IPA workflow.").foregroundStyle(.secondary)
+                        Text(L10n.format("What's New in DroidDeck %@", WhatsNew.version)).font(.largeTitle.weight(.bold))
+                        Text("DroidDeck now follows your iPhone language, with a full Simplified Chinese interface.").foregroundStyle(.secondary)
                     }
                     .padding(.top, 36)
                     ForEach(WhatsNew.items) { item in
@@ -55,8 +55,8 @@ struct WhatsNewSheet: View {
                                 .foregroundStyle(Color.accentColor)
                                 .frame(width: 36)
                             VStack(alignment: .leading, spacing: 3) {
-                                Text(item.title).font(.headline)
-                                Text(item.detail).font(.subheadline).foregroundStyle(.secondary)
+                                Text(L10n.text(item.title)).font(.headline)
+                                Text(L10n.text(item.detail)).font(.subheadline).foregroundStyle(.secondary)
                                     .fixedSize(horizontal: false, vertical: true)
                             }
                         }

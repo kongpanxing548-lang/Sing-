@@ -101,7 +101,7 @@ final class SourceManager: ObservableObject {
     // Fetch a single source by URL
     func fetchSource(urlString: String) async {
         guard let url = URL(string: urlString) else {
-            fetchErrors[urlString] = "Invalid URL"
+            fetchErrors[urlString] = L10n.text("Invalid URL")
             return
         }
 
@@ -119,7 +119,16 @@ final class SourceManager: ObservableObject {
                 var apps: [SourceApp] = []
                 for fApp in fdroid.apps {
                     guard let pkgs = fdroid.packages[fApp.packageName], let latest = pkgs.first else { continue }
-                    let loc = fApp.localized?["en-US"] ?? fApp.localized?.values.first
+                    // Prefer the device's repository metadata.  F-Droid often
+                    // offers zh-CN/zh descriptions alongside its English one;
+                    // these are server-authored values and remain verbatim.
+                    let locale = Locale.current.identifier.replacingOccurrences(of: "_", with: "-")
+                    let language = Locale.current.languageCode ?? "en"
+                    let loc = fApp.localized?[locale]
+                        ?? fApp.localized?["\(language)-\(Locale.current.regionCode ?? "")"]
+                        ?? fApp.localized?[language]
+                        ?? fApp.localized?["en-US"]
+                        ?? fApp.localized?.values.first
                     let appName = fApp.name ?? loc?.name ?? fApp.packageName
                     let appSummary = fApp.summary ?? loc?.summary ?? fApp.description ?? loc?.description ?? ""
                     let appIcon = fApp.icon ?? loc?.icon
@@ -148,7 +157,7 @@ final class SourceManager: ObservableObject {
                 let source = AppSource(name: simple.name, identifier: urlString, apps: apps)
                 upsert(source: source)
             } else {
-                fetchErrors[urlString] = "Unrecognized source format"
+                fetchErrors[urlString] = L10n.text("Unrecognized source format")
                 HuskLog.log("sources", "Unrecognized format at \(urlString)")
             }
         } catch {

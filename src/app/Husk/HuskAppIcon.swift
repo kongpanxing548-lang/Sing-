@@ -22,7 +22,7 @@ enum HuskAppIcon: String, CaseIterable, Identifiable {
     }
 
     var detail: String {
-        "Original DroidDeck artwork."
+        L10n.text("Original DroidDeck artwork.")
     }
 
     /// What UIKit wants: nil for the primary, the asset name otherwise.
@@ -36,7 +36,7 @@ enum HuskAppIcon: String, CaseIterable, Identifiable {
     /// stale copy of the default artwork whichever icon was actually in use.
     /// Shipping the images as ordinary resources is what makes them loadable.
     ///
-    /// `dark` remains in the small shared API even though 0.1.0 uses the same
+    /// `dark` remains in the small shared API even though 0.1.1 uses the same
     /// preview in every appearance.
     func preview(dark: Bool = false) -> UIImage? {
         switch self {

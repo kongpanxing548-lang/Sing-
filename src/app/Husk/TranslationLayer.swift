@@ -103,19 +103,20 @@ extension TLReport {
     var nativeEngineName: String { engine == "Python" ? "Python (Kivy)" : nativeEngine == .cocos ? "Cocos2d-x" : nativeEngine == .minecraft ? "Minecraft" : nativeEngine == .sdl ? "SDL" : nativeEngine == .ue4 ? "Unreal Engine" : nativeEngine == .gta ? "Rockstar" : nativeEngine == .godot ? "Godot" : nativeEngine == .nativeactivity ? "NativeActivity" : nativeEngine == .flutter ? "Flutter" : nativeEngine == .gamemaker ? "GameMaker" : nativeEngine == .java ? (engine == "libGDX" ? "libGDX" : engine == "SDL" ? "SDL" : engine == "Flutter" ? "Flutter" : "Android") : "Unity" }
 
     var displaySummary: String {
-        guard runsOnNativeRuntime else { return summary }
+        guard runsOnNativeRuntime else { return L10n.text(summary) }
         let flagged = libraries.filter { $0.abi == "arm64-v8a" && $0.status != "ok" }.count
         let total = libraries.filter { $0.abi == "arm64-v8a" }.count
         var text = nativeEngine == .flutter
-            ? "A Flutter app. Its engine and its compiled Dart run natively through DroidDeck's translation layer, which loads its \(total) arm64 libraries itself."
+            ? L10n.format("A Flutter app. Its engine and its compiled Dart run natively through DroidDeck's translation layer, which loads its %d arm64 libraries itself.", total)
             : nativeEngine == .java && engine != "libGDX"
-            ? "An Android app. DroidDeck runs its code on its own Java runtime" + (total > 0 ? " and loads its \(total) arm64 libraries itself." : ".")
-            : "A \(nativeEngineName) game. It runs through DroidDeck's native runtime, which loads its \(total) arm64 libraries itself."
-        if nativeEngine == .cocos || nativeEngine == .minecraft || nativeEngine == .ue4 || nativeEngine == .gta { text += " It is a landscape game: DroidDeck turns the screen for it." }
-        else if nativeEngine == .sdl || nativeEngine == .nativeactivity || nativeEngine == .godot || nativeEngine == .gamemaker { text += " DroidDeck turns the screen the way the game asks for." }
+            ? (total > 0
+               ? L10n.format("An Android app. DroidDeck runs its code on its own Java runtime and loads its %d arm64 libraries itself.", total)
+               : L10n.text("An Android app. DroidDeck runs its code on its own Java runtime."))
+            : L10n.format("A %@ game. It runs through DroidDeck's native runtime, which loads its %d arm64 libraries itself.", nativeEngineName, total)
+        if nativeEngine == .cocos || nativeEngine == .minecraft || nativeEngine == .ue4 || nativeEngine == .gta { text += L10n.text(" It is a landscape game: DroidDeck turns the screen for it.") }
+        else if nativeEngine == .sdl || nativeEngine == .nativeactivity || nativeEngine == .godot || nativeEngine == .gamemaker { text += L10n.text(" DroidDeck turns the screen the way the game asks for.") }
         if flagged > 0 {
-            text += " \(flagged) of them use tricks the older loader could not handle; the native runtime handles those too, "
-                  + "except for optional anti-tamper code, which it leaves out."
+            text += L10n.format(" %d of them use tricks the older loader could not handle; the native runtime handles those too, except for optional anti-tamper code, which it leaves out.", flagged)
         }
         return text
     }
@@ -289,8 +290,9 @@ final class TranslationLayerStore: ObservableObject {
 
     func add(_ urls: [URL], move: Bool = false) {
         guard !urls.isEmpty, busy == nil else { return }
-        busy = urls.count == 1 ? "Adding \(urls[0].lastPathComponent)…"
-                               : "Adding \(urls.count) APKs…"
+        busy = urls.count == 1
+            ? L10n.format("Adding %@…", urls[0].lastPathComponent)
+            : L10n.format("Adding %d APKs…", urls.count)
         Task.detached(priority: .userInitiated) {
             let failure = Self.ingest(urls, move: move)
             await MainActor.run {
@@ -414,7 +416,7 @@ final class TranslationLayerStore: ObservableObject {
         } catch {
             try? fm.removeItem(at: dir)
             HuskLog.log("tl", "FAILED to add: \(error.localizedDescription)")
-            return "DroidDeck could not copy it: \(error.localizedDescription)"
+            return L10n.format("DroidDeck could not copy it: %@", error.localizedDescription)
         }
 
         let apks = ((try? fm.contentsOfDirectory(atPath: dir.path)) ?? [])
@@ -583,18 +585,15 @@ struct TLChecksView: View {
             Button {
                 store.runChecks()
             } label: {
-                Label(store.checking ? "Checking…"
-                      : store.checks.isEmpty ? "Run checks" : "Run again",
+                Label(store.checking ? L10n.text("Checking…")
+                      : store.checks.isEmpty ? L10n.text("Run checks") : L10n.text("Run again"),
                       systemImage: "stethoscope")
             }
             .disabled(store.checking)
         } header: {
             Text("This iPhone")
         } footer: {
-            Text("Android's native code expects things of the processor and of memory "
-               + "that only the phone can answer -- above all, whether a library's code "
-               + "can run with its data writable right beside it. Enable JIT first, or "
-               + "the memory checks are skipped. The results go to the console too.")
+            Text(L10n.text("Android's native code expects things of the processor and of memory that only the phone can answer -- above all, whether a library's code can run with its data writable right beside it. Enable JIT first, or the memory checks are skipped. The results go to the console too."))
         }
     }
 
@@ -620,11 +619,11 @@ private struct TLCheckTag: View {
 
     var body: some View {
         switch status {
-        case "pass":    Tag(text: "Pass", tint: Theme.good)
-        case "fail":    Tag(text: "Fail", tint: .red)
-        case "warn":    Tag(text: "Partly", tint: .orange)
-        case "skip":    Tag(text: "Skipped")
-        default:        Tag(text: "Info", tint: Theme.accent)
+        case "pass":    Tag(text: L10n.text("Pass"), tint: Theme.good)
+        case "fail":    Tag(text: L10n.text("Fail"), tint: .red)
+        case "warn":    Tag(text: L10n.text("Partly"), tint: .orange)
+        case "skip":    Tag(text: L10n.text("Skipped"))
+        default:        Tag(text: L10n.text("Info"), tint: Theme.accent)
         }
     }
 }
@@ -646,12 +645,12 @@ final class TLAttemptRunner: ObservableObject {
     private var timer: Timer?
 
     var statusText: String {
-        if isRunning { return "Running Attempt..." }
-        guard let code = exitCode else { return "Ready" }
+        if isRunning { return L10n.text("Running Attempt…") }
+        guard let code = exitCode else { return L10n.text("Ready") }
         switch code {
-        case 2:  return "Success: The guest drew frames!"
-        case 1:  return "Loaded: Native libraries loaded (no draw)"
-        default: return "Refused: Could not execute"
+        case 2:  return L10n.text("Success: The guest drew frames!")
+        case 1:  return L10n.text("Loaded: Native libraries loaded (no draw)")
+        default: return L10n.text("Refused: Could not execute")
         }
     }
 
@@ -667,12 +666,12 @@ final class TLAttemptRunner: ObservableObject {
 
     var subStatusText: String {
         if isRunning {
-            return "\(frameCount) frame(s) posted · driving lifecycle"
+            return L10n.format("%d frame(s) posted · driving lifecycle", frameCount)
         }
         if let code = exitCode {
-            return "Exit code \(code) · \(frameCount) frame(s) drawn"
+            return L10n.format("Exit code %d · %d frame(s) drawn", code, frameCount)
         }
-        return "Not started"
+        return L10n.text("Not started")
     }
 
     private var pollTicks: Int = 0
@@ -879,7 +878,7 @@ struct TLClassicAttemptView: View {
             Spacer()
             if devInfo {
                 Button { withAnimation(.snappy(duration: 0.25)) { showLog.toggle() } } label: {
-                    Text(showLog ? "Hide log" : "Log").font(.system(size: 12, weight: .semibold))
+                    Text(showLog ? L10n.text("Hide log") : L10n.text("Log")).font(.system(size: 12, weight: .semibold))
                 }
                 .tint(.white)
             }
@@ -896,7 +895,7 @@ struct TLClassicAttemptView: View {
     private var logPanel: some View {
         ScrollViewReader { proxy in
             ScrollView {
-                Text(runner.logText.isEmpty ? "Starting…" : runner.logText)
+                Text(runner.logText.isEmpty ? L10n.text("Starting…") : runner.logText)
                     .font(.technical(10))
                     .foregroundStyle(.white.opacity(0.85))
                     .frame(maxWidth: .infinity, alignment: .leading)

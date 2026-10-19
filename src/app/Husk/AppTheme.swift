@@ -23,15 +23,15 @@ final class AppTheme: ObservableObject {
 
     static let presets: [Preset] = [
         Preset(id: "droiddeck", name: "DroidDeck", color: husk),
-        Preset(id: "blue", name: "Blue", color: .blue),
-        Preset(id: "purple", name: "Purple", color: .purple),
-        Preset(id: "pink", name: "Pink", color: .pink),
-        Preset(id: "red", name: "Red", color: .red),
-        Preset(id: "orange", name: "Orange", color: .orange),
-        Preset(id: "yellow", name: "Yellow", color: .yellow),
-        Preset(id: "green", name: "Green", color: .green),
-        Preset(id: "teal", name: "Teal", color: .teal),
-        Preset(id: "mint", name: "Mint", color: .mint),
+        Preset(id: "blue", name: L10n.text("Blue"), color: .blue),
+        Preset(id: "purple", name: L10n.text("Purple"), color: .purple),
+        Preset(id: "pink", name: L10n.text("Pink"), color: .pink),
+        Preset(id: "red", name: L10n.text("Red"), color: .red),
+        Preset(id: "orange", name: L10n.text("Orange"), color: .orange),
+        Preset(id: "yellow", name: L10n.text("Yellow"), color: .yellow),
+        Preset(id: "green", name: L10n.text("Green"), color: .green),
+        Preset(id: "teal", name: L10n.text("Teal"), color: .teal),
+        Preset(id: "mint", name: L10n.text("Mint"), color: .mint),
     ]
 
     @Published var accentColor: Color {

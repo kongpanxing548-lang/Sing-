@@ -139,11 +139,13 @@ import UserNotifications
         phase = .pin(pin)
         log("code shown")
         if #available(iOS 26.0, *), let task = continued as? BGContinuedProcessingTask {
-            task.updateTitle("Pairing code \(pin)", subtitle: "Enter it on this \(Self.deviceKind) to pair with DroidDeck")
+            task.updateTitle(L10n.format("Pairing code %@", pin),
+                             subtitle: L10n.format("Enter it on this %@ to pair with DroidDeck", Self.deviceKind))
             task.progress.completedUnitCount = 1
         }
         if UIApplication.shared.applicationState != .active {
-            notify("DroidDeck pairing code: \(pin)", body: "Enter this code on your \(Self.deviceKind) to finish pairing.")
+            notify(L10n.format("DroidDeck pairing code: %@", pin),
+                   body: L10n.format("Enter this code on your %@ to finish pairing.", Self.deviceKind))
         }
     }
 
@@ -158,10 +160,11 @@ import UserNotifications
             do {
                 guard let data else { throw NSError(domain: "HuskJIT", code: 20) }
                 try JITCoordinator.shared.storeOnDevicePairing(data)
-                phase = .paired(device: device ?? "this \(Self.deviceKind)")
+                phase = .paired(device: device ?? L10n.format("this %@", Self.deviceKind))
                 log("paired")
                 if UIApplication.shared.applicationState != .active {
-                    notify("Paired with DroidDeck", body: "Return to DroidDeck to finish setting up JIT.")
+                    notify(L10n.text("Paired with DroidDeck"),
+                           body: L10n.text("Return to DroidDeck to finish setting up JIT."))
                 }
                 endBackground(success: true)
             } catch {
@@ -265,8 +268,9 @@ import UserNotifications
             guard ok else { log("register refused"); backgroundLimited = true; return }
             registered = identifier
         }
-        let request = BGContinuedProcessingTaskRequest(identifier: identifier, title: "Pairing with DroidDeck",
-                                                       subtitle: "Settings › Privacy & Security › Developer Mode")
+        let request = BGContinuedProcessingTaskRequest(identifier: identifier,
+                                                       title: L10n.text("Pairing with DroidDeck"),
+                                                       subtitle: L10n.text("Settings › Privacy & Security › Developer Mode"))
         request.strategy = .fail
         do {
             try BGTaskScheduler.shared.submit(request)
@@ -283,13 +287,14 @@ import UserNotifications
         continued = task
         task.progress.totalUnitCount = 2
         if case .pin(let pin) = phase {
-            task.updateTitle("Pairing code \(pin)", subtitle: "Enter it on this \(Self.deviceKind) to pair with DroidDeck")
+            task.updateTitle(L10n.format("Pairing code %@", pin),
+                             subtitle: L10n.format("Enter it on this %@ to pair with DroidDeck", Self.deviceKind))
             task.progress.completedUnitCount = 1
         }
         task.expirationHandler = {
             DispatchQueue.main.async {
                 OnDevicePairing.shared.continued = nil
-                OnDevicePairing.shared.cancel(reason: "iOS stopped the pairing in the background. Try again.")
+                OnDevicePairing.shared.cancel(reason: L10n.text("iOS stopped the pairing in the background. Try again."))
             }
         }
         log("continued-processing running")

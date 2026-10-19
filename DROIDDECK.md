@@ -1,4 +1,4 @@
-# DroidDeck 0.1.0
+# DroidDeck 0.1.1
 
 DroidDeck 是一款基于 Husk 3.0 的 GPL 开源衍生版。它保留 APK 导入、Android
 原生翻译层、QEMU 完整模拟、JIT、存档和手柄支持，同时使用独立的
@@ -18,7 +18,7 @@ DroidDeck 是一款基于 Husk 3.0 的 GPL 开源衍生版。它保留 APK 导�
 2. 若发布到名为 `DroidDeck` 的分支，首次推送会自动开始构建；若工作流位于
    默认分支，也可以打开 Actions，选择 `Build DroidDeck IPA` 并点击 `Run workflow`。
 3. 首次构建会下载并交叉编译 QEMU、ANGLE、MoltenVK、Rust 配对库等，通常需要数小时。
-4. 在该次运行的 Artifacts 中下载 `DroidDeck-0.1.0`。
+4. 在该次运行的 Artifacts 中下载 `DroidDeck-0.1.1`。
 
 Actions 会把实际仓库与精确 commit 的 URL 写入 IPA 的“关于”页。本地构建若未设置
 `DROIDDECK_SOURCE_URL`，应用会显示“不可公开分发”提示；公开发布前必须设置为对应的公开源码 URL。
@@ -51,8 +51,8 @@ DROIDDECK_SOURCE_URL="https://github.com/你的账号/你的仓库/tree/精确�
 - 32 位 ARM 应用不能在现代 iPhone 上运行。
 - 完整 Android 使用 QEMU TCG，速度显著慢于翻译层。
 - Google Play 登录、云存档及购买不属于可承诺能力。
-- 0.1.0 不打包 PS4 运行时；上游所需的 FEXCore 分支未公开，无法从干净源码重现。
-- 0.1.0 不打包上游仅以无来源二进制提供的文件选择器补丁；应用内系统文件选择器改用公开的
+- 0.1.1 不打包 PS4 运行时；上游所需的 FEXCore 分支未公开，无法从干净源码重现。
+- 0.1.1 不打包上游仅以无来源二进制提供的文件选择器补丁；应用内系统文件选择器改用公开的
   `asCopy` API，Files/Safari 的分享菜单也仍可导入。这样避免把不可审计二进制放进发布 IPA。
 - 此类应用依赖调试/JIT entitlement，不以 App Store 上架为交付目标。
 

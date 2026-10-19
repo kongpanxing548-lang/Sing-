@@ -10,7 +10,10 @@ struct FAQTab: View {
         let q = query.trimmingCharacters(in: .whitespaces)
         guard !q.isEmpty else { return FAQ.sections }
         return FAQ.sections.compactMap { s in
-            let items = s.items.filter { $0.question.localizedCaseInsensitiveContains(q) || $0.answer.localizedCaseInsensitiveContains(q) }
+            let items = s.items.filter {
+                L10n.text($0.question).localizedCaseInsensitiveContains(q)
+                    || L10n.text($0.answer).localizedCaseInsensitiveContains(q)
+            }
             return items.isEmpty ? nil : FAQ.Section(title: s.title, symbol: s.symbol, items: items)
         }
     }
@@ -21,11 +24,11 @@ struct FAQTab: View {
                     Section {
                         ForEach(s.items) { item in FAQRow(item: item, expanded: !query.isEmpty) }
                     } header: {
-                        Label(s.title, systemImage: s.symbol)
+                        Label(L10n.text(s.title), systemImage: s.symbol)
                     }
                 }
                 if sections.isEmpty {
-                    Text("Nothing matches “\(query)”. Open Settings › About › Open Console to see what DroidDeck is doing.")
+                    Text(L10n.format("Nothing matches “%@”. Open Settings › About › Open Console to see what DroidDeck is doing.", query))
                         .foregroundStyle(.secondary)
                 }
             }
@@ -41,13 +44,13 @@ private struct FAQRow: View {
 
     var body: some View {
         DisclosureGroup(isExpanded: Binding(get: { open || expanded }, set: { open = $0 })) {
-            Text(.init(item.answer))
+            Text(.init(L10n.text(item.answer)))
                 .font(.subheadline)
                 .foregroundStyle(.secondary)
                 .fixedSize(horizontal: false, vertical: true)
                 .padding(.vertical, 4)
         } label: {
-            Text(item.question).font(.body.weight(.medium))
+            Text(L10n.text(item.question)).font(.body.weight(.medium))
         }
     }
 }
@@ -107,8 +110,8 @@ enum FAQ {
                        + "Your library, apps and saves are kept."),
         ]),
         Section(title: "Apps and Games", symbol: "gamecontroller.fill", items: [
-            Item(question: "Why are PS4 games unavailable in DroidDeck 0.1.0?",
-                 answer: "DroidDeck 0.1.0 does not include the optional PS4 runtime. The upstream runtime depends on source that is not "
+            Item(question: "Why are PS4 games unavailable in DroidDeck 0.1.1?",
+                 answer: "DroidDeck 0.1.1 does not include the optional PS4 runtime. The upstream runtime depends on source that is not "
                        + "publicly reproducible, so this build focuses on Android apps and games."),
             Item(question: "An app will not open",
                  answer: "Open its page in the Library. DroidDeck says why it stopped:\n"

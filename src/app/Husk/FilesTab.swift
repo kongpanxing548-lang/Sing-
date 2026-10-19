@@ -71,7 +71,7 @@ struct DirectoryView: View {
                            action: { showImportSheet = true })
             }
         }
-        .navigationTitle(title)
+        .navigationTitle(Text(L10n.text(title)))
         .navigationBarTitleDisplayMode(path == FilesTab.root ? .large : .inline)
         .toolbar {
             ToolbarItemGroup(placement: .topBarTrailing) {
@@ -144,7 +144,7 @@ struct DirectoryView: View {
             HStack {
                 Text("Storage")
                 Spacer()
-                Text("\(AppDetailView.bytes(s.total - s.free)) of \(AppDetailView.bytes(s.total))")
+                Text(L10n.format("%@ of %@", AppDetailView.bytes(s.total - s.free), AppDetailView.bytes(s.total)))
                     .font(.subheadline)
                     .foregroundStyle(.secondary)
             }
@@ -221,8 +221,7 @@ struct ImportSheet: View {
                         .font(.system(size: 34, weight: .light))
                         .foregroundStyle(Color.accentColor)
                     Text("Import Files").font(.headline)
-                    Text("They go to \((destination as NSString).lastPathComponent). "
-                       + "Unmodified APKs install from here too.")
+                    Text(L10n.format("They go to %@. Unmodified APKs install from here too.", (destination as NSString).lastPathComponent))
                         .font(.subheadline)
                         .foregroundStyle(.secondary)
                         .multilineTextAlignment(.center)

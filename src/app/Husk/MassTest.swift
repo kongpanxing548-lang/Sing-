@@ -76,8 +76,8 @@ final class MassTest: ObservableObject {
     // MARK: - Starting and stopping
 
     func start() {
-        guard let files = Self.apks(), !files.isEmpty else { status = "Put APKs in the DeveloperTesting folder first."; return }
-        guard !ranThisProcess, husk_native_loaded_apk() == nil else { status = "Close DroidDeck and open it again to start: a game was already loaded in this run."; return }
+        guard let files = Self.apks(), !files.isEmpty else { status = L10n.text("Put APKs in the DeveloperTesting folder first."); return }
+        guard !ranThisProcess, husk_native_loaded_apk() == nil else { status = L10n.text("Close DroidDeck and open it again to start: a game was already loaded in this run."); return }
         ranThisProcess = true
         state = State(queue: files, index: 0, results: [], appIDs: [:], launched: false, startedAt: Date())
         save()
@@ -96,8 +96,8 @@ final class MassTest: ObservableObject {
     /// A new test of only those.
     func retestFailures() {
         let files = failures
-        guard !files.isEmpty else { status = "No failures to retest."; return }
-        guard !ranThisProcess, husk_native_loaded_apk() == nil else { status = "Close DroidDeck and open it again to start: a game was already loaded in this run."; return }
+        guard !files.isEmpty else { status = L10n.text("No failures to retest."); return }
+        guard !ranThisProcess, husk_native_loaded_apk() == nil else { status = L10n.text("Close DroidDeck and open it again to start: a game was already loaded in this run."); return }
         ranThisProcess = true
         let ids = state?.appIDs ?? [:]
         state = State(queue: files, index: 0, results: [], appIDs: ids, launched: false, startedAt: Date())
@@ -148,7 +148,7 @@ final class MassTest: ObservableObject {
     private func runCurrent() {
         guard var s = state, s.index < s.queue.count else { writeReport(); shareResults = true; return }
         let file = s.queue[s.index]
-        status = "Testing \(s.index + 1) of \(s.queue.count): \(file)"
+        status = L10n.format("Testing %d of %d: %@", s.index + 1, s.queue.count, file)
         HuskLog.log("masstest", status)
         Task {
             // Taken into the library once; a later launch for the same APK (after a crash) finds it there.
@@ -303,13 +303,17 @@ struct MassTestView: View {
         List {
             Section {
                 if let files {
-                    Text(files.isEmpty ? "The DeveloperTesting folder is empty." : "\(files.count) apps in DeveloperTesting.")
+                    Text(files.isEmpty
+                         ? L10n.text("The DeveloperTesting folder is empty.")
+                         : L10n.format("%d apps in DeveloperTesting.", files.count))
                 } else {
                     Text("Make a folder named DeveloperTesting in DroidDeck's folder (Files > On My iPhone > DroidDeck) and put the APKs to test in it: an APK each, or a folder per app with its base and split APKs.")
                         .foregroundStyle(.secondary)
                 }
                 if let s = test.state {
-                    Text(test.active ? "In progress: \(s.results.count) of \(s.queue.count) done." : "Last test: \(s.results.count) of \(s.queue.count) done.")
+                    Text(test.active
+                         ? L10n.format("In progress: %d of %d done.", s.results.count, s.queue.count)
+                         : L10n.format("Last test: %d of %d done.", s.results.count, s.queue.count))
                 }
                 if !test.status.isEmpty { Text(test.status).font(.caption).foregroundStyle(.secondary) }
             } footer: {
@@ -321,7 +325,7 @@ struct MassTestView: View {
                 } else {
                     Button("Start Mass Test") { test.start() }.disabled((files ?? []).isEmpty)
                     if !test.failures.isEmpty {
-                        Button("Retest \(test.failures.count) Failures") { test.retestFailures() }
+                        Button(L10n.format("Retest %d Failures", test.failures.count)) { test.retestFailures() }
                     }
                 }
                 if FileManager.default.fileExists(atPath: MassTest.resultsURL.path) {

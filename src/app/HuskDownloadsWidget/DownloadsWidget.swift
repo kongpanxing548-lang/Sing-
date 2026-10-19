@@ -25,14 +25,14 @@ struct DownloadActivityWidget: Widget {
                     Image(systemName: stateIcon(context.state)).font(.title2).foregroundStyle(stateTint(context.state))
                 }
                 DynamicIslandExpandedRegion(.trailing) {
-                    Text(statePercent(context.state)).font(.headline.monospacedDigit())
+                    Text(verbatim: statePercent(context.state)).font(.headline.monospacedDigit())
                 }
                 DynamicIslandExpandedRegion(.bottom) {
                     VStack(alignment: .leading, spacing: 6) {
-                        Text(context.state.title).font(.subheadline.weight(.semibold)).lineLimit(1)
+                        Text(verbatim: context.state.title).font(.subheadline.weight(.semibold)).lineLimit(1)
                         Bar(state: context.state)
                         HStack {
-                            Text(stateDetail(context.state)).font(.caption).foregroundStyle(.secondary)
+                            Text(verbatim: stateDetail(context.state)).font(.caption).foregroundStyle(.secondary)
                             Spacer()
                             TimeLeft(state: context.state)
                         }
@@ -41,7 +41,7 @@ struct DownloadActivityWidget: Widget {
             } compactLeading: {
                 Image(systemName: stateIcon(context.state)).foregroundStyle(stateTint(context.state))
             } compactTrailing: {
-                Text(statePercent(context.state)).font(.caption.monospacedDigit())
+                Text(verbatim: statePercent(context.state)).font(.caption.monospacedDigit())
             } minimal: {
                 Image(systemName: stateIcon(context.state)).foregroundStyle(stateTint(context.state))
             }
@@ -56,13 +56,13 @@ private struct LockScreenView: View {
         VStack(alignment: .leading, spacing: 8) {
             HStack {
                 Image(systemName: stateIcon(state)).foregroundStyle(stateTint(state))
-                Text(state.title).font(.headline).lineLimit(1)
+                Text(verbatim: state.title).font(.headline).lineLimit(1)
                 Spacer()
-                Text(statePercent(state)).font(.headline.monospacedDigit())
+                Text(verbatim: statePercent(state)).font(.headline.monospacedDigit())
             }
             Bar(state: state)
             HStack {
-                Text(stateDetail(state)).font(.caption).foregroundStyle(.secondary)
+                Text(verbatim: stateDetail(state)).font(.caption).foregroundStyle(.secondary)
                 Spacer()
                 TimeLeft(state: state)
             }
@@ -100,7 +100,7 @@ private struct TimeLeft: View {
 
 @available(iOS 16.1, *)
 private func statePercent(_ s: HuskDownloadAttributes.ContentState) -> String {
-    if s.finished { return "Done" }
+    if s.finished { return L10n.text("Done") }
     guard s.total > 0 else { return "…" }
     return "\(Int(Double(s.received) / Double(s.total) * 100))%"
 }
@@ -108,11 +108,17 @@ private func statePercent(_ s: HuskDownloadAttributes.ContentState) -> String {
 @available(iOS 16.1, *)
 private func stateDetail(_ s: HuskDownloadAttributes.ContentState) -> String {
     let f = ByteCountFormatter()
-    if s.failed { return "Stopped. Open DroidDeck to retry." }
-    if s.finished { return "\(f.string(fromByteCount: s.total)) downloaded" }
-    var text = "\(f.string(fromByteCount: s.received)) of \(f.string(fromByteCount: s.total))"
-    if s.speed > 1 { text += " · \(f.string(fromByteCount: Int64(s.speed)))/s" }
-    if s.filesTotal > 1 { text += " · \(s.filesDone)/\(s.filesTotal) files" }
+    if s.failed { return L10n.text("Stopped. Open DroidDeck to retry.") }
+    let received = f.string(fromByteCount: s.received)
+    let total = f.string(fromByteCount: s.total)
+    if s.finished { return L10n.format("%@ downloaded", total) }
+    var text = L10n.format("%@ of %@", received, total)
+    if s.speed > 1 {
+        text += " · " + L10n.format("%@/s", f.string(fromByteCount: Int64(s.speed)))
+    }
+    if s.filesTotal > 1 {
+        text += " · " + L10n.format("%lld/%lld files", Int64(s.filesDone), Int64(s.filesTotal))
+    }
     return text
 }
 

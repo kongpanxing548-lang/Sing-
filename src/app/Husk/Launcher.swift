@@ -30,7 +30,7 @@ enum LibraryItem: Identifiable, Hashable {
         switch self {
         case .game(let g): return g.label
         case .app(let p): return p.label
-        case .android: return "Android"
+        case .android: return L10n.text("Android")
         case .ps4(let g): return g.title
         }
     }
@@ -97,8 +97,12 @@ enum LibraryItem: Identifiable, Hashable {
         guard let date = lastUsed else { return nil }
         let rel = RelativeDateTimeFormatter()
         rel.unitsStyle = .full
-        let ago = date.timeIntervalSinceNow > -60 ? "just now" : rel.localizedString(for: date, relativeTo: Date())
-        return (isGame ? "Played " : "Opened ") + ago
+        let ago = date.timeIntervalSinceNow > -60
+            ? L10n.text("just now")
+            : rel.localizedString(for: date, relativeTo: Date())
+        return isGame
+            ? L10n.format("Played %@", ago)
+            : L10n.format("Opened %@", ago)
     }
 }
 
@@ -108,9 +112,9 @@ enum LibraryFilter: String, CaseIterable, Identifiable {
     var id: String { rawValue }
     var title: String {
         switch self {
-        case .all: return "All"
-        case .games: return "Games"
-        case .apps: return "Apps"
+        case .all: return L10n.text("All")
+        case .games: return L10n.text("Games")
+        case .apps: return L10n.text("Apps")
         }
     }
 }
@@ -265,7 +269,9 @@ struct HomeView: View {
                         .buttonStyle(CardButtonStyle())
                         .id(item.id)
                         .accessibilityLabel(item.title)
-                        .accessibilityHint(isSelected ? (item.isGame ? "Plays it" : "Opens it") : "Selects it")
+                        .accessibilityHint(isSelected
+                            ? (item.isGame ? L10n.text("Plays it") : L10n.text("Opens it"))
+                            : L10n.text("Selects it"))
                         .libraryItemMenu(item) { router.home.append($0) }
                     }
                     if items.count > 1 {
@@ -298,36 +304,39 @@ struct HomeView: View {
     private func details(_ item: LibraryItem) -> some View {
         VStack(alignment: .leading, spacing: 6) {
             HStack(spacing: 8) {
-                Text(item.platformName.uppercased())
+                Text(verbatim: item.platformName.uppercased())
                     .font(.system(size: 12, weight: .bold))
                     .tracking(0.8)
                     .foregroundStyle(Console.textDim)
                 if let status = item.status {
                     HStack(spacing: 5) {
                         StatusDot(status: status)
-                        Text(status.label)
+                        Text(verbatim: status.label)
                             .font(.system(size: 12, weight: .semibold))
                             .foregroundStyle(status.color)
                     }
                 }
             }
-            Text(item.title)
+            Text(verbatim: item.title)
                 .font(.system(size: 32, weight: .heavy))
                 .foregroundStyle(Console.text)
                 .lineLimit(2)
                 .minimumScaleFactor(0.7)
                 .fixedSize(horizontal: false, vertical: true)
             if let used = item.lastPlayedText {
-                Text(used)
+                Text(verbatim: used)
                     .font(.system(size: 15))
                     .foregroundStyle(Console.textDim)
             }
             HStack(spacing: 10) {
                 Button { Launcher.play(item) { router.home.append($0) } } label: {
-                    Label(item.isGame ? "Play" : "Open", systemImage: item.isGame ? "play.fill" : "arrow.up.forward.app.fill")
+                    Label(item.isGame ? L10n.text("Play") : L10n.text("Open"),
+                          systemImage: item.isGame ? "play.fill" : "arrow.up.forward.app.fill")
                 }
                 .buttonStyle(ConsolePlayButtonStyle())
-                .accessibilityLabel((item.isGame ? "Play " : "Open ") + item.title)
+                .accessibilityLabel(item.isGame
+                    ? L10n.format("Play %@", item.title)
+                    : L10n.format("Open %@", item.title))
                 HomeMoreButton(item: item)
             }
             .padding(.top, 10)
@@ -371,12 +380,14 @@ struct HomeView: View {
     private var empty: some View {
         if router.platform != .all, !Launcher.items(store: store, host: host).isEmpty {
             VStack(alignment: .leading, spacing: 10) {
-                Text(router.platform == .ps4 ? "PS4 runtime unavailable" : "No Android games or apps yet")
+                Text(verbatim: router.platform == .ps4
+                     ? L10n.text("PS4 runtime unavailable")
+                     : L10n.text("No Android games or apps yet"))
                     .font(.system(size: 26, weight: .heavy))
                     .foregroundStyle(Console.text)
-                Text(router.platform == .ps4
-                     ? "DroidDeck 0.1.0 does not include the optional PS4 runtime."
-                     : "Add an APK or a bundle from the menu, or share one to DroidDeck.")
+                Text(verbatim: router.platform == .ps4
+                     ? L10n.text("DroidDeck 0.1.1 does not include the optional PS4 runtime.")
+                     : L10n.text("Add an APK or a bundle from the menu, or share one to DroidDeck."))
                     .font(.subheadline)
                     .foregroundStyle(Console.textDim)
                     .fixedSize(horizontal: false, vertical: true)
@@ -469,11 +480,11 @@ private struct WideCard: View {
             HStack(spacing: 10) {
                 ItemIcon(item: item, size: 38)
                 VStack(alignment: .leading, spacing: 2) {
-                    Text(item.title)
+                    Text(verbatim: item.title)
                         .font(.system(size: 15, weight: .semibold))
                         .foregroundStyle(.white)
                         .lineLimit(1)
-                    Text(item.platformName)
+                    Text(verbatim: item.platformName)
                         .font(.system(size: 12))
                         .foregroundStyle(.white.opacity(0.7))
                         .lineLimit(1)
@@ -521,7 +532,7 @@ private struct HomeMoreButton: View {
                 .frame(width: 52, height: 52)
                 .background(Console.raised, in: RoundedRectangle(cornerRadius: 14, style: .continuous))
         }
-        .accessibilityLabel("More for \(item.title)")
+        .accessibilityLabel(Text(verbatim: L10n.format("More for %@", item.title)))
         .removeItemDialog(item, isPresented: $confirmRemove)
     }
 }
@@ -539,7 +550,9 @@ private struct HomeAvatar: View {
             Button { router.showFiles = true } label: { Label("Files", systemImage: "folder") }
             Divider()
             Button { JITNotice.toggle(jit) } label: {
-                Label(Launcher.jitOn ? "JIT On (\(JITNotice.via(jit)))" : "Turn On JIT", systemImage: "bolt.fill")
+                Label(Launcher.jitOn
+                      ? L10n.format("JIT On (%@)", JITNotice.via(jit))
+                      : L10n.text("Turn On JIT"), systemImage: "bolt.fill")
             }
             .disabled(jit.busy)
             Button { router.tab = .settings } label: { Label("Settings", systemImage: "gearshape") }
@@ -586,7 +599,9 @@ private struct JITNotice: View {
                         .foregroundStyle(.orange)
                     VStack(alignment: .leading, spacing: 1) {
                         Text("JIT is off").font(.system(size: 14, weight: .semibold)).foregroundStyle(.white)
-                        Text(jit.busy ? (jit.status ?? "Turning on…") : "Games need it. Tap to turn it on.")
+                        Text(verbatim: jit.busy
+                             ? L10n.text(jit.status ?? "Turning on…")
+                             : L10n.text("Games need it. Tap to turn it on."))
                             .font(.system(size: 12)).foregroundStyle(Console.textDim).lineLimit(1)
                     }
                     Spacer(minLength: 0)
@@ -605,7 +620,7 @@ private struct JITNotice: View {
             .buttonStyle(CardButtonStyle())
             .disabled(jit.busy)
             if let error = jit.error {
-                Text(error).font(.caption).foregroundStyle(.orange).fixedSize(horizontal: false, vertical: true)
+                Text(verbatim: L10n.text(error)).font(.caption).foregroundStyle(.orange).fixedSize(horizontal: false, vertical: true)
             }
         }
     }
@@ -623,12 +638,15 @@ private struct DownloadsNotice: View {
         if !running.isEmpty {
             let total = running.reduce(Int64(0)) { $0 + $1.total }
             let got = running.reduce(Int64(0)) { $0 + $1.received }
-            let pct = total > 0 ? " · \(Int(Double(got) / Double(total) * 100))%" : ""
-            return "\(running.count) downloading\(pct)"
+            if total > 0 {
+                let percent = Int(Double(got) / Double(total) * 100)
+                return L10n.format("%lld downloading · %d%%", Int64(running.count), percent)
+            }
+            return L10n.format("%lld downloading", Int64(running.count))
         }
-        if downloads.jobs.contains(where: \.failed) { return "A download failed" }
-        if let release = updates.available { return "DroidDeck \(release.version) is out" }
-        if guest.update.isSomething { return "Android update ready" }
+        if downloads.jobs.contains(where: \.failed) { return L10n.text("A download failed") }
+        if let release = updates.available { return L10n.format("DroidDeck %@ is out", release.version) }
+        if guest.update.isSomething { return L10n.text("Android update ready") }
         return nil
     }
 
@@ -639,7 +657,7 @@ private struct DownloadsNotice: View {
                     Image(systemName: "arrow.down.circle.fill")
                         .font(.system(size: 16, weight: .semibold))
                         .foregroundStyle(Theme.accent)
-                    Text(status).font(.system(size: 14, weight: .semibold)).foregroundStyle(.white).lineLimit(1)
+                    Text(verbatim: status).font(.system(size: 14, weight: .semibold)).foregroundStyle(.white).lineLimit(1)
                     Spacer(minLength: 0)
                     Image(systemName: "chevron.right").font(.system(size: 12, weight: .bold)).foregroundStyle(Console.textDim)
                 }
@@ -667,8 +685,7 @@ private struct WelcomeCard: View {
                 Text("Add your first game")
                     .font(.system(size: 26, weight: .heavy))
                     .foregroundStyle(Console.text)
-                Text("Pick an APK or a bundle (.xapk, .apkm, .apks), or share one to DroidDeck from Files or Safari. Games run "
-                   + "straight on your iPhone, while other apps run inside Android.")
+                Text(verbatim: L10n.text("Pick an APK or a bundle (.xapk, .apkm, .apks), or share one to DroidDeck from Files or Safari. Games run straight on your iPhone, while other apps run inside Android."))
                     .font(.subheadline)
                     .foregroundStyle(Console.textDim)
                     .fixedSize(horizontal: false, vertical: true)
@@ -796,7 +813,7 @@ struct LibraryScreen: View {
                         Spacer(minLength: 0)
                         Menu {
                             Picker("Show", selection: $router.libraryFilter) {
-                                ForEach(LibraryFilter.allCases) { Text($0.title).tag($0) }
+                                ForEach(LibraryFilter.allCases) { Text(verbatim: $0.title).tag($0) }
                             }
                         } label: {
                             Image(systemName: router.libraryFilter == .all ? "line.3.horizontal.decrease.circle"
@@ -818,9 +835,9 @@ struct LibraryScreen: View {
                         .sorted { $0.title.localizedCaseInsensitiveCompare($1.title) == .orderedAscending }
                     let android = items.filter { !$0.isPS4 }
 
-                    section("Android", android,
+                    section(L10n.text("Android"), android,
                             empty: query.isEmpty && router.libraryFilter == .all
-                                ? "Add a game with the + button." : nil)
+                                ? L10n.text("Add a game with the + button.") : nil)
                     if !query.isEmpty, items.isEmpty { NoResults(query: query) }
                 }
                 .padding(.horizontal, 20)
@@ -847,11 +864,11 @@ struct LibraryScreen: View {
         if !items.isEmpty || empty != nil {
             VStack(alignment: .leading, spacing: 14) {
                 HStack(alignment: .firstTextBaseline, spacing: 8) {
-                    Text(title).font(.system(size: 21, weight: .bold)).foregroundStyle(Console.text)
+                    Text(verbatim: title).font(.system(size: 21, weight: .bold)).foregroundStyle(Console.text)
                     Text("\(items.count)").font(.system(size: 15, weight: .medium)).foregroundStyle(Console.textDim)
                 }
                 if items.isEmpty, let empty {
-                    Text(empty)
+                    Text(verbatim: empty)
                         .font(.subheadline)
                         .foregroundStyle(Console.textDim)
                         .frame(maxWidth: .infinity, alignment: .leading)
@@ -876,14 +893,16 @@ struct LibraryScreen: View {
         switch item {
         case .game(let g):
             if g.packageName == GeodeSupport.launcherPackage { return "Geode" }
-            return g.report?.canRun == true ? nil : "May not run"
+            return g.report?.canRun == true ? nil : L10n.text("May not run")
         case .android:
-            if AndroidHost.shared.isReady { return "Running" }
-            return guest.state == .ready ? nil : "Not installed"
-        case .app: return "Emulator"
+            if AndroidHost.shared.isReady { return L10n.text("Running") }
+            return guest.state == .ready ? nil : L10n.text("Not installed")
+        case .app: return L10n.text("Emulator")
         case .ps4:
             if PS4Store.available { return nil }
-            return PS4Store.moduleURL == nil ? "Runtime not included" : "Needs iOS 17.4"
+            return PS4Store.moduleURL == nil
+                ? L10n.text("Runtime not included")
+                : L10n.text("Needs iOS 17.4")
         }
     }
 }
@@ -904,13 +923,13 @@ private struct LibraryCell: View {
             VStack(alignment: .leading, spacing: 2) {
                 HStack(spacing: 5) {
                     if let status = item.status { StatusDot(status: status) }
-                    Text(item.title)
+                    Text(verbatim: item.title)
                         .font(.system(size: 13, weight: .semibold))
                         .foregroundStyle(Console.text)
                         .lineLimit(1)
                 }
                 if let caption {
-                    Text(caption).font(.system(size: 11)).foregroundStyle(Console.textDim).lineLimit(1)
+                    Text(verbatim: caption).font(.system(size: 11)).foregroundStyle(Console.textDim).lineLimit(1)
                 }
             }
         }
@@ -948,13 +967,13 @@ struct LauncherTile: View {
                 if let result { GameStatusBadge(result: result).offset(x: 5, y: -5) }
             }
             VStack(spacing: 1) {
-                Text(title)
+                Text(verbatim: title)
                     .font(.caption.weight(.medium))
                     .foregroundStyle(.primary)
                     .lineLimit(2)
                     .multilineTextAlignment(.center)
                 if let caption {
-                    Text(caption).font(.caption2).foregroundStyle(.secondary).lineLimit(1)
+                    Text(verbatim: caption).font(.caption2).foregroundStyle(.secondary).lineLimit(1)
                 }
             }
             .padding(.top, item?.runsInAndroid == true ? 3 : 0)
@@ -974,7 +993,8 @@ struct LibraryItemActions: View {
 
     var body: some View {
         Button { Launcher.play(item, push: push) } label: {
-            Label(item.isGame ? "Play" : "Open", systemImage: item.isGame ? "play.fill" : "arrow.up.forward.app")
+            Label(item.isGame ? L10n.text("Play") : L10n.text("Open"),
+                  systemImage: item.isGame ? "play.fill" : "arrow.up.forward.app")
         }
         if showsDetails, !item.runsInAndroid {
             Button { push(item.route) } label: { Label("Details", systemImage: "info.circle") }
@@ -986,7 +1006,7 @@ struct LibraryItemActions: View {
         } else if case .app(let p) = item, AndroidHost.shared.isReady {
             Divider()
             Button(role: .destructive) { askRemove() } label: { Label("Uninstall", systemImage: "trash") }
-                .accessibilityHint("Removes \(p.label) from Android")
+                .accessibilityHint(Text(verbatim: L10n.format("Removes %@ from Android", p.label)))
         }
     }
 }
@@ -1011,11 +1031,17 @@ private struct RemoveItemDialog: ViewModifier {
             }
     }
 
-    private var removeVerb: String { if case .app = item { return "Uninstall" }; return "Remove" }
-    private var removeTitle: String { "\(removeVerb) \(item.title)?" }
+    private var removeVerb: String {
+        if case .app = item { return L10n.text("Uninstall") }
+        return L10n.text("Remove")
+    }
+    private var removeTitle: String {
+        if case .app = item { return L10n.format("Uninstall %@?", item.title) }
+        return L10n.format("Remove %@?", item.title)
+    }
     private var removeMessage: String {
-        if case .app = item { return "It is uninstalled from Android, with its data." }
-        return "Its files and saved progress are deleted from DroidDeck."
+        if case .app = item { return L10n.text("It is uninstalled from Android, with its data.") }
+        return L10n.text("Its files and saved progress are deleted from DroidDeck.")
     }
 }
 
@@ -1078,6 +1104,7 @@ struct BusyStrip: View {
 /// A search field as the system draws one.
 struct SearchField: View {
     @Binding var text: String
+    /// Stable, developer-authored placeholder copy (never the person's search text).
     let prompt: String
     @FocusState private var focused: Bool
 
@@ -1087,7 +1114,7 @@ struct SearchField: View {
                 Image(systemName: "magnifyingglass")
                     .font(.system(size: 15, weight: .medium))
                     .foregroundStyle(.secondary)
-                TextField(prompt, text: $text)
+                TextField(L10n.text(prompt), text: $text)
                     .focused($focused)
                     .submitLabel(.search)
                     .autocorrectionDisabled()

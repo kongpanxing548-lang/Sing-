@@ -15,11 +15,11 @@ enum JITMethod: String, CaseIterable, Identifiable {
     var id: String { rawValue }
     var title: String {
         switch self {
-        case .automatic: return "Automatic"
+        case .automatic: return L10n.text("Automatic")
         case .stikDebug: return "StikDebug"
         case .trollStore: return "TrollStore"
-        case .jailbreak: return "Jailbreak (Dopamine)"
-        case .builtIn: return "Built-in StikJIT"
+        case .jailbreak: return L10n.text("Jailbreak (Dopamine)")
+        case .builtIn: return L10n.text("Built-in StikJIT")
         }
     }
 }
@@ -67,7 +67,7 @@ enum JITPairingFileStore {
               let identifier = dictionary["identifier"] as? String, !identifier.isEmpty else {
             throw NSError(domain: "HuskJIT", code: 10,
                           userInfo: [NSLocalizedDescriptionKey:
-                            "That is not a remote pairing file. Make one with the StikDebug pairing-file guide and try again."])
+                            L10n.text("That is not a remote pairing file. Make one with the StikDebug pairing-file guide and try again.")])
         }
         try FileManager.default.createDirectory(at: directory, withIntermediateDirectories: true)
         try data.write(to: url, options: .atomic)
@@ -104,10 +104,9 @@ final class JITCoordinator: ObservableObject {
         var message: String {
             switch self {
             case .vpn:
-                return "DroidDeck couldn't reach this device. Connect LocalDevVPN, then try again."
+                return L10n.text("DroidDeck couldn't reach this device. Connect LocalDevVPN, then try again.")
             case .pairing:
-                return "This device closed the connection, which usually means it no longer accepts "
-                     + "DroidDeck's pairing. Pair again, and check that LocalDevVPN is connected."
+                return L10n.text("This device closed the connection, which usually means it no longer accepts DroidDeck's pairing. Pair again, and check that LocalDevVPN is connected.")
             }
         }
     }
@@ -145,10 +144,10 @@ final class JITCoordinator: ObservableObject {
 
     var automaticDescription: String {
         switch resolvedMethod {
-        case .stikDebug: return "StikDebug is installed, so DroidDeck will open it."
-        case .trollStore: return "TrollStore is installed, so DroidDeck will ask it to enable JIT."
-        case .jailbreak: return "This device is jailbroken, so JIT comes from the jailbreak's Allow JIT in Apps setting."
-        default: return "StikDebug, TrollStore and a jailbreak were not found, so DroidDeck will use its built-in helper."
+        case .stikDebug: return L10n.text("StikDebug is installed, so DroidDeck will open it.")
+        case .trollStore: return L10n.text("TrollStore is installed, so DroidDeck will ask it to enable JIT.")
+        case .jailbreak: return L10n.text("This device is jailbroken, so JIT comes from the jailbreak's Allow JIT in Apps setting.")
+        default: return L10n.text("StikDebug, TrollStore and a jailbreak were not found, so DroidDeck will use its built-in helper.")
         }
     }
 
@@ -201,19 +200,19 @@ final class JITCoordinator: ObservableObject {
             assertionFailure("Automatic must resolve to a concrete JIT method")
         case .stikDebug:
             if !JITBootstrap.requestAttach(), !JITBootstrap.requestTrollStoreAttach() {
-                error = "StikDebug is not installed. Install it, or set up Built-in StikJIT."
+                error = L10n.text("StikDebug is not installed. Install it, or set up Built-in StikJIT.")
                 showSetup = true
             }
         case .trollStore:
             if JITBootstrap.requestTrollStoreAttach() {
                 awaitTrollStore()
             } else {
-                error = "TrollStore could not be opened. Install DroidDeck through TrollStore, or choose another method."
+                error = L10n.text("TrollStore could not be opened. Install DroidDeck through TrollStore, or choose another method.")
                 showSetup = true
             }
         case .jailbreak:
             // Nothing to ask: a jailbreak marks an app as debugged as it opens, if it has been told to. Say what to turn on.
-            error = "Turn on Allow JIT in Apps in Dopamine's settings, then open DroidDeck again."
+            error = L10n.text("Turn on Allow JIT in Apps in Dopamine's settings, then open DroidDeck again.")
             showSetup = true
         case .builtIn:
             guard HuskBuiltInJIT.isAvailable, hasPairing else {
@@ -230,20 +229,19 @@ final class JITCoordinator: ObservableObject {
     /// it never comes -- TrollStore only answers enable-jit once its URL Scheme setting is on.
     private func awaitTrollStore() {
         busy = true
-        status = "Waiting for TrollStore to enable JIT…"
+        status = L10n.text("Waiting for TrollStore to enable JIT…")
         log("waiting for TrollStore's attach")
         _ = Self.waitForDebugger(timeout: 60) { [weak self] attached in
             guard let self else { return }
             busy = false
             if attached {
-                status = "JIT is on."
+                status = L10n.text("JIT is on.")
                 error = nil
                 attachGeneration += 1
                 log("TrollStore enabled JIT")
             } else {
                 status = nil
-                error = "TrollStore did not enable JIT. In TrollStore's Settings turn on URL Scheme, and make sure DroidDeck was "
-                      + "installed through TrollStore (or is signed with get-task-allow)."
+                error = L10n.text("TrollStore did not enable JIT. In TrollStore's Settings turn on URL Scheme, and make sure DroidDeck was installed through TrollStore (or is signed with get-task-allow).")
                 log("TrollStore did not enable JIT within a minute")
                 showSetup = true
             }
@@ -257,7 +255,7 @@ final class JITCoordinator: ObservableObject {
             refreshPairingStatus()
             method = .builtIn
             prepared = false
-            status = "Pairing file imported."
+            status = L10n.text("Pairing file imported.")
             error = nil
             log("pairing file imported")
         } catch {
@@ -271,7 +269,7 @@ final class JITCoordinator: ObservableObject {
         refreshPairingStatus()
         method = .builtIn
         prepared = false
-        status = "Paired on this device."
+        status = L10n.text("Paired on this device.")
         error = nil
     }
 
@@ -281,7 +279,7 @@ final class JITCoordinator: ObservableObject {
         busy = true
         error = nil
         connectionProblem = nil
-        status = "Checking LocalDevVPN and the Developer Disk Image…"
+        status = L10n.text("Checking LocalDevVPN and the Developer Disk Image…")
         HuskBuiltInJIT.send(.prepare(pairingData: pairing)) { [weak self] result in
             guard let self else { return }
             busy = false
@@ -289,7 +287,7 @@ final class JITCoordinator: ObservableObject {
             case .success(let response):
                 txmPresent = response.txmPresent
                 prepared = response.success
-                status = response.success ? response.message : nil
+                status = response.success ? localizedHelperMessage(response.message) : nil
                 error = response.success ? nil : helperFailure(response.message)
                 log("setup check \(response.success ? "passed" : "failed"): \(response.message)")
             case .failure(let failure):
@@ -303,14 +301,14 @@ final class JITCoordinator: ObservableObject {
     func enableBuiltIn() {
         guard let pairing = builtInPairing() else { return }
         guard let script = JITBootstrap.scriptBase64 else {
-            error = "DroidDeck's JIT script is missing from this installation. Reinstall DroidDeck."
+            error = L10n.text("DroidDeck's JIT script is missing from this installation. Reinstall DroidDeck.")
             return
         }
 
         busy = true
         error = nil
         connectionProblem = nil
-        status = "Starting DroidDeck's JIT helper…"
+        status = L10n.text("Starting DroidDeck's JIT helper…")
         log("enabling JIT with the built-in helper")
         var readiness: Timer?
         var finished = false
@@ -325,7 +323,7 @@ final class JITCoordinator: ObservableObject {
                 log("built-in JIT failed: \(failure)")
                 showSetup = true
             } else {
-                status = "JIT is on."
+                status = L10n.text("JIT is on.")
                 error = nil
                 attachGeneration += 1
                 log("built-in helper attached")
@@ -335,10 +333,9 @@ final class JITCoordinator: ObservableObject {
         HuskBuiltInJIT.send(
             .enable(targetPID: getpid(), pairingData: pairing, scriptBase64: script),
             started: { [weak self] in
-                self?.status = "Waiting for the helper to attach…"
+                self?.status = L10n.text("Waiting for the helper to attach…")
                 readiness = Self.waitForDebugger { attached in
-                    finish(attached ? nil : "The helper did not attach within 90 seconds. "
-                                          + "Check that LocalDevVPN is connected, then try again.")
+                    finish(attached ? nil : L10n.text("The helper did not attach within 90 seconds. Check that LocalDevVPN is connected, then try again."))
                 }
             },
             completion: { [weak self] result in
@@ -359,15 +356,15 @@ final class JITCoordinator: ObservableObject {
     func resetDDI() {
         busy = true
         error = nil
-        status = "Resetting the Developer Disk Image cache…"
+        status = L10n.text("Resetting the Developer Disk Image cache…")
         HuskBuiltInJIT.send(.resetDDI) { [weak self] result in
             guard let self else { return }
             busy = false
             prepared = false
             switch result {
             case .success(let response):
-                status = response.success ? response.message : nil
-                error = response.success ? nil : response.message
+                status = response.success ? localizedHelperMessage(response.message) : nil
+                error = response.success ? nil : localizedHelperMessage(response.message)
             case .failure(let failure):
                 status = nil
                 error = failure.localizedDescription
@@ -381,7 +378,7 @@ final class JITCoordinator: ObservableObject {
             return nil
         }
         guard let pairing = try? JITPairingFileStore.data() else {
-            error = "Pair this device or import its pairing file first."
+            error = L10n.text("Pair this device or import its pairing file first.")
             return nil
         }
         return pairing
@@ -391,7 +388,25 @@ final class JITCoordinator: ObservableObject {
     /// explanation (the helper's own message is already in the log).
     private func helperFailure(_ message: String) -> String {
         connectionProblem = ConnectionProblem(helperMessage: message)
-        return connectionProblem?.message ?? message
+        return connectionProblem?.message ?? localizedHelperMessage(message)
+    }
+
+    /// The extension's JSON is also useful in logs, so it keeps stable English
+    /// protocol text.  Translate only the fixed replies at the UI boundary;
+    /// vendor/runtime error text is deliberately returned unchanged.
+    private func localizedHelperMessage(_ message: String) -> String {
+        switch message {
+        case "Developer Disk Image cache reset.",
+             "LocalDevVPN is reachable and the Developer Disk Image is ready.",
+             "StikJIT returned an unknown preparation state.",
+             "DroidDeck detached cleanly from its built-in JIT helper.",
+             "The pairing file was not provided.",
+             "The target process or DroidDeck's JIT script was not provided.",
+             "DroidDeck's JIT helper received no request.":
+            return L10n.text(message)
+        default:
+            return message
+        }
     }
 
     /// Polls CS_DEBUGGED until it is set or `timeout` passes.
@@ -420,7 +435,9 @@ enum LocalDevVPN {
     static let connect = URL(string: "localdevvpn://enable?scheme=droiddeck")!
 
     static var isInstalled: Bool { UIApplication.shared.canOpenURL(URL(string: "localdevvpn://")!) }
-    static var actionTitle: String { isInstalled ? "Connect LocalDevVPN" : "Get LocalDevVPN" }
+    static var actionTitle: String {
+        isInstalled ? L10n.text("Connect LocalDevVPN") : L10n.text("Get LocalDevVPN")
+    }
 
     @MainActor static func open() {
         let installed = isInstalled

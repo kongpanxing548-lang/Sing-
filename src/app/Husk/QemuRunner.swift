@@ -1706,8 +1706,10 @@ final class QemuRunner: ObservableObject {
                             Task { @MainActor in
                                 let r = QemuRunner.shared
                                 if percent > r.bootProgress { r.bootProgress = percent }
-                                r.setupMessage =
-                                    "\(r.bootProgress)%  ·  \(milestone)  ·  \(stamp) elapsed"
+                                r.setupMessage = L10n.format(
+                                    "%d%% · %@ · %@ elapsed",
+                                    r.bootProgress, L10n.text(milestone), stamp
+                                )
                             }
                             break
                         }

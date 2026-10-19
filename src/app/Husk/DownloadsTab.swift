@@ -59,7 +59,9 @@ struct DownloadsTab: View {
                     Text("Live Activities are off for DroidDeck, so downloads don't show on the Lock Screen or in the Dynamic Island. Turn them on in Settings › DroidDeck › Live Activities.")
                                 .foregroundStyle(.orange)
                         }
-                        if let free = Downloads.freeSpace() { Text("\(Downloads.bytes(free)) free on this device.") }
+                        if let free = Downloads.freeSpace() {
+                            Text(L10n.format("%@ free on this device.", Downloads.bytes(free)))
+                        }
                     }
                 }
             }
@@ -85,7 +87,7 @@ struct DownloadsTab: View {
             }
             if guest.update.isSomething {
                 HStack {
-                    Label(guest.update.title, systemImage: "shippingbox.fill")
+                    Label(L10n.text(guest.update.title), systemImage: "shippingbox.fill")
                     Spacer()
                     Button("Download") { guest.applyUpdate() }.buttonStyle(.bordered)
                 }
@@ -104,17 +106,21 @@ private struct DownloadRow: View {
     private var fraction: Double { job.total > 0 ? min(1, Double(job.received) / Double(job.total)) : 0 }
 
     private var status: String {
-        if job.complete { return job.kind == .apk ? "Added to the library" : job.kind == .folder ? "In Shared Storage" : "In Shared Storage" }
-        if job.paused { return "Paused · \(Downloads.bytes(job.received)) of \(Downloads.bytes(job.total))" }
-        if let err = job.files.first(where: { $0.error != nil })?.error { return "Stopped: \(err)" }
-        var s = "\(Downloads.bytes(job.received)) of \(Downloads.bytes(job.total))"
-        if job.files.count > 1 { s += " · \(job.filesDone)/\(job.files.count) files" }
+        if job.complete { return L10n.text(job.kind == .apk ? "Added to the library" : "In Shared Storage") }
+        if job.paused {
+            return L10n.format("Paused · %@ of %@", Downloads.bytes(job.received), Downloads.bytes(job.total))
+        }
+        if let err = job.files.first(where: { $0.error != nil })?.error {
+            return L10n.format("Stopped: %@", L10n.text(err))
+        }
+        var s = L10n.format("%@ of %@", Downloads.bytes(job.received), Downloads.bytes(job.total))
+        if job.files.count > 1 { s += L10n.format(" · %d/%d files", job.filesDone, job.files.count) }
         if speed > 1 {
             s += " · \(Downloads.bytes(Int64(speed)))/s"
             let left = Double(job.total - job.received) / speed
             if left.isFinite, left > 0 {
                 let f = DateComponentsFormatter(); f.allowedUnits = left > 3600 ? [.hour, .minute] : [.minute, .second]; f.unitsStyle = .abbreviated
-                if let t = f.string(from: left) { s += " · \(t) left" }
+                if let t = f.string(from: left) { s += L10n.format(" · %@ left", t) }
             }
         }
         return s
@@ -163,7 +169,7 @@ private struct AddDownloadSheet: View {
                         .textInputAutocapitalization(.never)
                         .autocorrectionDisabled()
                 } footer: {
-                    if let problem = downloads.problem { Text(problem).foregroundStyle(.orange) }
+                    if let problem = downloads.problem { Text(L10n.text(problem)).foregroundStyle(.orange) }
                 }
                 Section {
                     Text("An APK is added to your library when it finishes. Anything else goes into the Shared Storage folder, which games see as their phone storage.")

@@ -46,10 +46,10 @@ final class CompatibilityStore: ObservableObject {
         case works, opens, broken, protected
         var label: String {
             switch self {
-            case .works: return "Works"
-            case .opens: return "Opens"
-            case .broken: return "Doesn\u{2019}t Work"
-            case .protected: return "Protected"
+            case .works: return L10n.text("Works")
+            case .opens: return L10n.text("Opens")
+            case .broken: return L10n.text("Doesn’t Work")
+            case .protected: return L10n.text("Protected")
             }
         }
         var symbol: String {
@@ -70,10 +70,10 @@ final class CompatibilityStore: ObservableObject {
         }
         var explanation: String {
             switch self {
-            case .works: return "Runs and plays or works normally."
-            case .opens: return "Starts and shows its screens, but has not been fully tested or has problems."
-            case .broken: return "Crashes or closes while starting."
-            case .protected: return "Refuses to run outside a real Android phone (anti-cheat, anti-tamper or DRM). DroidDeck does not get around that."
+            case .works: return L10n.text("Runs and plays or works normally.")
+            case .opens: return L10n.text("Starts and shows its screens, but has not been fully tested or has problems.")
+            case .broken: return L10n.text("Crashes or closes while starting.")
+            case .protected: return L10n.text("Refuses to run outside a real Android phone (anti-cheat, anti-tamper or DRM). DroidDeck does not get around that.")
             }
         }
     }
@@ -237,14 +237,14 @@ struct CompatibilitySection: View {
                 HStack(spacing: 12) {
                     Image(systemName: status.symbol).font(.title3).foregroundStyle(status.color)
                     VStack(alignment: .leading, spacing: 2) {
-                        Text(status.label).font(.body.weight(.semibold))
-                        Text(entry.official?.note.isEmpty == false ? entry.official!.note : status.explanation)
+                        Text(L10n.text(status.label)).font(.body.weight(.semibold))
+                        Text(entry.official?.note.isEmpty == false ? entry.official!.note : L10n.text(status.explanation))
                             .font(.footnote).foregroundStyle(.secondary).fixedSize(horizontal: false, vertical: true)
                     }
                 }
                 .padding(.vertical, 2)
                 if entry.community.reports > 0 {
-                    LabeledContent("Player Reports", value: "\(entry.community.reports)")
+                    LabeledContent(L10n.text("Player Reports"), value: "\(entry.community.reports)")
                 }
             } else {
                 Text("Not on the list yet. Be the first to say how it runs.")
@@ -279,7 +279,8 @@ struct CompatReportSheet: View {
                     ForEach([CompatibilityStore.Status.works, .opens, .broken], id: \.self) { s in
                         Button { status = s } label: {
                             HStack {
-                                Label(s == .opens ? "Opens, but Has Problems" : s.label, systemImage: s.symbol)
+                                Label(s == .opens ? L10n.text("Opens, but Has Problems") : s.label,
+                                      systemImage: s.symbol)
                                     .foregroundStyle(.primary)
                                 Spacer()
                                 if status == s { Image(systemName: "checkmark").foregroundStyle(.tint) }
@@ -312,7 +313,7 @@ struct CompatReportSheet: View {
                     Text("Your DroidDeck log helps the developer see what went wrong. Only moderators can read it.")
                 }
                 if let error {
-                    Section { Text(error).foregroundStyle(.red) }
+                    Section { Text(L10n.text(error)).foregroundStyle(.red) }
                 }
             }
             .navigationTitle(sent ? "Thanks!" : "Report")
@@ -364,7 +365,7 @@ struct CompatReportSheet: View {
 struct CompatBadge: View {
     let status: CompatibilityStore.Status
     var body: some View {
-        Label(status.label, systemImage: status.symbol)
+        Label(L10n.text(status.label), systemImage: status.symbol)
             .labelStyle(.titleAndIcon)
             .font(.caption.weight(.medium))
             .foregroundStyle(status.color)

@@ -1,0 +1,5 @@
+/* Main application metadata and permission prompts */
+"CFBundleDisplayName" = "DroidDeck";
+"CFBundleName" = "DroidDeck";
+"CFBundleTypeName" = "Android 应用";
+"NSLocalNetworkUsageDescription" = "DroidDeck 使用本地网络与这台 iPhone 配对并启用 JIT，无需电脑。";

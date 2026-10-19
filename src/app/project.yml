@@ -6,6 +6,9 @@ options:
     # and Dopamine iOS 15 devices (#92). Compat15.swift stands in for the
     # iOS 16 SwiftUI the screens use.
     iOS: "15.5"
+  # English source strings remain the development language.  zh-Hans.lproj
+  # supplies the Simplified Chinese UI when selected in iOS Settings.
+  developmentLanguage: en
   createIntermediateGroups: true
 
 settings:
@@ -145,7 +148,7 @@ targets:
         embed: true
         codeSign: true
         link: false
-      # The optional PS4 layer is deliberately not embedded in DroidDeck 0.1.0:
+      # The optional PS4 layer is deliberately not embedded in DroidDeck 0.1.1:
       # its upstream FEXCore branch is not published, so a clean GPL build cannot
       # reproduce libhuskps4.dylib. PS4Store already treats an absent module as
       # unavailable; Android translation and full-system emulation are unaffected.
@@ -250,6 +253,10 @@ targets:
     deploymentTarget: "26.0"
     sources:
       - path: HuskJITHelper
+        excludes:
+          - "Resources/**"
+      - path: HuskJITHelper/Resources
+        buildPhase: resources
     settings:
       base:
         PRODUCT_BUNDLE_IDENTIFIER: $(HUSK_BUNDLE_IDENTIFIER).JITHelper
@@ -276,6 +283,10 @@ targets:
     deploymentTarget: "16.1"
     sources:
       - path: HuskDownloadsWidget
+        excludes:
+          - "Resources/**"
+      - path: HuskDownloadsWidget/Resources
+        buildPhase: resources
       - path: Shared
     settings:
       base:

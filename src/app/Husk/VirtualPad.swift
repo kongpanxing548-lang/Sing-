@@ -78,7 +78,11 @@ struct PadLayout: Codable, Equatable {
 
     /// The names the editor shows.
     static func name(_ id: String) -> String {
-        ["lstick": "Left stick", "rstick": "Right stick", "dpad": "D-pad", "back": "Back", "start": "Start"][id] ?? id.uppercased()
+        ["lstick": L10n.text("Left stick"),
+         "rstick": L10n.text("Right stick"),
+         "dpad": L10n.text("D-pad"),
+         "back": L10n.text("Back"),
+         "start": L10n.text("Start")][id] ?? id.uppercased()
     }
 }
 

@@ -19,11 +19,11 @@ private struct PageHero<Action: View>: View {
                     ItemIcon(item: item, size: 84)
                         .shadow(color: .black.opacity(0.35), radius: 12, y: 5)
                     VStack(alignment: .leading, spacing: 4) {
-                        Text(item.title)
+                        Text(verbatim: item.title)
                             .font(.system(.title2, design: .rounded).weight(.heavy))
                             .lineLimit(2)
                             .minimumScaleFactor(0.8)
-                        Text(subtitle)
+                        Text(verbatim: subtitle)
                             .font(.subheadline)
                             .foregroundStyle(.white.opacity(0.75))
                             .lineLimit(2)
@@ -51,7 +51,7 @@ private struct BigButton: View {
 
     var body: some View {
         Button(action: action) {
-            Label(title, systemImage: systemImage)
+            Label(L10n.text(title), systemImage: systemImage)
                 .font(.system(.headline, design: .rounded))
                 .frame(maxWidth: .infinity)
                 .frame(height: 50)
@@ -113,14 +113,14 @@ struct GamePage: View {
     private var blockedBy: String? {
         guard let loaded = husk_native_loaded_apk().map({ String(cString: $0) }), let apk = app.apks.first, loaded != apk
         else { return nil }
-        return store.apps.first { $0.apks.first == loaded }?.label ?? "Another game"
+        return store.apps.first { $0.apks.first == loaded }?.label ?? L10n.text("Another game")
     }
 
     private var preflight: AppDiagnosis? { AppDiagnosis.preflight(app) }
 
     private var subtitle: String {
         if let used = LibraryItem.game(app).usedText { return used }
-        return runs ? "Ready to play" : "May not run on this iPhone"
+        return runs ? L10n.text("Ready to play") : L10n.text("May not run on this iPhone")
     }
 
     var body: some View {
@@ -129,9 +129,7 @@ struct GamePage: View {
                 PageHero(item: .game(app), subtitle: subtitle) { primary }
             } footer: {
                 if isGeodeLauncher {
-                    Text("This is Geode's Android launcher. On DroidDeck, Geode runs inside Geometry Dash instead: turn it on here "
-                       + "(or in Geometry Dash's settings, under Mods), then start Geometry Dash and use Geode's button on its "
-                       + "main menu to get mods. This APK supplies a library Geode needs, so keep it.")
+                    Text(L10n.text("This is Geode's Android launcher. On DroidDeck, Geode runs inside Geometry Dash instead: turn it on here (or in Geometry Dash's settings, under Mods), then start Geometry Dash and use Geode's button on its main menu to get mods. This APK supplies a library Geode needs, so keep it."))
                 } else if let other = blockedBy {
                     Text("\(other) is still loaded, and a game cannot be unloaded once it has started. Close DroidDeck with the "
                        + "button above, then open it again to play \(app.label).")
@@ -185,7 +183,7 @@ struct GamePage: View {
                 } header: {
                     Text("Saves")
                 } footer: {
-                    if let savesMessage { Text(savesMessage) }
+                    if let savesMessage { Text(verbatim: L10n.text(savesMessage)) }
                     else if loadedNow { Text("\(app.label) has been started in this run of DroidDeck. Close DroidDeck and open it again to restore saves.") }
                     else { Text("A backup is a .zip of everything \(app.label) has saved in DroidDeck, to keep in Files or move to another device.") }
                 }
@@ -317,7 +315,10 @@ struct GamePage: View {
             await MainActor.run {
                 savesBusy = false
                 switch result {
-                case .success(let n): savesMessage = "Restored \(n) file\(n == 1 ? "" : "s") from \(url.lastPathComponent)."
+                case .success(let n):
+                    savesMessage = n == 1
+                        ? L10n.format("Restored %d file from %@.", n, url.lastPathComponent)
+                        : L10n.format("Restored %d files from %@.", n, url.lastPathComponent)
                 case .failure(let e): savesMessage = e.localizedDescription
                 }
             }
@@ -347,7 +348,10 @@ struct GamePage: View {
             BigButton(title: "Close DroidDeck to Play", systemImage: "xmark.circle", prominent: false) { confirmQuit = true }
         } else if !Launcher.jitOn {
             if jit.busy {
-                HStack(spacing: 10) { ProgressView(); Text(jit.status ?? "Turning on JIT…").foregroundStyle(.secondary) }
+                HStack(spacing: 10) {
+                    ProgressView()
+                    Text(verbatim: L10n.text(jit.status ?? "Turning on JIT…")).foregroundStyle(.secondary)
+                }
                     .frame(maxWidth: .infinity).frame(height: 50)
             } else {
                 BigButton(title: "Turn On JIT to Play", systemImage: "bolt.fill", action: turnOnJIT)
@@ -371,15 +375,16 @@ struct PS4GamePage: View {
 
     /// Another game already loaded in this run of Husk (an Android game's engine, or another PS4 game).
     private var blockedBy: String? {
-        if Router.shared.androidStarted { return "Android" }   // QEMU holds the JIT region the PS4 layer needs
+        if Router.shared.androidStarted { return L10n.text("Android") }   // QEMU holds the JIT region the PS4 layer needs
         guard let loaded = husk_native_loaded_apk().map({ String(cString: $0) }), loaded != game.libraryID else { return nil }
-        if loaded.hasPrefix("ps4:") { return PS4Store.shared.game(String(loaded.dropFirst(4)))?.title ?? "Another game" }
-        return TranslationLayerStore.shared.apps.first { $0.apks.first == loaded }?.label ?? "Another game"
+        if loaded.hasPrefix("ps4:") { return PS4Store.shared.game(String(loaded.dropFirst(4)))?.title ?? L10n.text("Another game") }
+        return TranslationLayerStore.shared.apps.first { $0.apks.first == loaded }?.label ?? L10n.text("Another game")
     }
 
     private var subtitle: String {
         if let used = item.usedText { return used }
-        return "PlayStation 4" + (game.version.map { " · v\($0)" } ?? "")
+        guard let version = game.version else { return L10n.text("PlayStation 4") }
+        return L10n.format("PlayStation 4 · v%@", version)
     }
 
     var body: some View {
@@ -432,7 +437,10 @@ struct PS4GamePage: View {
             BigButton(title: "Close DroidDeck to Play", systemImage: "xmark.circle", prominent: false) { confirmQuit = true }
         } else if !Launcher.jitOn {
             if jit.busy {
-                HStack(spacing: 10) { ProgressView(); Text(jit.status ?? "Turning on JIT…").foregroundStyle(.secondary) }
+                HStack(spacing: 10) {
+                    ProgressView()
+                    Text(verbatim: L10n.text(jit.status ?? "Turning on JIT…")).foregroundStyle(.secondary)
+                }
                     .frame(maxWidth: .infinity).frame(height: 50)
             } else {
                 BigButton(title: "Turn On JIT to Play", systemImage: "bolt.fill", action: turnOnJIT)
@@ -464,7 +472,7 @@ struct AndroidAppPage: View {
     var body: some View {
         List {
             Section {
-                PageHero(item: item, subtitle: item.usedText ?? "Runs inside Android") { primary }
+                PageHero(item: item, subtitle: item.usedText ?? L10n.text("Runs inside Android")) { primary }
             } footer: {
                 if router.pendingAndroidLaunch == app.name, !host.isReady {
                     Text("\(live.label) opens by itself once Android has started.")
@@ -583,7 +591,7 @@ struct AndroidSystemPage: View {
                     }
                 }
             } footer: {
-                if let note { Text(note) }
+                if let note { Text(verbatim: note) }
             }
             .heroRow()
 
@@ -607,8 +615,7 @@ struct AndroidSystemPage: View {
             }
 
             Section {
-                Text("Android runs fully emulated, so it is slower than games on the translation layer. Use it for apps "
-                   + "DroidDeck cannot run directly, like Termux or app stores.")
+                Text(L10n.text("Android runs fully emulated, so it is slower than games on the translation layer. Use it for apps DroidDeck cannot run directly, like Termux or app stores."))
                     .font(.footnote)
                     .foregroundStyle(.secondary)
             }
@@ -621,16 +628,19 @@ struct AndroidSystemPage: View {
 
     private var status: String {
         if running {
-            if host.isReady { return "Running" }
-            return runner.setupMessage ?? (runner.bootProgress > 0 ? "Starting · \(runner.bootProgress)%" : "Starting…")
+            if host.isReady { return L10n.text("Running") }
+            if let setupMessage = runner.setupMessage { return L10n.text(setupMessage) }
+            return runner.bootProgress > 0
+                ? L10n.format("Starting · %d%%", runner.bootProgress)
+                : L10n.text("Starting…")
         }
         switch guest.state {
-        case .missing: return "Not downloaded yet"
+        case .missing: return L10n.text("Not downloaded yet")
         case .downloading(_, let received, let total):
-            return "Downloading · \(bytes(received)) of \(total > 0 ? bytes(total) : "…")"
-        case .installing: return "Installing…"
-        case .failed: return "Something went wrong"
-        case .ready: return Launcher.jitOn ? "Ready to start" : "Needs JIT to start"
+            return L10n.format("Downloading · %@ of %@", bytes(received), total > 0 ? bytes(total) : "…")
+        case .installing: return L10n.text("Installing…")
+        case .failed: return L10n.text("Something went wrong")
+        case .ready: return L10n.text(Launcher.jitOn ? "Ready to start" : "Needs JIT to start")
         }
     }
 
@@ -643,8 +653,8 @@ struct AndroidSystemPage: View {
     private var note: String? {
         guard !running else { return nil }
         switch guest.state {
-        case .missing: return "DroidDeck's Android runtime is about 760 MB. Android itself follows once it is installed."
-        case .failed(let message): return message
+        case .missing: return L10n.text("DroidDeck's Android runtime is about 760 MB. Android itself follows once it is installed.")
+        case .failed(let message): return L10n.text(message)
         default: return nil
         }
     }
@@ -673,7 +683,10 @@ struct AndroidSystemPage: View {
                 BigButton(title: "Try Again", systemImage: "arrow.clockwise") { JITBootstrap.prewarm(); guest.download() }
             case .ready:
                 if jit.busy {
-                    HStack(spacing: 10) { ProgressView(); Text(jit.status ?? "Turning on JIT…").foregroundStyle(.secondary) }
+                    HStack(spacing: 10) {
+                        ProgressView()
+                        Text(verbatim: L10n.text(jit.status ?? "Turning on JIT…")).foregroundStyle(.secondary)
+                    }
                         .frame(maxWidth: .infinity).frame(height: 50)
                 } else {
                     BigButton(title: Launcher.jitOn ? "Start Android" : "Turn On JIT", systemImage: Launcher.jitOn ? "power" : "bolt.fill") {

@@ -2,7 +2,7 @@
 
 <img src="src/app/Husk/Resources/droiddeck-icon.png" alt="DroidDeck 图标" width="180">
 
-DroidDeck 0.1.0 是基于 [Husk 3.0](https://github.com/Leviidev/Husk) 的
+DroidDeck 0.1.1 是基于 [Husk 3.0](https://github.com/Leviidev/Husk) 的
 GPL-2.0-or-later 开源衍生版，面向 iPhone 上的 Android APK 导入、原生翻译层和
 QEMU 完整 Android 模式。它使用独立的名称、图标、Bundle ID
 `com.droiddeck.app` 与 URL Scheme `droiddeck://`。
@@ -14,7 +14,7 @@ QEMU 完整 Android 模式。它使用独立的名称、图标、Bundle ID
 Windows 无法运行 Xcode。推送到名为 `DroidDeck` 的 GitHub 分支会自动启动
 macOS 构建；工作流位于默认分支时也可在 **Actions → Build DroidDeck IPA →
 Run workflow** 手动启动。成功的
-`DroidDeck-0.1.0` artifact 包含：
+`DroidDeck-0.1.1` artifact 包含：
 
 - `DroidDeck.ipa`：供 SideStore、AltStore 等重新签名；
 - `DroidDeck.tipa`：供 TrollStore；

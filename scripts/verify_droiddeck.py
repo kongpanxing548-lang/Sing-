@@ -13,9 +13,10 @@ from pathlib import Path
 
 
 ROOT = Path(__file__).resolve().parents[1]
-VERSION = "0.1.0"
-BUILD = "1"
+VERSION = "0.1.1"
+BUILD = "2"
 BUNDLE_ID = "com.droiddeck.app"
+ARTIFACT_NAME = f"DroidDeck-{VERSION}"
 
 
 def require(condition: bool, message: str) -> None:
@@ -45,6 +46,62 @@ def sha256(relative: str) -> str:
     return hashlib.sha256((ROOT / relative).read_bytes()).hexdigest()
 
 
+def load_strings(relative: str) -> dict[str, str]:
+    """Load a simple UTF-8 .strings resource and reject malformed entries.
+
+    These files are intentionally plain key/value resources rather than an
+    Xcode-only asset: checking them here catches a missing Chinese UI before a
+    several-hour macOS build begins.
+    """
+    path = ROOT / relative
+    require(path.is_file(), f"missing localization resource: {relative}")
+    try:
+        source = path.read_text(encoding="utf-8-sig")
+    except UnicodeDecodeError as error:
+        raise SystemExit(f"FAIL: {relative} must be UTF-8: {error}") from error
+
+    entry = re.compile(r'^\s*"((?:\\.|[^"\\])*)"\s*=\s*"((?:\\.|[^"\\])*)"\s*;\s*$')
+    pairs: list[tuple[str, str]] = []
+    in_comment = False
+    for line_number, line in enumerate(source.splitlines(), 1):
+        stripped = line.strip()
+        if in_comment:
+            if "*/" in stripped:
+                in_comment = False
+            continue
+        if not stripped or stripped.startswith("//"):
+            continue
+        if stripped.startswith("/*"):
+            in_comment = "*/" not in stripped
+            continue
+        match = entry.fullmatch(line)
+        require(match is not None, f"{relative}:{line_number} malformed .strings entry")
+        pairs.append((match.group(1), match.group(2)))
+
+    require(pairs, f"{relative} must contain .strings key/value pairs")
+    keys = [key for key, _ in pairs]
+    require(len(keys) == len(set(keys)), f"{relative} contains duplicate keys")
+
+    # A translated format string must accept exactly the arguments supplied by
+    # its English source key. A mismatch otherwise crashes String(format:) at
+    # runtime or prints the wrong value in Chinese.
+    placeholder = re.compile(
+        r'%(?!%)(?:\d+\$)?(?:[-+0 #]*\d*(?:\.\d+)?)?(?:hh|h|ll|l|q|z|t|j)?[@diuoxXfFeEgGaAcCsSp]'
+    )
+    for key, value in pairs:
+        require(
+            placeholder.findall(key) == placeholder.findall(value),
+            f"{relative} format placeholders for {key!r}",
+        )
+    return dict(pairs)
+
+
+def require_strings(relative: str, expected: dict[str, str]) -> None:
+    strings = load_strings(relative)
+    for key, value in expected.items():
+        require(strings.get(key) == value, f"{relative} translation for {key!r}")
+
+
 main = load_plist("src/app/Husk/Info.plist")
 helper = load_plist("src/app/HuskJITHelper/Info.plist")
 widget = load_plist("src/app/HuskDownloadsWidget/Info.plist")
@@ -65,6 +122,15 @@ for label, plist in (("JIT helper", helper), ("downloads widget", widget)):
 project = (ROOT / "src/app/project.yml").read_text(encoding="utf-8")
 pbxproj = (ROOT / "src/app/Husk.xcodeproj/project.pbxproj").read_text(encoding="utf-8")
 require(f"HUSK_BUNDLE_IDENTIFIER: {BUNDLE_ID}" in project, "project.yml bundle ID")
+require("developmentLanguage: en" in project, "project.yml development language")
+require(
+    'path: HuskJITHelper/Resources\n        buildPhase: resources' in project,
+    "JIT helper localization resources must be bundled",
+)
+require(
+    'path: HuskDownloadsWidget/Resources\n        buildPhase: resources' in project,
+    "downloads widget localization resources must be bundled",
+)
 require(f"HUSK_BUNDLE_IDENTIFIER = {BUNDLE_ID};" in pbxproj, "checked-in project bundle ID")
 require("ASSETCATALOG_COMPILER_APPICON_NAME: DroidDeckIcon" in project, "XcodeGen icon")
 require("ASSETCATALOG_COMPILER_APPICON_NAME = DroidDeckIcon;" in pbxproj, "Xcode icon")
@@ -159,6 +225,64 @@ require("droidDeckSourceURL" in settings, "About page corresponding source link"
 workflow = (ROOT / ".github/workflows/build-ipa.yml").read_text(encoding="utf-8")
 require("DROIDDECK_SOURCE_URL:" in workflow, "workflow source URL")
 require("- DroidDeck" in workflow, "DroidDeck branch push build trigger")
+require(f"name: {ARTIFACT_NAME}" in workflow, "workflow artifact version")
+require(f"DroidDeck {VERSION}" in (ROOT / "README.md").read_text(encoding="utf-8"), "README version")
+require(f"# DroidDeck {VERSION}" in (ROOT / "DROIDDECK.md").read_text(encoding="utf-8"), "DroidDeck guide version")
+whats_new = (ROOT / "src/app/Husk/WhatsNew.swift").read_text(encoding="utf-8")
+require(f'static let version = "{VERSION}"' in whats_new, "What’s New version")
+
+require_strings(
+    "src/app/Husk/Resources/zh-Hans.lproj/Localizable.strings",
+    {
+        "Home": "首页",
+        "Library": "应用库",
+        "Store": "商店",
+        "Settings": "设置",
+        "JIT is off": "JIT 未开启",
+        "Turn On": "开启",
+        "Add your first game": "添加你的第一个游戏",
+    },
+)
+require_strings(
+    "src/app/Husk/Resources/zh-Hans.lproj/InfoPlist.strings",
+    {
+        "CFBundleDisplayName": "DroidDeck",
+        "CFBundleTypeName": "Android 应用",
+        "NSLocalNetworkUsageDescription": "DroidDeck 使用本地网络与这台 iPhone 配对并启用 JIT，无需电脑。",
+    },
+)
+require_strings(
+    "src/app/HuskJITHelper/Resources/zh-Hans.lproj/InfoPlist.strings",
+    {"CFBundleDisplayName": "DroidDeck JIT 助手"},
+)
+require_strings(
+    "src/app/HuskDownloadsWidget/Resources/zh-Hans.lproj/InfoPlist.strings",
+    {"CFBundleDisplayName": "DroidDeck 下载"},
+)
+
+# Every explicit L10n key and every fixed SwiftUI title must exist in the main
+# table. This catches a new English-only screen before the IPA is built.
+main_strings = load_strings("src/app/Husk/Resources/zh-Hans.lproj/Localizable.strings")
+l10n_call = re.compile(r'L10n\.(?:text|format)\("((?:\\.|[^"\\])*)"')
+ui_call = re.compile(
+    r'(?:Text|Button|Label|Section|navigationTitle|ProgressView|Toggle|Picker|accessibilityLabel|confirmationDialog|alert)'
+    r'\(\s*"((?:\\.|[^"\\])*)"'
+)
+for swift_path in (ROOT / "src/app/Husk").rglob("*.swift"):
+    swift = swift_path.read_text(encoding="utf-8")
+    for key in l10n_call.findall(swift):
+        require(key in main_strings, f"missing zh-Hans L10n key {key!r} ({swift_path.name})")
+    for key in ui_call.findall(swift):
+        if key and r"\(" not in key:
+            require(key in main_strings, f"missing zh-Hans UI key {key!r} ({swift_path.name})")
+
+widget_strings = load_strings(
+    "src/app/HuskDownloadsWidget/Resources/zh-Hans.lproj/Localizable.strings"
+)
+for swift_path in (ROOT / "src/app/HuskDownloadsWidget").rglob("*.swift"):
+    swift = swift_path.read_text(encoding="utf-8")
+    for key in l10n_call.findall(swift):
+        require(key in widget_strings, f"missing widget zh-Hans key {key!r}")
 qemu_runner = (ROOT / "src/app/Husk/QemuRunner.swift").read_text(encoding="utf-8")
 require("phase0Alpine" not in qemu_runner, "GPL Phase 0 guest must not be bundled")
 require("virtio-net-pci,netdev=net0,romfile=" in qemu_runner, "QEMU network option ROM must be disabled")

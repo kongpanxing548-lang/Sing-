@@ -189,10 +189,10 @@ struct OnboardingView: View {
                 .font(.system(size: 50, weight: .regular))
                 .foregroundStyle(Theme.accent)
                 .frame(height: 60)
-            Text(title)
+            Text(L10n.text(title))
                 .font(.system(size: 32, weight: .bold))
                 .multilineTextAlignment(.center)
-            Text(subtitle)
+            Text(L10n.text(subtitle))
                 .font(.system(size: 16))
                 .foregroundStyle(.secondary)
                 .multilineTextAlignment(.center)
@@ -289,8 +289,7 @@ struct OnboardingView: View {
                 .huskCard()
 
                 choice(icon: "bolt.fill", title: "Start Android When DroidDeck Opens",
-                       detail: "Off by default. The full Android emulator is experimental: starting it on launch can cause unwanted "
-                             + "bugs, freezes and crashes, and slows every launch. Games and apps don't need it.",
+                       detail: "Off by default. The full Android emulator is experimental: starting it on launch can cause unwanted bugs, freezes and crashes, and slows every launch. Games and apps don't need it.",
                        isOn: $autoStart, caution: true)
                 choice(icon: "rectangle.landscape.rotate", title: "Landscape Android Screen",
                        detail: "For the Android emulator: games fill a landscape screen, portrait apps get letterboxed.",
@@ -314,8 +313,8 @@ struct OnboardingView: View {
                 .foregroundStyle(caution ? Color.orange : Theme.accent)
                 .frame(width: 30, height: 30)
             VStack(alignment: .leading, spacing: 3) {
-                Text(title).font(.body.weight(.medium))
-                Text(detail).font(.caption).foregroundStyle(caution ? Color.orange : Color.secondary)
+                Text(L10n.text(title)).font(.body.weight(.medium))
+                Text(L10n.text(detail)).font(.caption).foregroundStyle(caution ? Color.orange : Color.secondary)
                     .fixedSize(horizontal: false, vertical: true)
             }
             Spacer(minLength: 8)
@@ -327,12 +326,12 @@ struct OnboardingView: View {
 
     /// What the JIT page says is already in place, if anything.
     private var jitState: String? {
-        if JITBootstrap.ready { return "JIT is on." }
-        if jit.method == .stikDebug { return "DroidDeck will use StikDebug." }
-        if jit.method == .trollStore { return "DroidDeck will use TrollStore." }
+        if JITBootstrap.ready { return L10n.text("JIT is on.") }
+        if jit.method == .stikDebug { return L10n.text("DroidDeck will use StikDebug.") }
+        if jit.method == .trollStore { return L10n.text("DroidDeck will use TrollStore.") }
         switch jit.pairingSource {
-        case .onDevice: return "Paired on this device."
-        case .imported: return "Pairing file imported."
+        case .onDevice: return L10n.text("Paired on this device.")
+        case .imported: return L10n.text("Pairing file imported.")
         case nil: return nil
         }
     }
@@ -346,7 +345,7 @@ struct OnboardingView: View {
                 Label(state, systemImage: "checkmark.circle.fill")
                     .font(.callout.weight(.medium)).foregroundStyle(.green)
             }
-            Button(jitState == nil ? "Set Up StikJIT Now" : "Change JIT Setup") { settingUpJIT = true }
+            Button(L10n.text(jitState == nil ? "Set Up StikJIT Now" : "Change JIT Setup")) { settingUpJIT = true }
                 .font(.body.weight(.semibold))
                 .foregroundStyle(Theme.accent)
             Text("You can skip this: DroidDeck asks again when a game needs it, and it is in Settings › JIT & Sideload.")
@@ -407,8 +406,8 @@ struct OnboardingView: View {
                 .foregroundStyle(Theme.accent)
                 .frame(width: 96, height: 96)
                 .background(Theme.surface, in: RoundedRectangle(cornerRadius: 26, style: .continuous))
-            Text(card.title).font(.system(size: 32, weight: .bold))
-            Text(card.text)
+            Text(L10n.text(card.title)).font(.system(size: 32, weight: .bold))
+            Text(L10n.text(card.text))
                 .font(.system(size: 17))
                 .foregroundStyle(.secondary)
                 .multilineTextAlignment(.center)

@@ -66,7 +66,7 @@ struct BootScreen: View {
 
                 // The line that talks. Keyed on the index so each one fades
                 // into the next rather than snapping.
-                Text(Self.phrases[phrase % Self.phrases.count])
+                Text(L10n.text(Self.phrases[phrase % Self.phrases.count]))
                     .font(.system(size: 15))
                     .foregroundStyle(Theme.textDim)
                     .multilineTextAlignment(.center)
@@ -84,7 +84,7 @@ struct BootScreen: View {
 
                 // What Android itself is doing, small, under everything else.
                 // The phrases pass the time; this is the part that is true.
-                Text(runner.setupMessage ?? host.status)
+                Text(L10n.text(runner.setupMessage ?? host.status))
                     .font(.system(size: 11))
                     .foregroundStyle(Theme.textDim.opacity(0.75))
                     .lineLimit(1)
@@ -123,7 +123,7 @@ struct BootScreen: View {
             .frame(height: 5)
 
             HStack {
-                Text(shown > 0 ? "\(shown)%" : "starting")
+                Text(shown > 0 ? "\(shown)%" : L10n.text("starting"))
                     .font(.technical(12, weight: .medium))
                     .foregroundStyle(Theme.accent)
                 Spacer()
@@ -164,8 +164,8 @@ struct BootScreen: View {
         // for ten minutes, so show elapsed time instead.
         if done >= 58, !QemuRunner.didRestore {
             let mins = Int(now.timeIntervalSince(QemuRunner.bootStarted) / 60)
-            return mins < 1 ? "first boot takes 5–15 min"
-                            : "\(mins) min · first boot takes 5–15 min"
+            return mins < 1 ? L10n.text("first boot takes 5–15 min")
+                            : L10n.format("%d min · first boot takes 5–15 min", mins)
         }
         guard done >= 8, done <= 92 else { return nil }
         let elapsed = now.timeIntervalSince(began)
@@ -175,8 +175,8 @@ struct BootScreen: View {
         guard left > 2, left < 15 * 60 else { return nil }
         if left < 90 {
             let rounded = Int((left / 5).rounded()) * 5
-            return "about \(max(rounded, 5)) seconds remaining"
+            return L10n.format("about %d seconds remaining", max(rounded, 5))
         }
-        return "about \(Int((left / 60).rounded())) minutes remaining"
+        return L10n.format("about %d minutes remaining", Int((left / 60).rounded()))
     }
 }
