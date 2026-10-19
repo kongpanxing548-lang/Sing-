@@ -1,0 +1,16 @@
+* text=auto
+.gitattributes text eol=lf
+.gitignore text eol=lf
+
+# Build and generator entry points must stay executable on macOS runners even
+# when the repository is prepared from Windows.
+*.sh text eol=lf
+*.py text eol=lf
+*.yml text eol=lf
+*.yaml text eol=lf
+*.swift text eol=lf
+*.plist text eol=lf
+*.pbxproj text eol=lf
+*.json text eol=lf
+*.md text eol=lf
+*.txt text eol=lf

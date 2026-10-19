@@ -1,0 +1,120 @@
+name: Build DroidDeck IPA
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - DroidDeck
+
+permissions:
+  contents: read
+
+concurrency:
+  group: droiddeck-ipa-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  build:
+    name: macOS IPA build
+    runs-on: macos-26
+    timeout-minutes: 360
+    env:
+      DROIDDECK_SOURCE_URL: ${{ github.server_url }}/${{ github.repository }}/tree/${{ github.sha }}
+
+    steps:
+      - name: Check out source
+        uses: actions/checkout@v4
+
+      - name: Validate derivative metadata
+        run: python3 scripts/verify_droiddeck.py
+
+      - name: Select newest Xcode
+        run: |
+          XC="$(python3 - <<'PY'
+          from pathlib import Path
+          import plistlib
+
+          candidates = []
+          for app in Path("/Applications").glob("Xcode*.app"):
+              info = app / "Contents" / "Info.plist"
+              if not info.is_file():
+                  continue
+              with info.open("rb") as handle:
+                  version = plistlib.load(handle).get("CFBundleShortVersionString", "0")
+              parts = tuple(int(part) if part.isdigit() else 0 for part in version.split("."))
+              candidates.append((parts, str(app)))
+          if not candidates:
+              raise SystemExit("No Xcode installation found under /Applications")
+          print(max(candidates)[1])
+          PY
+          )"
+          echo "Using $XC"
+          sudo xcode-select -s "$XC/Contents/Developer"
+          xcodebuild -version
+          xcrun --sdk iphoneos --show-sdk-version
+
+      - name: Cache source downloads
+        uses: actions/cache@v4
+        with:
+          path: |
+            third_party/sources
+            ~/.cargo/registry
+            ~/.cargo/git
+          key: droiddeck-sources-${{ runner.os }}-${{ hashFiles('scripts/sources.sh', 'scripts/prepare_stikjit_notices.sh', 'src/rppairing-ios/Cargo.lock') }}
+          restore-keys: |
+            droiddeck-sources-${{ runner.os }}-
+
+      - name: Install build tools
+        run: |
+          brew install autoconf automake bison cmake flex gettext libtool meson ninja pkg-config qemu xcodegen
+          "$(brew --prefix)/bin/python3" -m pip install --break-system-packages --user pyyaml mako packaging
+          echo "$(brew --prefix bison)/bin" >> "$GITHUB_PATH"
+          echo "$(brew --prefix flex)/bin" >> "$GITHUB_PATH"
+          rustup target add aarch64-apple-ios
+
+      - name: Show toolchain
+        run: |
+          xcodebuild -version
+          xcrun --sdk iphoneos --show-sdk-version
+          python3 --version
+          meson --version
+          ninja --version
+          cargo --version
+
+      - name: Build ad-hoc packages
+        run: |
+          chmod +x scripts/*.sh
+          ./scripts/ci_build.sh build/DroidDeck.ipa
+
+      - name: Create checksums
+        run: |
+          cd build
+          shasum -a 256 DroidDeck.ipa DroidDeck.tipa > SHA256SUMS.txt
+
+      - name: Upload IPA and TIPA
+        uses: actions/upload-artifact@v4
+        with:
+          name: DroidDeck-0.1.0
+          path: |
+            build/DroidDeck.ipa
+            build/DroidDeck.tipa
+            build/SHA256SUMS.txt
+            LICENSE
+            NOTICE.md
+            SOURCE_MANIFEST.md
+            THIRD_PARTY_NOTICES.md
+            third_party/NOTICE_COMPONENTS.json
+            build/legal
+          if-no-files-found: error
+          retention-days: 14
+
+      - name: Upload build logs on failure
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: DroidDeck-build-logs
+          path: |
+            build/logs
+            /tmp/husk_ipa/build.log
+          if-no-files-found: ignore
+          retention-days: 7
